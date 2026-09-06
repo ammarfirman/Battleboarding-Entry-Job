@@ -1,0 +1,1217 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0C">
+<title>Battleboarding Business Entry</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  img{max-width:100%}
+  [hidden]{display:none!important}
+  :root{
+    --bg:#0B0B0C;
+    --panel:#0E0E10;
+    --ink:#FFFFFF;
+    --muted:#B9B9BE;
+    --faint:#7A7A82;
+    --line:#2C2C31;
+    --red:#E4002B;
+    --red-wash:rgba(228,0,43,.14);
+    --warn:#FFD400;
+    --hard:6px 6px 0 var(--red);
+    --hard-sm:4px 4px 0 #000;
+    --anton:"Anton","Barlow Semi Condensed",Impact,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Barlow","Segoe UI",Roboto,-apple-system,sans-serif;
+    line-height:1.5;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:url("assets/joker-bg.webp") no-repeat center top;
+    background-size:cover;opacity:.5;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(ellipse 135% 95% at 50% 10%,rgba(11,11,12,0) 0%,rgba(11,11,12,.42) 52%,rgba(11,11,12,.84) 100%),
+      radial-gradient(circle at 1px 1px,rgba(255,255,255,.05) 1px,transparent 1.5px);
+    background-size:100% 100%,13px 13px;
+  }
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+  .dot{width:10px;height:10px;flex:none;display:inline-block;transform:skewX(-12deg);border:1.5px solid #000}
+
+  .app{max-width:1180px;margin:0 auto;padding:26px 20px 76px;position:relative;z-index:1}
+
+  header{margin-bottom:24px;position:relative}
+  header::before{content:"";position:absolute;inset:-30px -24px -10px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 80% 100% at 22% 45%,rgba(11,11,12,.9),rgba(11,11,12,.45) 60%,rgba(11,11,12,0) 100%)}
+  .brand{display:flex;align-items:center;gap:14px}
+  .mark{
+    font-size:19px;width:44px;height:44px;display:grid;place-items:center;flex:none;
+    background:var(--red);border:2px solid #000;box-shadow:var(--hard-sm);transform:rotate(-4deg);
+  }
+  h1{
+    font-family:var(--anton);font-weight:400;font-size:clamp(1.9rem,5.6vw,3.1rem);margin:0;
+    letter-spacing:.015em;line-height:.96;text-transform:uppercase;color:var(--ink);
+    text-shadow:4px 4px 0 var(--red);transform:skewX(-5deg);text-wrap:balance;
+  }
+  .tagline{
+    color:var(--muted);margin:16px 0 0;max-width:62ch;font-size:.98rem;
+    border-left:4px solid var(--red);padding-left:13px;
+  }
+
+  .stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .stat{
+    display:flex;flex-direction:column;
+    background:#000;border:2px solid var(--ink);
+    padding:7px 16px 9px;min-width:94px;
+    transform:skewX(-9deg);box-shadow:var(--hard-sm);
+  }
+  .stat > *{transform:skewX(9deg)}
+  .stat b{font-family:var(--anton);font-weight:400;font-size:1.7rem;line-height:1;letter-spacing:.02em}
+  .stat span{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:600}
+  .stat.is-done b{color:#fff}
+  .stat.is-accent b{color:var(--red)}
+  .stat.is-danger{border-color:var(--warn)}
+  .stat.is-danger b{color:var(--warn)}
+  .stat.is-money b{font-size:1.15rem;color:#fff}
+
+  .view-switch{display:flex;flex-wrap:wrap;margin-top:22px;gap:10px}
+  .view-switch button{
+    font-family:var(--anton);font-weight:400;font-size:.95rem;letter-spacing:.09em;text-transform:uppercase;
+    cursor:pointer;border:2px solid var(--ink);background:#000;color:var(--ink);
+    padding:9px 22px;transform:skewX(-10deg);transition:background .12s,color .12s;
+  }
+  .view-switch button:hover{background:var(--red-wash)}
+  .view-switch button.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:var(--hard-sm)}
+  .view-switch button:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+
+  .conn{
+    margin-top:16px;font-size:.85rem;padding:10px 14px;
+    border:2px solid var(--line);border-left:5px solid var(--warn);background:#000;color:var(--muted);
+    display:flex;gap:9px;align-items:flex-start;
+  }
+  .conn.warn{border-left-color:var(--red)}
+  .conn .d{width:9px;height:9px;background:var(--warn);margin-top:5px;flex:none;transform:skewX(-12deg)}
+  .conn.warn .d{background:var(--red)}
+
+  .board{display:grid;grid-template-columns:290px 1fr;gap:24px;align-items:start}
+  @media (max-width:860px){.board{grid-template-columns:1fr}}
+
+  /* rail */
+  .rail{
+    position:sticky;top:18px;
+    background:var(--panel);border:2px solid var(--ink);
+    padding:16px;box-shadow:var(--hard);
+  }
+  @media (max-width:860px){.rail{position:static}}
+  .rail h2{
+    font-family:var(--anton);font-weight:400;font-size:1.05rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink);margin:0 0 12px;border-bottom:2px solid var(--red);padding-bottom:6px;
+  }
+  .add-row{display:flex;gap:8px}
+  .add-row input{
+    flex:1;min-width:0;font:inherit;color:var(--ink);
+    background:#000;border:2px solid var(--line);padding:9px 11px;
+  }
+  .add-row input::placeholder{color:var(--faint)}
+  .add-row input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .add-row button{
+    font-family:var(--anton);font-weight:400;font-size:.92rem;letter-spacing:.06em;text-transform:uppercase;
+    cursor:pointer;white-space:nowrap;
+    background:var(--red);color:#fff;border:2px solid #000;
+    padding:8px 16px;transform:skewX(-10deg);box-shadow:var(--hard-sm);transition:background .12s,color .12s;
+  }
+  .add-row button:hover{background:#fff;color:var(--red)}
+  .add-row button:active{transform:skewX(-10deg) translate(2px,2px);box-shadow:none}
+
+  .cat-list{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .cat{
+    display:flex;align-items:center;gap:10px;padding:10px 10px 10px 12px;cursor:pointer;
+    background:#000;border:2px solid var(--line);transition:transform .12s,border-color .12s;
+  }
+  .cat:hover{border-color:var(--ink);transform:translateX(3px)}
+  .cat.sel{background:var(--red);border-color:var(--red);box-shadow:var(--hard-sm);transform:translateX(6px)}
+  .cat-name{
+    flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:.92rem;
+  }
+  .cat.sel .cat-name,.cat.sel .cat-count{color:#fff}
+  .cat.sel .dot{border-color:#fff}
+  .cat-count{font-size:.82rem;color:var(--faint);flex:none;font-weight:600}
+  .rail-hint{color:var(--faint);font-size:.85rem;margin:16px 2px 2px;text-wrap:pretty}
+  .add-cat-btn{
+    margin-top:12px;width:100%;cursor:pointer;
+    font-family:var(--anton);font-weight:400;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+    background:#000;border:2px dashed var(--line);color:var(--muted);padding:9px 8px;
+    transform:skewX(-10deg);transition:border-color .12s,color .12s;
+  }
+  .add-cat-btn:hover{border-color:var(--red);color:#fff}
+  .add-cat-btn:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+
+  /* panel */
+  .panel{
+    background:var(--panel);border:2px solid var(--ink);
+    box-shadow:var(--hard);min-height:360px;
+  }
+  .panel-head{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:20px 24px 28px;background:var(--red);
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),0 100%);
+  }
+  .panel-head h2{
+    font-family:var(--anton);font-weight:400;font-size:clamp(1.4rem,3vw,2rem);margin:0;
+    letter-spacing:.02em;line-height:1;text-transform:uppercase;color:#fff;flex:1;min-width:0;
+    text-wrap:balance;text-shadow:3px 3px 0 #000;
+  }
+  .pill{
+    font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:500;
+    padding:4px 10px;background:#000;color:#fff;white-space:nowrap;transform:skewX(-10deg);
+  }
+  .link-danger{
+    font-family:var(--anton);font-weight:400;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;
+    background:#000;border:2px solid #000;color:#fff;cursor:pointer;
+    padding:5px 11px;transform:skewX(-10deg);
+  }
+  .link-danger:hover{background:var(--warn);color:#000}
+
+  .section{padding:20px 24px}
+  .section + .section{border-top:2px solid var(--line)}
+  .section h3{
+    font-family:var(--anton);font-weight:400;font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--red);margin:0 0 14px;display:flex;align-items:center;gap:9px;
+  }
+  .section h3::before{content:"";width:14px;height:14px;background:var(--red);transform:skewX(-12deg);flex:none}
+
+  /* job list */
+  .job-list{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:0}
+  .job{border-bottom:2px solid var(--line);transition:background .12s}
+  .job:first-child{border-top:2px solid var(--line)}
+  .job:hover{background:linear-gradient(90deg,var(--red-wash),transparent 62%)}
+  .job.exp{background:var(--red-wash);box-shadow:inset 5px 0 0 var(--red)}
+  .job-row{display:flex;align-items:flex-start;gap:13px;padding:12px 8px}
+  .check{
+    flex:none;width:24px;height:24px;margin-top:1px;cursor:pointer;
+    border:2px solid var(--ink);background:#000;display:grid;place-items:center;padding:0;
+    transform:skewX(-8deg);transition:background .12s,border-color .12s;
+  }
+  .check:hover{border-color:var(--red)}
+  .check:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+  .check svg{width:14px;height:14px;stroke:#fff;stroke-width:3.4;fill:none;opacity:0;transform:skewX(8deg)}
+  .job.done .check{background:var(--red);border-color:var(--red)}
+  .job.done .check svg{opacity:1}
+  .job-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;cursor:pointer}
+  .job-main:focus-visible{outline:3px solid var(--warn);outline-offset:3px}
+  .job-title-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .job-title{word-break:break-word;font-weight:700;text-transform:uppercase;letter-spacing:.01em}
+  .job.done .job-title{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px;color:var(--faint)}
+  .job-time{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--warn);text-transform:uppercase;letter-spacing:.04em}
+  .job-desc-prev{
+    font-size:.84rem;color:var(--muted);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;
+  }
+  .sched-chip{
+    font-family:"IBM Plex Mono",monospace;font-size:.7rem;font-weight:500;text-transform:uppercase;
+    padding:2px 8px;border:1.5px solid var(--warn);color:var(--warn);background:#000;
+    white-space:nowrap;transform:skewX(-10deg);
+  }
+  .sched-chip.over{border-color:var(--red);background:var(--red);color:#fff}
+  .price-chip{
+    font-family:"IBM Plex Mono",monospace;font-size:.7rem;font-weight:500;
+    padding:2px 8px;border:1.5px solid var(--ink);color:var(--ink);background:#000;
+    white-space:nowrap;transform:skewX(-10deg);
+  }
+  .job.done .price-chip{border-color:var(--faint);color:var(--faint)}
+  .icon-btn{
+    flex:none;font:inherit;background:none;border:none;color:var(--faint);cursor:pointer;
+    width:28px;height:28px;line-height:1;opacity:0;transition:opacity .1s;
+  }
+  .job-row:hover .icon-btn,.job.exp .icon-btn,.img-card:hover .icon-btn{opacity:1}
+  .icon-btn:hover{background:var(--red);color:#fff}
+  .icon-btn:focus-visible{opacity:1;outline:3px solid var(--warn);outline-offset:1px}
+
+  /* job detail */
+  .job-detail{padding:8px 10px 20px 45px;display:flex;flex-direction:column;gap:16px}
+  .fld{display:flex;flex-direction:column;gap:7px}
+  .fld > span{font-family:var(--anton);font-weight:400;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+  .job-desc-input{
+    font:inherit;color:var(--ink);width:100%;resize:vertical;min-height:68px;
+    background:#000;border:2px solid var(--line);padding:10px 12px;
+  }
+  .job-desc-input::placeholder{color:var(--faint)}
+  .job-desc-input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .sched-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .job-sched-input{
+    font:inherit;color:var(--ink);color-scheme:dark;
+    background:#000;border:2px solid var(--line);padding:8px 11px;max-width:240px;
+  }
+  .job-sched-input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .price-input{
+    font:inherit;color:var(--ink);color-scheme:dark;width:200px;max-width:100%;
+    background:#000;border:2px solid var(--line);padding:8px 11px;
+  }
+  .price-input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .price-tag{color:var(--muted);font-size:.86rem;white-space:nowrap}
+  .sched-price{font-size:.72rem;color:var(--muted)}
+
+  .dropzone{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    padding:22px;border:2px dashed var(--red);cursor:pointer;
+    color:var(--muted);text-align:center;background:#000;transition:background .12s;
+  }
+  .dropzone:hover,.dropzone.drag{background:var(--red-wash)}
+  .dropzone b{font-family:var(--anton);font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:#fff;font-size:1rem}
+  .dropzone small{font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+
+  .img-grid{
+    margin-top:14px;display:grid;gap:14px;
+    grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  }
+  .img-card{
+    position:relative;overflow:hidden;border:3px solid #fff;background:#000;
+    aspect-ratio:1;cursor:zoom-in;box-shadow:4px 4px 0 #000;transition:transform .12s,box-shadow .12s;
+  }
+  .img-card:nth-child(odd){transform:rotate(-1.6deg)}
+  .img-card:nth-child(even){transform:rotate(1.6deg)}
+  .img-card:hover{transform:rotate(0) scale(1.04);z-index:2;box-shadow:4px 4px 0 var(--red)}
+  .img-card img{width:100%;height:100%;object-fit:cover;display:block}
+  .img-card .icon-btn{position:absolute;top:3px;right:3px;background:#000;color:#fff;opacity:1;width:26px;height:26px}
+  .img-card .icon-btn:hover{background:var(--red)}
+  .img-time{
+    position:absolute;left:0;right:0;bottom:0;padding:4px 7px;font-size:.64rem;
+    background:var(--red);color:#fff;font-family:"IBM Plex Mono",monospace;
+  }
+
+  /* schedule view */
+  .sched-item{
+    width:100%;text-align:left;font:inherit;cursor:pointer;
+    display:grid;grid-template-columns:140px 1fr auto;gap:16px;align-items:center;
+    background:#000;border:2px solid var(--line);border-left:5px solid var(--line);
+    padding:13px 12px;margin-bottom:8px;transition:transform .12s,border-color .12s;
+  }
+  .sched-item:hover{transform:translateX(4px);border-color:var(--ink)}
+  .sched-item:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+  .sched-item.over{border-left-color:var(--red)}
+  .sched-when{font-family:"IBM Plex Mono",monospace;color:var(--muted);font-size:.8rem;text-transform:uppercase}
+  .sched-item.over .sched-when{color:var(--red)}
+  .sched-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .sched-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;text-transform:uppercase;letter-spacing:.01em}
+  .sched-item.is-done{opacity:.5}
+  .sched-item.is-done .sched-title{text-decoration:line-through;text-decoration-color:var(--red)}
+  .sched-cat{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--faint);text-transform:uppercase;letter-spacing:.03em}
+  .sched-flag{
+    font-family:var(--anton);font-weight:400;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+    padding:3px 10px;background:var(--red);color:#fff;white-space:nowrap;transform:skewX(-10deg);
+  }
+  .sched-flag.ok{background:#fff;color:#000}
+  .empty-inline{color:var(--faint);font-size:.88rem;margin:4px 2px}
+  @media (max-width:560px){.sched-item{grid-template-columns:1fr auto}.sched-when{grid-column:1/-1}}
+
+  .empty{padding:60px 24px;text-align:center;color:var(--faint)}
+  .empty p{margin:0 auto;max-width:34ch;text-wrap:pretty;font-family:var(--anton);font-size:1.1rem;line-height:1.3;text-transform:uppercase;letter-spacing:.03em}
+
+  /* history view */
+  .history{padding:24px 28px 30px;max-width:74ch}
+  .history .est{
+    font-family:var(--anton);font-weight:400;font-size:clamp(1.6rem,4vw,2.4rem);line-height:.95;
+    margin:0;color:var(--red);text-transform:uppercase;text-shadow:3px 3px 0 #000;transform:skewX(-5deg);
+  }
+  .history .founders{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 24px}
+  .history .founder{
+    font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.02em;
+    padding:4px 11px;background:#000;border:1.5px solid var(--ink);color:var(--ink);
+    white-space:nowrap;transform:skewX(-10deg);
+  }
+  .history p{margin:0 0 15px;color:var(--muted)}
+  .history p:nth-of-type(2){color:var(--ink)}
+  .history strong{color:var(--ink);font-weight:700}
+
+  /* services view */
+  .svc-list{padding:22px 24px 28px;display:flex;flex-direction:column;gap:14px;max-width:80ch}
+  .svc{
+    background:#000;border:2px solid var(--line);border-left:5px solid var(--red);
+    padding:14px 16px;transition:transform .12s,border-left-color .12s;
+  }
+  .svc:hover{transform:translateX(3px);border-left-color:var(--warn)}
+  .svc h3{
+    font-family:var(--anton);font-weight:400;font-size:1.15rem;letter-spacing:.05em;text-transform:uppercase;
+    color:#fff;margin:0 0 6px;
+  }
+  .svc p{margin:0;color:var(--muted);font-size:.92rem}
+
+  /* lightbox */
+  .lightbox{
+    position:fixed;inset:0;background:rgba(0,0,0,.93);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    padding:28px;z-index:50;
+  }
+  .lightbox img{max-width:100%;max-height:76vh;border:4px solid #fff;box-shadow:12px 12px 0 var(--red)}
+  .lightbox .cap{color:#fff;font-size:.82rem;font-family:"IBM Plex Mono",monospace;text-transform:uppercase}
+  .lightbox .close{
+    position:absolute;top:16px;right:20px;font-size:1.6rem;background:var(--red);border:2px solid #000;
+    color:#fff;cursor:pointer;line-height:1;width:44px;height:44px;transform:skewX(-10deg);
+  }
+  .lightbox .close:hover{background:#fff;color:var(--red)}
+
+  /* view transition — Persona 5 "all-out" screen wipe */
+  #wipe{
+    position:fixed;top:-28vh;bottom:-28vh;left:-45vw;right:-45vw;z-index:60;pointer-events:none;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--red);
+    transform:translateX(-150%) skewX(-14deg);
+    will-change:transform;
+  }
+  #wipe::before{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(114deg,transparent 0 30px,rgba(0,0,0,.18) 30px 36px);
+  }
+  #wipe.in{transition:transform .26s cubic-bezier(.5,0,.12,1);transform:translateX(0) skewX(-14deg)}
+  #wipe.out{transition:transform .38s cubic-bezier(.55,0,.25,1);transform:translateX(150%) skewX(-14deg)}
+  #wipe .logo{
+    position:relative;width:min(74vw,460px);height:auto;
+    image-rendering:auto;
+    filter:drop-shadow(6px 6px 0 rgba(0,0,0,.5));
+    transform:scale(.3) rotate(-16deg) skewX(14deg);opacity:0;
+  }
+  #wipe.in .logo{
+    transition:transform .28s .02s cubic-bezier(.18,1.4,.3,1),opacity .16s;
+    transform:scale(1) rotate(-4deg) skewX(14deg);opacity:1;
+  }
+  #wipe.out .logo{
+    transition:transform .34s cubic-bezier(.5,0,1,1),opacity .3s;
+    transform:scale(1.9) rotate(12deg) skewX(14deg);opacity:0;
+  }
+  @media (prefers-reduced-motion:reduce){#wipe{display:none!important}}
+
+  /* opening loading screen */
+  #loader{
+    position:fixed;inset:0;z-index:90;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+    background:var(--red);
+    animation:loaderfail 0s linear 26s forwards;
+  }
+  #loader img{
+    width:min(88vw,540px);height:auto;display:block;
+    filter:drop-shadow(0 10px 30px rgba(0,0,0,.4));
+  }
+  #loader .lbl{
+    font-family:var(--anton);font-weight:400;text-transform:uppercase;letter-spacing:.24em;
+    font-size:clamp(1rem,3.2vw,1.55rem);color:#000;transform:skewX(-8deg);
+  }
+  #loader.done{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s ease,visibility .5s}
+  #loader[hidden]{display:none!important}
+  @keyframes loaderfail{to{opacity:0;visibility:hidden;pointer-events:none}}
+
+  /* music toggle */
+  #soundBtn{
+    position:fixed;top:14px;right:14px;z-index:80;
+    width:44px;height:44px;display:grid;place-items:center;cursor:pointer;
+    background:#000;border:2px solid var(--ink);color:#fff;
+    transform:skewX(-10deg);box-shadow:var(--hard-sm);transition:background .12s,border-color .12s;
+  }
+  #soundBtn:hover{background:var(--red);border-color:var(--red)}
+  #soundBtn:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+  #soundBtn .ico{transform:skewX(10deg);font-size:1.05rem;line-height:1}
+  #soundBtn.off{opacity:.7}
+  @media (max-width:520px){#soundBtn{width:38px;height:38px;top:10px;right:10px}}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <img src="assets/loading.gif" alt="">
+  <span class="lbl">Processing to Meta-Listing</span>
+</div>
+
+<audio id="bgm" loop preload="none" src="assets/life-will-change.mp3"></audio>
+<button id="soundBtn" type="button" aria-pressed="true" title="Musik"><span class="ico">🔊</span></button>
+
+<div class="app">
+  <header>
+    <div class="brand">
+      <span class="mark">📋</span>
+      <h1>Battleboarding Business Entry</h1>
+    </div>
+    <p class="tagline">Gunakan alat ini untuk melakukan list dengan baik mengenai pekerjaan battleboarding kalian. Dengan berisi deskripsi, harga, jadwal, dan log foto yang menjadi bukti.</p>
+    <div class="stats" id="stats"></div>
+    <div class="view-switch" role="tablist" aria-label="View">
+      <button type="button" data-view="board" class="on">Board</button>
+      <button type="button" data-view="schedule">Schedule</button>
+      <button type="button" data-view="history">History</button>
+      <button type="button" data-view="services">Services</button>
+    </div>
+  </header>
+
+  <div id="boardWrap">
+    <div class="board">
+      <aside class="rail">
+        <h2>Categories</h2>
+        <ul class="cat-list" id="catList"></ul>
+        <p class="rail-hint" id="railHint" hidden>No categories yet.</p>
+        <button type="button" id="addCatBtn" class="add-cat-btn">+ Tambah kategori</button>
+      </aside>
+
+      <main class="panel" id="panel"></main>
+    </div>
+  </div>
+
+  <div id="scheduleWrap" hidden></div>
+
+  <div id="historyWrap" hidden>
+    <div class="panel">
+      <div class="panel-head"><h2>Sejarah</h2><span class="pill mono">Est. 2021</span></div>
+      <div class="history">
+        <p class="est">Battleboarding Business</p>
+        <div class="founders">
+          <span class="founder">Fariz Ramadhani</span>
+          <span class="founder">Ammar Firman</span>
+          <span class="founder">Rahmat Al Faris</span>
+        </div>
+        <p>Battleboarding Business pada dasarnya berdiri pada tahun 2021. Dimulai oleh Fariz Ramadhani, Ammar Firman, dan Rahmat Al Faris. Bermula dari komunitas battleboarding di Indonesia, <strong>Infinite Battle Reborn</strong> yang memiliki anggota sekitar 12 ribu orang. Dan terus menyebar hingga termasuk komunitas Battleboarding Indonesia di semua platforms.</p>
+        <p>Battleboarding Business diawali dengan Ammar Firman dan Fariz Ramadhani, yang membuka jasa <strong>&ldquo;Judgement.&rdquo;</strong> Yakni jasa untuk menilai suatu perdebatan yang terjadi dalam Private Debate. Private Debate pada dasarnya terdiri dari 2 pendebat, dan Judgement melakukan penilaian siapa yang menang diantara mereka.</p>
+        <p>Lalu dilanjutkan oleh Rahmat Al Faris pada 2022, dengan membuka <strong>jasa joki Private Debate</strong> dan dikembangkan lebih lanjut oleh Ammar Firman: jasa joki Private Debate bukan hanya dari segi battleboarding, melainkan juga <strong>Private Debate Terms</strong> &mdash; di mana perdebatan meliputi adu pengetahuan dan pemahaman di ranah Matematika dan Filsafat. Termasuk juga jasa joki Pro dan Kontra, menjawab pertanyaan Fisika, dan lain semacamnya.</p>
+        <p>Semenjak 2022, jasa Battleboarding semakin meluas dengan Ammar Firman membuka jasa <strong>Respect Thread dan Calculation</strong> di 2022. Secara data dan histori, bisnis ini terus berlanjut dari 2021 hingga 2026 dan kemungkinan akan terus eksis hingga komunitas ini mati.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="servicesWrap" hidden>
+    <div class="panel">
+      <div class="panel-head"><h2>Layanan</h2><span class="pill mono">4 jasa</span></div>
+      <div class="svc-list">
+        <div class="svc">
+          <h3>Respect Thread</h3>
+          <p>Jasa yang menyediakan analisis dan pengumpulan data-data dari suatu karakter di fiksi. Di mana, pembuat jasa akan membentuk suatu penjelasan power-scaling yang memperkirakan seberapa kuat karakter dengan bukti-bukti yang bisa dipertanggungjawabkan dari sumber aslinya secara langsung.</p>
+        </div>
+        <div class="svc">
+          <h3>Joki Private Debate</h3>
+          <p>Jasa yang menyediakan argumen untuk pihak yang melakukan perdebatan.</p>
+        </div>
+        <div class="svc">
+          <h3>Judgement Battleboarding</h3>
+          <p>Jasa yang menyediakan penilaian untuk pihak-pihak yang melakukan perdebatan.</p>
+        </div>
+        <div class="svc">
+          <h3>Calculation Battleboarding</h3>
+          <p>Jasa yang menyediakan perhitungan untuk mencari tahu estimasi kekuatan, kecepatan, ketahanan, atau energi yang dikeluarkan dari karakter menggunakan kemampuan berhitung secara Fisika dan Matematis.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="close" id="lbClose" aria-label="Close">✕</button>
+  <img id="lbImg" alt="">
+  <div class="cap mono" id="lbCap"></div>
+</div>
+
+<div id="wipe" hidden aria-hidden="true">
+  <img class="logo" src="assets/wipe-joker.gif" alt="">
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var CHECK_SVG = '<svg viewBox="0 0 16 16"><path d="M2 8.5l4 4 8-9"/></svg>';
+  var HUES = ["#0E6E66","#B5641E","#3457A6","#8A3FA0","#2E7D57","#B23B3B","#546170","#0C7C92"];
+
+  var state = {
+    view: "board",
+    categories: [],          // [{id,name,createdAt}]
+    jobsByCat: {},            // catId -> [{id,title,description,price,done,doneAt,scheduledAt,createdAt}]
+    imagesByJob: {},          // jobId -> [{id,dataUrl,name,createdAt}]
+    selectedId: null,
+    expandedId: null
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function uid(){
+    return (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
+  }
+  function hueFor(id){
+    var h = 0;
+    for (var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+    return HUES[h % HUES.length];
+  }
+  function fmtTime(v){
+    if (!v) return "";
+    var d = new Date(v);
+    if (isNaN(d)) return "";
+    return d.toLocaleString(undefined, { month:"short", day:"numeric", year:"numeric", hour:"numeric", minute:"2-digit" });
+  }
+  function fmtSched(v){
+    if (!v) return "";
+    var d = new Date(v);
+    if (isNaN(d)) return "";
+    return d.toLocaleString(undefined, { month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+  }
+  function toLocalInput(iso){
+    if (!iso) return "";
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    function p(n){ return String(n).padStart(2, "0"); }
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + "T" + p(d.getHours()) + ":" + p(d.getMinutes());
+  }
+  function isOverdue(j){
+    return !!j.scheduledAt && !j.done && new Date(j.scheduledAt).getTime() < Date.now();
+  }
+  function fmtIDR(n){
+    n = Number(n) || 0;
+    try {
+      return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
+    } catch (e) {
+      return "Rp " + Math.round(n).toLocaleString("id-ID");
+    }
+  }
+  function jobPrice(j){ return typeof j.price === "number" && isFinite(j.price) ? j.price : 0; }
+
+  /* ---------- rendering ---------- */
+
+  function jobsFor(id){ return state.jobsByCat[id] || []; }
+  function selectedCat(){
+    return state.categories.filter(function(c){ return c.id === state.selectedId; })[0] || null;
+  }
+
+  function renderStats(){
+    var total = 0, done = 0, overdue = 0, value = 0;
+    state.categories.forEach(function(c){
+      jobsFor(c.id).forEach(function(j){
+        total++; if (j.done) done++; if (isOverdue(j)) overdue++; value += jobPrice(j);
+      });
+    });
+    $("stats").innerHTML =
+      stat(state.categories.length, "Categories", "") +
+      stat(total, "Jobs", "is-accent") +
+      stat(done, "Done", "is-done") +
+      stat(total - done, "Open", "") +
+      stat(overdue, "Overdue", overdue ? "is-danger" : "") +
+      stat(fmtIDR(value), "Nilai total", "is-money");
+  }
+  function stat(n, label, cls){
+    return '<div class="stat ' + cls + '"><b>' + esc(n) + '</b><span>' + esc(label) + '</span></div>';
+  }
+
+  function renderRail(){
+    $("catList").innerHTML = state.categories.map(function(c){
+      var js = jobsFor(c.id);
+      var d = js.filter(function(j){ return j.done; }).length;
+      return '<li class="cat' + (c.id === state.selectedId ? " sel" : "") + '" data-act="select" data-id="' + esc(c.id) + '" role="button" tabindex="0">' +
+               '<span class="dot" style="background:' + hueFor(c.id) + '"></span>' +
+               '<span class="cat-name">' + esc(c.name) + '</span>' +
+               '<span class="cat-count mono">' + d + "/" + js.length + '</span>' +
+             '</li>';
+    }).join("");
+    $("railHint").hidden = state.categories.length !== 0;
+  }
+
+  function jobDetailHtml(j){
+    var imgs = state.imagesByJob[j.id] || [];
+    var grid = imgs.length ? '<div class="img-grid">' + imgs.map(function(im, i){
+      return '<div class="img-card" data-act="zoom" data-job="' + esc(j.id) + '" data-idx="' + i + '">' +
+               '<img loading="lazy" src="' + esc(im.dataUrl) + '" alt="' + esc(im.name || "photo") + '">' +
+               (im.createdAt ? '<span class="img-time mono">' + esc(fmtSched(im.createdAt)) + '</span>' : "") +
+               '<button class="icon-btn" data-act="del-img" data-job="' + esc(j.id) + '" data-id="' + esc(im.id) + '" aria-label="Delete photo">✕</button>' +
+             '</div>';
+    }).join("") + '</div>' : "";
+
+    return '<div class="job-detail">' +
+             '<label class="fld"><span>Description</span>' +
+               '<textarea class="job-desc-input" data-id="' + esc(j.id) + '" rows="3" placeholder="Scope, notes, materials, who’s doing it…">' + esc(j.description || "") + '</textarea>' +
+             '</label>' +
+             '<div class="fld"><span>Scheduled for</span>' +
+               '<span class="sched-row">' +
+                 '<input type="datetime-local" class="job-sched-input" data-id="' + esc(j.id) + '" value="' + esc(toLocalInput(j.scheduledAt)) + '">' +
+                 (j.scheduledAt ? '<button type="button" class="link-danger" data-act="sched-clear" data-id="' + esc(j.id) + '">Clear</button>' : "") +
+               '</span>' +
+             '</div>' +
+             '<div class="fld"><span>Harga (Rp)</span>' +
+               '<span class="sched-row">' +
+                 '<input type="number" min="0" step="1000" inputmode="numeric" class="price-input" data-id="' + esc(j.id) + '" placeholder="0" value="' + (typeof j.price === "number" ? j.price : "") + '">' +
+                 (jobPrice(j) ? '<span class="price-tag mono">' + esc(fmtIDR(j.price)) + '</span>' : "") +
+                 (jobPrice(j) ? '<button type="button" class="link-danger" data-act="price-clear" data-id="' + esc(j.id) + '">Clear</button>' : "") +
+               '</span>' +
+             '</div>' +
+             '<div class="fld"><span>Photos</span>' +
+               '<label class="dropzone" data-drop="' + esc(j.id) + '">' +
+                 '<b>Add photos</b><small>Click to choose, or drop image files here</small>' +
+                 '<input type="file" class="file-input" data-file="' + esc(j.id) + '" accept="image/*" multiple hidden>' +
+               '</label>' +
+               grid +
+             '</div>' +
+           '</div>';
+  }
+
+  function renderPanel(){
+    var panel = $("panel");
+    var cat = selectedCat();
+
+    var active = document.activeElement;
+    var keepDesc = active && active.classList && active.classList.contains("job-desc-input")
+      ? { id: active.getAttribute("data-id"), s: active.selectionStart, e: active.selectionEnd } : null;
+
+    if (!cat){
+      panel.innerHTML = '<div class="empty"><p>' +
+        (state.categories.length ? "Pick a category on the left to see its jobs, notes and photos." :
+         "No categories yet.") + '</p></div>';
+      return;
+    }
+
+    var js = jobsFor(cat.id);
+    var doneN = js.filter(function(j){ return j.done; }).length;
+    var catTotal = js.reduce(function(s, j){ return s + jobPrice(j); }, 0);
+
+    var jobsHtml = js.length ? '<ul class="job-list">' + js.map(function(j){
+      var exp = j.id === state.expandedId;
+      return '<li class="job' + (j.done ? " done" : "") + (exp ? " exp" : "") + '">' +
+               '<div class="job-row">' +
+                 '<button class="check" data-act="toggle" data-id="' + esc(j.id) + '" aria-pressed="' + (j.done ? "true" : "false") + '" aria-label="Mark done">' + CHECK_SVG + '</button>' +
+                 '<div class="job-main" data-act="expand" data-id="' + esc(j.id) + '" role="button" tabindex="0" aria-expanded="' + (exp ? "true" : "false") + '">' +
+                   '<div class="job-title-row">' +
+                     '<span class="job-title">' + esc(j.title) + '</span>' +
+                     (j.scheduledAt ? '<span class="sched-chip' + (isOverdue(j) ? " over" : "") + ' mono">' + esc(fmtSched(j.scheduledAt)) + '</span>' : "") +
+                     (jobPrice(j) ? '<span class="price-chip mono">' + esc(fmtIDR(j.price)) + '</span>' : "") +
+                   '</div>' +
+                   (j.done && j.doneAt ? '<span class="job-time mono">Done ' + esc(fmtTime(j.doneAt)) + '</span>' : "") +
+                   (!exp && j.description ? '<span class="job-desc-prev">' + esc(j.description) + '</span>' : "") +
+                 '</div>' +
+                 '<button class="icon-btn" data-act="del-job" data-id="' + esc(j.id) + '" aria-label="Delete job">✕</button>' +
+               '</div>' +
+               (exp ? jobDetailHtml(j) : "") +
+             '</li>';
+    }).join("") + '</ul>' : '<div class="empty"><p>No jobs in this category yet. Add the first one above.</p></div>';
+
+    panel.innerHTML =
+      '<div class="panel-head">' +
+        '<h2>' + esc(cat.name) + '</h2>' +
+        '<span class="pill mono">' + doneN + " / " + js.length + ' done</span>' +
+        (catTotal ? '<span class="pill mono">' + esc(fmtIDR(catTotal)) + '</span>' : "") +
+        '<button class="link-danger" data-act="del-cat">Delete category</button>' +
+      '</div>' +
+      '<div class="section">' +
+        '<h3>Jobs</h3>' +
+        '<form class="add-row" id="jobForm" autocomplete="off">' +
+          '<input id="jobInput" placeholder="Add a job…" maxlength="140" required aria-label="New job">' +
+          '<button type="submit">Add job</button>' +
+        '</form>' +
+        jobsHtml +
+      '</div>';
+
+    bindPanel(cat.id);
+
+    if (keepDesc){
+      var nt = panel.querySelector('.job-desc-input[data-id="' + (window.CSS && CSS.escape ? CSS.escape(keepDesc.id) : keepDesc.id) + '"]');
+      if (nt){ nt.focus(); try { nt.setSelectionRange(keepDesc.s, keepDesc.e); } catch (e) {} }
+    }
+  }
+
+  function renderSchedule(){
+    var wrap = $("scheduleWrap");
+    var items = [];
+    state.categories.forEach(function(c){
+      jobsFor(c.id).forEach(function(j){
+        if (j.scheduledAt) items.push({ c: c, j: j, t: new Date(j.scheduledAt).getTime() });
+      });
+    });
+
+    if (!items.length){
+      wrap.innerHTML = '<div class="panel"><div class="empty"><p>No jobs scheduled yet. Open a job on the board and pick a date under “Scheduled for.”</p></div></div>';
+      return;
+    }
+
+    var open = items.filter(function(x){ return !x.j.done; }).sort(function(a, b){ return a.t - b.t; });
+    var done = items.filter(function(x){ return x.j.done; }).sort(function(a, b){ return b.t - a.t; });
+
+    function row(x){
+      var over = !x.j.done && x.t < Date.now();
+      return '<button class="sched-item' + (over ? " over" : "") + (x.j.done ? " is-done" : "") + '" data-act="goto" data-cat="' + esc(x.c.id) + '" data-id="' + esc(x.j.id) + '">' +
+               '<span class="sched-when mono">' + esc(fmtSched(x.j.scheduledAt)) + '</span>' +
+               '<span class="sched-info">' +
+                 '<span class="sched-title">' + esc(x.j.title) + '</span>' +
+                 '<span class="sched-cat"><span class="dot" style="background:' + hueFor(x.c.id) + '"></span>' + esc(x.c.name) +
+                   (jobPrice(x.j) ? ' <span class="sched-price mono">· ' + esc(fmtIDR(x.j.price)) + '</span>' : "") +
+                 '</span>' +
+               '</span>' +
+               (over ? '<span class="sched-flag">Overdue</span>' : (x.j.done ? '<span class="sched-flag ok">Done</span>' : '<span></span>')) +
+             '</button>';
+    }
+
+    wrap.innerHTML = '<div class="panel">' +
+      '<div class="section"><h3>Upcoming &amp; open</h3>' +
+        (open.length ? open.map(row).join("") : '<p class="empty-inline">Nothing open on the schedule.</p>') +
+      '</div>' +
+      (done.length ? '<div class="section"><h3>Completed</h3>' + done.map(row).join("") + '</div>' : "") +
+    '</div>';
+  }
+
+  function renderView(){
+    $("boardWrap").hidden = state.view !== "board";
+    $("scheduleWrap").hidden = state.view !== "schedule";
+    $("historyWrap").hidden = state.view !== "history";
+    $("servicesWrap").hidden = state.view !== "services";
+    Array.prototype.forEach.call(document.querySelectorAll(".view-switch button"), function(b){
+      b.classList.toggle("on", b.getAttribute("data-view") === state.view);
+    });
+    if (state.view === "board"){ renderRail(); renderPanel(); }
+    else if (state.view === "schedule"){ renderSchedule(); }
+  }
+
+  function renderAll(){ renderStats(); renderView(); }
+
+  /* ---------- panel event binding ---------- */
+
+  function bindPanel(catId){
+    var jf = $("jobForm");
+    if (jf) jf.addEventListener("submit", function(e){
+      e.preventDefault();
+      var inp = $("jobInput");
+      var t = inp.value.trim();
+      if (t){ DATA.addJob(catId, t); inp.value = ""; }
+    });
+
+    var panel = $("panel");
+
+    var ta = panel.querySelector(".job-desc-input");
+    if (ta) ta.addEventListener("blur", function(){
+      DATA.updateJob(catId, ta.getAttribute("data-id"), { description: ta.value.trim() });
+    });
+
+    var si = panel.querySelector(".job-sched-input");
+    if (si) si.addEventListener("change", function(){
+      var v = si.value;
+      DATA.updateJob(catId, si.getAttribute("data-id"), { scheduledAt: v ? new Date(v).toISOString() : null });
+    });
+
+    var pi = panel.querySelector(".price-input");
+    if (pi) pi.addEventListener("change", function(){
+      var v = pi.value.trim();
+      var n = v === "" ? null : Math.max(0, Math.round(Number(v)));
+      if (n !== null && !isFinite(n)) n = null;
+      DATA.updateJob(catId, pi.getAttribute("data-id"), { price: n });
+    });
+
+    var fi = panel.querySelector(".file-input");
+    if (fi) fi.addEventListener("change", function(){
+      handleFiles(catId, fi.getAttribute("data-file"), fi.files);
+      fi.value = "";
+    });
+
+    var dz = panel.querySelector(".dropzone");
+    if (dz){
+      ["dragenter","dragover"].forEach(function(ev){
+        dz.addEventListener(ev, function(e){ e.preventDefault(); dz.classList.add("drag"); });
+      });
+      ["dragleave","dragend"].forEach(function(ev){
+        dz.addEventListener(ev, function(){ dz.classList.remove("drag"); });
+      });
+      dz.addEventListener("drop", function(e){
+        e.preventDefault();
+        dz.classList.remove("drag");
+        if (e.dataTransfer && e.dataTransfer.files) handleFiles(catId, dz.getAttribute("data-drop"), e.dataTransfer.files);
+      });
+    }
+  }
+
+  /* ---------- delegated events ---------- */
+
+  document.addEventListener("click", function(e){
+    var t = e.target.closest("[data-act]");
+    if (!t) return;
+    var act = t.getAttribute("data-act");
+    var id = t.getAttribute("data-id");
+    var cat = selectedCat();
+
+    if (act === "select"){ selectCategory(id); }
+    else if (act === "expand"){ toggleExpand(id); }
+    else if (act === "toggle" && cat){
+      var job = jobsFor(cat.id).filter(function(j){ return j.id === id; })[0];
+      if (job) DATA.toggleJob(cat.id, id, !job.done);
+    }
+    else if (act === "del-job" && cat){ DATA.deleteJob(cat.id, id); }
+    else if (act === "del-cat" && cat){
+      if (confirm('Delete "' + cat.name + '" and all its jobs, notes and photos?')) DATA.deleteCategory(cat.id);
+    }
+    else if (act === "sched-clear" && cat){ DATA.updateJob(cat.id, id, { scheduledAt: null }); }
+    else if (act === "price-clear" && cat){ DATA.updateJob(cat.id, id, { price: null }); }
+    else if (act === "del-img" && cat){ DATA.deleteImage(cat.id, t.getAttribute("data-job"), id); }
+    else if (act === "zoom"){ openLightbox(t.getAttribute("data-job"), parseInt(t.getAttribute("data-idx"), 10)); }
+    else if (act === "goto"){
+      var gCat = t.getAttribute("data-cat"), gJob = t.getAttribute("data-id");
+      playTransition(function(){
+        state.view = "board";
+        state.selectedId = gCat;
+        state.expandedId = gJob;
+        renderAll();
+      });
+      setTimeout(function(){
+        var li = $("panel").querySelector(".job.exp");
+        if (li) li.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 320);
+    }
+  });
+
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){
+      var sel = e.target.closest && e.target.closest('[data-act="select"]');
+      if (sel){ e.preventDefault(); selectCategory(sel.getAttribute("data-id")); return; }
+      var exp = e.target.closest && e.target.closest('[data-act="expand"]');
+      if (exp){ e.preventDefault(); toggleExpand(exp.getAttribute("data-id")); return; }
+    }
+    if (e.key === "Escape") closeLightbox();
+  });
+
+  /* ---------- Persona 5 style view transition ---------- */
+  var transitioning = false, pendingSwap = null;
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function playTransition(swap){
+    var el = $("wipe");
+    if (reduceMotion || !el){ swap(); return; }
+    if (transitioning){ pendingSwap = swap; return; }
+    transitioning = true;
+
+    el.hidden = false;
+    el.classList.remove("in", "out");
+    void el.offsetWidth;               // reflow so the transition runs
+    el.classList.add("in");            // red slab sweeps across, logo pops
+
+    setTimeout(function(){
+      try { swap(); } catch (err) { console.error(err); }
+      el.classList.remove("in");
+      el.classList.add("out");         // slab clears out, logo flies off
+      setTimeout(function(){
+        el.classList.remove("out");
+        el.hidden = true;
+        transitioning = false;
+        if (pendingSwap){ var s = pendingSwap; pendingSwap = null; playTransition(s); }
+      }, 400);
+    }, 270);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".view-switch button"), function(b){
+    b.addEventListener("click", function(){
+      var v = b.getAttribute("data-view");
+      if (v === state.view && !transitioning) return;
+      playTransition(function(){ state.view = v; renderView(); });
+    });
+  });
+
+  var addCatBtn = $("addCatBtn");
+  if (addCatBtn) addCatBtn.addEventListener("click", function(){
+    var name = window.prompt("Nama kategori baru:");
+    if (name && name.trim()) DATA.addCategory(name.trim());
+  });
+
+  function selectCategory(id){
+    if (state.selectedId === id) return;
+    state.selectedId = id;
+    state.expandedId = null;
+    renderRail();
+    renderPanel();
+  }
+
+  function toggleExpand(id){
+    state.expandedId = state.expandedId === id ? null : id;
+    renderPanel();
+  }
+
+  /* ---------- lightbox ---------- */
+  function openLightbox(jobId, idx){
+    var im = (state.imagesByJob[jobId] || [])[idx];
+    if (!im) return;
+    $("lbImg").src = im.dataUrl;
+    $("lbImg").alt = im.name || "photo";
+    $("lbCap").textContent = (im.name ? im.name + "  ·  " : "") + fmtTime(im.createdAt);
+    $("lightbox").hidden = false;
+  }
+  function closeLightbox(){ $("lightbox").hidden = true; $("lbImg").src = ""; }
+  $("lbClose").addEventListener("click", closeLightbox);
+  $("lightbox").addEventListener("click", function(e){ if (e.target === $("lightbox")) closeLightbox(); });
+
+  /* ---------- image processing ---------- */
+  var MAX_DIM = 1000;
+  var MAX_CHARS = 180 * 1024;
+
+  function handleFiles(catId, jobId, fileList){
+    var files = Array.prototype.slice.call(fileList).filter(function(f){ return /^image\//.test(f.type); });
+    if (!files.length) return;
+    files.reduce(function(chain, f){
+      return chain.then(function(){
+        return downscale(f).then(function(dataUrl){
+          if (dataUrl.length > MAX_CHARS){
+            alert('"' + f.name + '" is too large to store even after compression. Try a smaller image.');
+            return;
+          }
+          return DATA.addImage(catId, jobId, { dataUrl: dataUrl, name: f.name, createdAt: Date.now() });
+        });
+      }).catch(function(err){ console.error(err); alert('Could not add "' + f.name + '".'); });
+    }, Promise.resolve());
+  }
+
+  function downscale(file){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function(){
+        URL.revokeObjectURL(url);
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var scale = Math.min(1, MAX_DIM / Math.max(w, h));
+        w = Math.round(w * scale); h = Math.round(h * scale);
+        var canvas = document.createElement("canvas");
+        var out;
+        function draw(cw, ch){
+          canvas.width = cw; canvas.height = ch;
+          var ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, cw, ch);
+          ctx.drawImage(img, 0, 0, cw, ch);
+        }
+        draw(w, h);
+        var q = 0.82;
+        out = canvas.toDataURL("image/jpeg", q);
+        while (out.length > MAX_CHARS && q > 0.4){ q -= 0.12; out = canvas.toDataURL("image/jpeg", q); }
+        while (out.length > MAX_CHARS && canvas.width > 380){
+          draw(Math.round(canvas.width * 0.82), Math.round(canvas.height * 0.82));
+          out = canvas.toDataURL("image/jpeg", 0.7);
+        }
+        resolve(out);
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error("decode failed")); };
+      img.src = url;
+    });
+  }
+
+  /* ---------- persistence: on-device IndexedDB (offline, per install) ---------- */
+
+  var IDB_NAME = "bbe", IDB_STORE = "kv", IDB_KEY = "state";
+
+  function idbOpen(){
+    return new Promise(function(res, rej){
+      var r = indexedDB.open(IDB_NAME, 1);
+      r.onupgradeneeded = function(){ r.result.createObjectStore(IDB_STORE); };
+      r.onsuccess = function(){ res(r.result); };
+      r.onerror = function(){ rej(r.error); };
+    });
+  }
+  function idbGet(){
+    return idbOpen().then(function(db){
+      return new Promise(function(res, rej){
+        var rq = db.transaction(IDB_STORE, "readonly").objectStore(IDB_STORE).get(IDB_KEY);
+        rq.onsuccess = function(){ res(rq.result); };
+        rq.onerror = function(){ rej(rq.error); };
+      });
+    });
+  }
+  function idbSet(val){
+    return idbOpen().then(function(db){
+      return new Promise(function(res, rej){
+        var tx = db.transaction(IDB_STORE, "readwrite");
+        tx.objectStore(IDB_STORE).put(val, IDB_KEY);
+        tx.oncomplete = function(){ res(); };
+        tx.onerror = function(){ rej(tx.error); };
+      });
+    });
+  }
+
+  var _saveTimer = null;
+  function save(){
+    if (_saveTimer) clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(function(){
+      _saveTimer = null;
+      idbSet({
+        v: 1,
+        categories: state.categories,
+        jobsByCat: state.jobsByCat,
+        imagesByJob: state.imagesByJob
+      }).catch(function(e){ console.error("save failed", e); });
+    }, 250);
+  }
+
+  var SERVICE_CATEGORIES = [
+    "Respect Thread",
+    "Joki Private Debate",
+    "Judgement Battleboarding",
+    "Calculation Battleboarding"
+  ];
+  function seedServices(){
+    var t = Date.now();
+    state.categories = SERVICE_CATEGORIES.map(function(n, i){
+      return { id: uid(), name: n, createdAt: t + i };
+    });
+    state.jobsByCat = {};
+    state.imagesByJob = {};
+    state.categories.forEach(function(c){ state.jobsByCat[c.id] = []; });
+    save();
+  }
+
+  /* ---------- data layer ---------- */
+
+  var DATA = {
+    addCategory: function(name){
+      var c = { id: uid(), name: name, createdAt: Date.now() };
+      state.categories.push(c);
+      state.jobsByCat[c.id] = [];
+      state.selectedId = c.id;
+      state.expandedId = null;
+      renderAll(); save();
+    },
+    deleteCategory: function(id){
+      if (state.selectedId === id) state.expandedId = null;
+      (state.jobsByCat[id] || []).forEach(function(j){ delete state.imagesByJob[j.id]; });
+      state.categories = state.categories.filter(function(c){ return c.id !== id; });
+      delete state.jobsByCat[id];
+      if (state.selectedId === id) state.selectedId = state.categories[0] ? state.categories[0].id : null;
+      renderAll(); save();
+    },
+    addJob: function(catId, title){
+      if (!state.jobsByCat[catId]) state.jobsByCat[catId] = [];
+      state.jobsByCat[catId].push({
+        id: uid(), title: title, description: "", price: null,
+        done: false, doneAt: null, scheduledAt: null, createdAt: Date.now()
+      });
+      renderAll(); save();
+    },
+    updateJob: function(catId, jobId, patch){
+      var j = jobsFor(catId).filter(function(x){ return x.id === jobId; })[0];
+      if (j) Object.keys(patch).forEach(function(k){ j[k] = patch[k]; });
+      renderAll(); save();
+    },
+    toggleJob: function(catId, id, done){
+      var j = jobsFor(catId).filter(function(x){ return x.id === id; })[0];
+      if (j){ j.done = done; j.doneAt = done ? new Date().toISOString() : null; }
+      renderAll(); save();
+    },
+    deleteJob: function(catId, id){
+      if (state.expandedId === id) state.expandedId = null;
+      state.jobsByCat[catId] = jobsFor(catId).filter(function(j){ return j.id !== id; });
+      delete state.imagesByJob[id];
+      renderAll(); save();
+    },
+    addImage: function(catId, jobId, img){
+      (state.imagesByJob[jobId] = state.imagesByJob[jobId] || []).unshift({
+        id: uid(), dataUrl: img.dataUrl, name: img.name, createdAt: img.createdAt
+      });
+      renderPanel(); save();
+    },
+    deleteImage: function(catId, jobId, id){
+      state.imagesByJob[jobId] = (state.imagesByJob[jobId] || []).filter(function(im){ return im.id !== id; });
+      renderPanel(); save();
+    }
+  };
+
+  /* ---------- opening loading screen ---------- */
+  var loaderHidden = false;
+  function hideLoader(){
+    if (loaderHidden) return;
+    loaderHidden = true;
+    var el = $("loader");
+    if (!el) return;
+    el.classList.add("done");
+    setTimeout(function(){ el.hidden = true; }, 650);
+  }
+  // Start the countdown only once the frame is actually painting. The artifact
+  // frame can stay hidden for several seconds on a heavy page, and rAF is paused
+  // while it is hidden — so this guarantees the loader gets its full time on
+  // screen regardless of how long the frame took to appear.
+  var MIN_LOADER_MS = 2600;
+  (function arm(n){
+    requestAnimationFrame(function(){
+      if (n > 0){ arm(n - 1); return; }
+      setTimeout(hideLoader, MIN_LOADER_MS);
+    });
+  })(3);
+  setTimeout(hideLoader, 20000);   // absolute last resort
+
+  /* ---------- background music ---------- */
+  (function(){
+    var bgm = $("bgm"), btn = $("soundBtn");
+    if (!bgm || !btn) return;
+    bgm.volume = 0.32;
+    bgm.loop = true;
+    // Safety net in case the browser drops the loop on the data: source
+    bgm.addEventListener("ended", function(){
+      if (musicOn){ try { bgm.currentTime = 0; } catch (e) {} tryPlay(); }
+    });
+    var musicOn = true;
+    try { musicOn = localStorage.getItem("bbe-music") !== "off"; } catch (e) {}
+
+    function sync(){
+      btn.classList.toggle("off", !musicOn);
+      btn.setAttribute("aria-pressed", musicOn ? "true" : "false");
+      btn.title = musicOn ? "Musik: nyala" : "Musik: mati";
+      btn.querySelector(".ico").textContent = musicOn ? "🔊" : "🔇";
+    }
+    function tryPlay(){
+      if (!musicOn) return;
+      var p = bgm.play();
+      if (p && p.catch) p.catch(function(){});
+    }
+    sync();
+
+    var armed = false;
+    function firstGesture(){
+      if (armed) return;
+      armed = true;
+      document.removeEventListener("pointerdown", firstGesture, true);
+      document.removeEventListener("keydown", firstGesture, true);
+      tryPlay();
+    }
+    document.addEventListener("pointerdown", firstGesture, true);
+    document.addEventListener("keydown", firstGesture, true);
+
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      musicOn = !musicOn;
+      try { localStorage.setItem("bbe-music", musicOn ? "on" : "off"); } catch (err) {}
+      if (musicOn){ armed = true; tryPlay(); } else { bgm.pause(); }
+      sync();
+    });
+  })();
+
+  /* ---------- boot ---------- */
+  renderAll();
+  (function(){
+    function finish(){
+      state.categories.forEach(function(c){ if (!state.jobsByCat[c.id]) state.jobsByCat[c.id] = []; });
+      if (!state.selectedId || !state.categories.some(function(c){ return c.id === state.selectedId; })){
+        state.selectedId = state.categories[0] ? state.categories[0].id : null;
+      }
+      renderAll();
+    }
+    function fresh(err){
+      if (err) console.error(err);
+      seedServices();
+      finish();
+    }
+    if (!("indexedDB" in window)){ fresh(); return; }
+    idbGet().then(function(saved){
+      if (saved && saved.categories && saved.categories.length){
+        state.categories = saved.categories;
+        state.jobsByCat = saved.jobsByCat || {};
+        state.imagesByJob = saved.imagesByJob || {};
+        finish();
+      } else {
+        fresh();
+      }
+    }).catch(fresh);
+  })();
+})();
+</script>
+
+</body>
+</html>

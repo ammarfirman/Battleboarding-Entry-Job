@@ -1,0 +1,17 @@
+# Normalize text to LF in the repo, checkout native on Windows
+* text=auto
+
+*.html   text
+*.css    text
+*.js     text
+*.json   text
+*.md     text
+
+# Binary assets — never touch line endings, never try to diff
+*.woff2  binary
+*.mp3    binary
+*.gif    binary
+*.webp   binary
+*.png    binary
+*.jpg    binary
+*.apk    binary

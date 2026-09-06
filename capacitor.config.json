@@ -1,0 +1,11 @@
+{
+  "appId": "com.battleboarding.entry",
+  "appName": "Battleboarding Entry",
+  "webDir": "www",
+  "backgroundColor": "#0B0B0C",
+  "android": {
+    "backgroundColor": "#0B0B0C",
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  }
+}

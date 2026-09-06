@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# Capacitor-generated native project (recreate with: npx cap add android)
+/android/
+
+# build output
+*.apk
+*.aab
+dist/
+
+# Windows Electron bundle — ~375 MB of bundled Chromium, regenerated from
+# windows-app/electron/ + www/ (see windows-app/README.md). Not for git.
+windows-app/BattleboardingEntry/
+windows-app/BattleboardingEntry.html
+
+# local JDK / tooling drops
+/jdk-*/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/

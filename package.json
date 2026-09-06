@@ -1,0 +1,19 @@
+{
+  "name": "battleboarding-entry",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Battleboarding Business Entry — Persona 5-styled job/service tracker (Android app via Capacitor)",
+  "scripts": {
+    "add:android": "cap add android",
+    "sync": "cap sync",
+    "open:android": "cap open android",
+    "copy": "cap copy"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/core": "^8.5.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.1"
+  }
+}
