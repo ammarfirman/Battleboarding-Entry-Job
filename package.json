@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "Battleboarding Business Entry — Persona 5-styled job/service tracker (Android app via Capacitor)",
+  "author": "ammarfirman",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ammarfirman/Battleboarding-Entry-Job.git"
+  },
+  "homepage": "https://ammarfirman.github.io/Battleboarding-Entry-Job/",
   "scripts": {
     "add:android": "cap add android",
     "sync": "cap sync",
