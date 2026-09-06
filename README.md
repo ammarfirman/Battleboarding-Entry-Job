@@ -15,9 +15,9 @@ account, works fully offline.
 
 | Target | What | How to get it |
 |---|---|---|
-| **Browser** | one self-contained ~10 MB HTML file | double-click `battleboarding-standalone.html` |
-| **Android** | installable APK, Android 7.0+ (debug-signed) | build it — `SETUP-ANDROID.md` |
-| **Windows** | Electron desktop wrapper | rebuild bundle from `windows-app/electron/` — `windows-app/README.md` |
+| **Browser** | one self-contained ~10 MB HTML file | double-click `battleboarding-standalone.html`, or open the live demo above |
+| **Android** | installable APK, Android 7.0+ (debug-signed) | **[Releases](../../releases/latest)** → `BattleboardingEntry-debug.apk` · build: `SETUP-ANDROID.md` |
+| **Windows** | Electron desktop app | **[Releases](../../releases/latest)** → `BattleboardingEntry-Windows-x64.zip` · build: `windows-app/README.md` |
 
 ---
 
