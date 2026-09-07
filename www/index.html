@@ -78,6 +78,11 @@
     font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;
     padding:3px 8px;background:var(--warn);color:#000;transform:skewX(-10deg);
   }
+  .ver-wrap{display:inline-flex;flex-direction:column;align-items:flex-start;gap:4px}
+  .byline{
+    font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--faint);white-space:nowrap;
+  }
   .tagline{
     color:var(--muted);margin:16px 0 0;max-width:64ch;font-size:.98rem;
     border-left:4px solid var(--red);padding-left:13px;
@@ -661,7 +666,10 @@
     <div class="brand">
       <span class="mark">📋</span>
       <h1>Battleboarding Business Entry</h1>
-      <span class="ver mono">v3</span>
+      <span class="ver-wrap">
+        <span class="ver mono">v3</span>
+        <span class="byline">Made by Ammar Firman</span>
+      </span>
     </div>
     <p class="tagline">Pelacak pekerjaan battleboarding: lifecycle status, deadline &amp; prioritas, rebuttal terstruktur, embed scan, dan statistik — semua tersimpan di perangkat ini.</p>
     <div class="stats" id="stats"></div>
