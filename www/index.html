@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#0B0B0C">
 <title>Battleboarding Business Entry</title>
 <link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
 <style>
   img{max-width:100%}
   [hidden]{display:none!important}
@@ -346,6 +347,22 @@
   .rt-export-btn{border-color:var(--warn);color:var(--warn)}
   .rt-export-btn:hover{background:var(--warn);color:#000}
 
+  /* calculation / latex */
+  .calc-section{border:2px solid var(--warn);padding:12px;background:rgba(255,212,0,.04)}
+  .calc-section > span:first-child{color:var(--warn)}
+  .calc-blocks{display:flex;flex-direction:column;gap:12px;margin:8px 0 10px}
+  .calc-block{border:2px solid var(--line);background:#000;padding:12px 13px;display:flex;flex-direction:column;gap:9px;position:relative;border-left:4px solid var(--warn)}
+  .calc-del{position:absolute;top:6px;right:6px;opacity:1;width:24px;height:24px}
+  .calc-block textarea{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.86rem}
+  .calc-preview{
+    background:#0f0f12;border:1.5px solid var(--line);padding:12px 14px;
+    color:var(--ink);overflow-x:auto;min-height:44px;font-size:1rem;line-height:1.5;
+  }
+  .calc-preview .calc-ph{color:var(--faint);font-family:"Barlow",sans-serif;font-size:.84rem}
+  .calc-preview .katex{color:var(--ink)}
+  .calc-preview .katex-display{margin:.4em 0;text-align:left}
+  .math-err{color:var(--red);font-family:"IBM Plex Mono",monospace;font-size:.85em;background:var(--red-wash);padding:1px 4px}
+
   /* arguments editor */
   .argdoc{border:2px solid var(--line);background:#000}
   .argdoc-toolbar{display:flex;flex-wrap:wrap;border-bottom:2px solid var(--line)}
@@ -662,6 +679,7 @@
   <img class="logo" src="assets/wipe-joker.gif" alt="">
 </div>
 
+<script src="vendor/katex/katex.min.js"></script>
 <script>
 (function(){
   "use strict";
@@ -1189,8 +1207,46 @@
            '</div>';
   }
 
+  /* ---------- LaTeX / math (Calculation) ---------- */
+  function renderMathInto(el, text){
+    var s = String(text == null ? "" : text);
+    if (!window.katex){ el.textContent = s; return; }
+    var re = /\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\$([^$\n]+?)\$|\\\(([\s\S]+?)\\\)/g;
+    var out = "", last = 0, m;
+    while ((m = re.exec(s))){
+      out += esc(s.slice(last, m.index)).replace(/\n/g, "<br>");
+      var display = m[1] != null || m[2] != null;
+      var tex = m[1] != null ? m[1] : (m[2] != null ? m[2] : (m[3] != null ? m[3] : m[4]));
+      try {
+        out += window.katex.renderToString(tex, { displayMode: display, throwOnError: false, strict: false });
+      } catch (e){
+        out += '<span class="math-err">' + esc(m[0]) + '</span>';
+      }
+      last = re.lastIndex;
+    }
+    out += esc(s.slice(last)).replace(/\n/g, "<br>");
+    el.innerHTML = out || '<span class="calc-ph">Pratinjau muncul di sini…</span>';
+  }
+  function calcBlockHtml(j, b){
+    return '<div class="calc-block" data-calc="' + esc(b.id) + '">' +
+             '<button class="icon-btn calc-del" data-act="del-calc" data-job="' + esc(j.id) + '" data-id="' + esc(b.id) + '" aria-label="Hapus blok">✕</button>' +
+             '<div class="reb-line"><label>Judul langkah</label><input class="txt" data-calc-field="label" placeholder="mis. Energi kinetik proyektil" value="' + esc(b.label || "") + '"></div>' +
+             '<div class="reb-line"><label>Isi (teks + LaTeX: $...$ inline, $$...$$ display)</label><textarea data-calc-field="body" rows="3" placeholder="Massa $m = 5\\,\\text{kg}$, kecepatan $v = 200\\,\\text{m/s}$.&#10;$$E_k = \\tfrac12 m v^2 = 1.0\\times10^{5}\\ \\text{J}$$">' + esc(b.body || "") + '</textarea></div>' +
+             '<div class="calc-preview" data-calc-preview></div>' +
+           '</div>';
+  }
+  function calcSectionHtml(j){
+    var blocks = (j.calc && j.calc.blocks) || [];
+    return '<div class="fld calc-section"><span>Calculation &middot; LaTeX</span>' +
+             '<span class="hint">Tulis di antara <b>$…$</b> untuk rumus sebaris, atau <b>$$…$$</b> untuk rumus terpisah. Pratinjau otomatis.</span>' +
+             '<div class="calc-blocks">' + (blocks.length ? blocks.map(function(b){ return calcBlockHtml(j, b); }).join("") : '<p class="reb-empty">Belum ada perhitungan.</p>') + '</div>' +
+             '<div><button type="button" class="mini-btn" data-act="add-calc" data-id="' + esc(j.id) + '">+ Tambah perhitungan</button></div>' +
+           '</div>';
+  }
+
   function jobDetailHtml(j, cat){
     var isRT = !!(cat && cat.kind === "respect-thread");
+    var isCalc = !!(cat && cat.kind === "calc");
     var hideReb = catHides(cat, "rebuttals");
     var hideEmb = catHides(cat, "embeds");
     var imgs = state.imagesByJob[j.id] || [];
@@ -1236,6 +1292,7 @@
              '</div>' +
 
              (isRT ? rtSectionHtml(j) : "") +
+             (isCalc ? calcSectionHtml(j) : "") +
 
              '<div class="fld"><span>Deadline</span>' +
                '<span class="sched-row">' +
@@ -1733,6 +1790,23 @@
       });
     });
 
+    // Calculation / LaTeX blocks
+    Array.prototype.forEach.call(panel.querySelectorAll(".calc-block"), function(card){
+      var blockId = card.getAttribute("data-calc");
+      var body = card.querySelector('[data-calc-field="body"]');
+      var prev = card.querySelector("[data-calc-preview]");
+      if (body && prev){
+        renderMathInto(prev, body.value);
+        var live = debounce(function(){ renderMathInto(prev, body.value); }, 220);
+        body.addEventListener("input", live);
+      }
+      Array.prototype.forEach.call(card.querySelectorAll("[data-calc-field]"), function(el){
+        el.addEventListener("blur", function(){
+          DATA.updateCalcBlock(catId, state.expandedId, blockId, el.getAttribute("data-calc-field"), el.value);
+        });
+      });
+    });
+
     var fi = panel.querySelector(".file-input");
     if (fi) fi.addEventListener("change", function(){ handleFiles(catId, fi.getAttribute("data-file"), fi.files); fi.value = ""; });
 
@@ -1768,6 +1842,8 @@
     else if (act === "del-rt" && cat){ DATA.deleteRtItem(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), id); }
     else if (act === "del-rt-ev" && cat){ DATA.deleteRtEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), t.getAttribute("data-entry"), parseInt(t.getAttribute("data-idx"), 10)); }
     else if (act === "rt-export" && cat){ exportRespectThread(cat.id, id); }
+    else if (act === "add-calc" && cat){ DATA.addCalcBlock(cat.id, id); }
+    else if (act === "del-calc" && cat){ DATA.deleteCalcBlock(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "del-embed" && cat){ DATA.deleteEmbed(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "embed-play"){
       var card = t.closest(".embed-card");
@@ -2131,9 +2207,16 @@
       if (!e.id) e.id = uid();
       e.label = e.label || ""; e.value = e.value || ""; e.note = e.note || "";
     });
+    if (!j.calc || typeof j.calc !== "object") j.calc = { blocks: [] };
+    if (!Array.isArray(j.calc.blocks)) j.calc.blocks = [];
+    j.calc.blocks.forEach(function(b){
+      if (!b.id) b.id = uid();
+      b.label = b.label || ""; b.body = b.body || "";
+      if (!b.createdAt) b.createdAt = Date.now();
+    });
     return j;
   }
-  var CATEGORY_KIND = { "Respect Thread": "respect-thread" };
+  var CATEGORY_KIND = { "Respect Thread": "respect-thread", "Calculation Battleboarding": "calc" };
   var CATEGORY_HIDE = {
     "Respect Thread": ["rebuttals", "embeds"],
     "Judgement Battleboarding": ["rebuttals", "embeds"]
@@ -2294,6 +2377,24 @@
       var it = j.rt[listKey].filter(function(x){ return x.id === itemId; })[0];
       if (!it || !it.evidence) return;
       it.evidence.splice(idx, 1);
+      renderPanel(); save();
+    },
+    addCalcBlock: function(catId, jobId){
+      var j = jobById(catId, jobId); if (!j) return;
+      j.calc = j.calc || { blocks: [] };
+      j.calc.blocks.push({ id: uid(), label: "", body: "", createdAt: Date.now() });
+      renderPanel(); save();
+    },
+    updateCalcBlock: function(catId, jobId, blockId, field, val){
+      var j = jobById(catId, jobId); if (!j || !j.calc) return;
+      var b = (j.calc.blocks || []).filter(function(x){ return x.id === blockId; })[0];
+      if (!b) return;
+      b[field] = String(val || "");
+      save();
+    },
+    deleteCalcBlock: function(catId, jobId, blockId){
+      var j = jobById(catId, jobId); if (!j || !j.calc) return;
+      j.calc.blocks = (j.calc.blocks || []).filter(function(x){ return x.id !== blockId; });
       renderPanel(); save();
     },
     addEmbed: function(catId, jobId, e){

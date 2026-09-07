@@ -11,8 +11,8 @@ account, works fully offline.
 > (GitHub Pages, deployed from `www/` by the included workflow).
 
 **Stack:** HTML · CSS · ES5 · IndexedDB · Capacitor 8 (Android) · Electron 44
-(Windows) · bundled web fonts (Anton / Barlow / IBM Plex Mono). No framework,
-no build step, no runtime dependencies.
+(Windows) · bundled web fonts (Anton / Barlow / IBM Plex Mono) · bundled KaTeX
+(offline math). No framework, no build step, no runtime dependencies.
 
 | Target | What | How to get it |
 |---|---|---|
@@ -29,6 +29,7 @@ battleboarding/
 ├─ www/                          the app — shared by all three builds
 │  ├─ index.html                 markup + styles + all the logic (one file)
 │  ├─ fonts.css  fonts/*.woff2   bundled Anton / Barlow / IBM Plex Mono (offline)
+│  ├─ vendor/katex/              bundled KaTeX (math rendering for Calculation jobs)
 │  └─ assets/                    joker-bg.webp, loading.gif, wipe-joker.gif, life-will-change.mp3
 │
 ├─ battleboarding-standalone.html   everything inlined into one ~10 MB file
@@ -119,6 +120,12 @@ name/tier/explanation + evidence links; Statistics is a label/value/note
 table. Notes and the photo log stay. An **Export to HTML** button writes a
 clean formatted document with those five headings (evidence rendered as
 images, stats as a table).
+
+**Calculation Battleboarding jobs** get a **Calculation · LaTeX** section — a
+list of calculation blocks (title + body), each with a live math preview.
+Write `$…$` for inline and `$$…$$` for display math; rendered with a bundled
+copy of **KaTeX** (`www/vendor/katex/`, works fully offline). `\[ … \]` and
+`\( … \)` are also recognised.
 
 **Schedule** — deadline buckets (🔴 Overdue · 🟠 Due soon · 🟡 Upcoming ·
 🟢 Completed) plus a month **calendar** with per-day deadline dots.
