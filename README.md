@@ -161,6 +161,12 @@ screen. The corner 🔊 button opens a Persona-5 decision-style menu to pick the
 background theme — **Tema Aksi** (Life Will Change, default), **Tema Tenang**
 (No More What Ifs), or off — remembered per browser/install.
 
+**Language** — an **ID / EN** button (top-right, next to 🔊) switches the whole
+UI between Indonesian and English, including dates and the History/Services
+copy. Remembered per browser/install (`localStorage` `bbe-lang`, default `id`).
+Strings live in the `I18N` catalog; `L("key")` at every render site, static
+markup via `data-i18n*` attributes.
+
 > Embeds load on GitHub Pages, the standalone file, and the Android/Windows
 > apps. They do **not** load inside the claude.ai artifact preview (its CSP
 > blocks third-party images/iframes).
