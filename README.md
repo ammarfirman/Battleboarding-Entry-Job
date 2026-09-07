@@ -108,11 +108,12 @@ global **Ctrl/⌘ + K** search palette.
 - **Price + status** — `Penawaran` / `Terjual` / `Contoh (estimasi)`.
 - a **photo log** (downscaled, stored on-device).
 
-**Respect Thread jobs** get an extra structured **Respect Thread** section:
-an *Introduction* field plus an abilities list (name → tier → explanation →
-evidence links), and an **Export to HTML** button that writes a clean,
-formatted document (Introduction + Abilities & Powerscaling, each with a
-"Bukti:" evidence block).
+**Respect Thread jobs** get an extra structured **Respect Thread** section in
+five parts — **Introduction · Terminology · Feats and Abilities · Statistics ·
+Intelligence and In-Char**. Terminology and Feats entries take
+name/tier/explanation + evidence links; Statistics is a label/value/note
+table. An **Export to HTML** button writes a clean formatted document with
+those five headings (evidence rendered as images, stats as a table).
 
 **Schedule** — deadline buckets (🔴 Overdue · 🟠 Due soon · 🟡 Upcoming ·
 🟢 Completed) plus a month **calendar** with per-day deadline dots.

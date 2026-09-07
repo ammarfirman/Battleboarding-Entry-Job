@@ -802,27 +802,39 @@
       return "<p>" + esc(p).replace(/\n/g, "<br>") + "</p>";
     }).join("\n");
   }
-  function buildRespectThreadDoc(j, cat){
-    var rt = j.rt || { intro: "", entries: [] };
+  function rtDocEvidence(list){
+    return (list || []).map(function(u){
+      var info = classifyEmbed(u) || { kind: "link", url: u };
+      return info.kind === "image"
+        ? '<img src="' + esc(info.embedUrl || u) + '" alt="bukti">'
+        : '<a class="evlink" href="' + esc(safeHref(u)) + '">' + esc(u) + '</a>';
+    }).join("\n");
+  }
+  function buildRespectThreadDoc(j){
+    var rt = j.rt || {};
     var title = (j.title || "Respect Thread").toUpperCase();
     var sub = "Respect Thread &middot; Battleboarding Business" +
       (j.customer ? " &middot; " + esc(j.customer) : "") +
       (j.tags && j.tags.length ? " &middot; " + j.tags.map(esc).join(", ") : "");
+    var em = '<p><em>(Belum diisi)</em></p>';
 
-    var abilities = (rt.entries || []).map(function(e){
-      var ev = (e.evidence || []).map(function(u){
-        var info = classifyEmbed(u) || { kind: "link", url: u };
-        return info.kind === "image"
-          ? '<img src="' + esc(info.embedUrl || u) + '" alt="bukti">'
-          : '<a class="evlink" href="' + esc(safeHref(u)) + '">' + esc(u) + '</a>';
-      }).join("\n");
-      return '<section class="ability">' +
-        '<h3>' + esc(e.name || "(tanpa nama)") + '</h3>' +
-        (e.tier ? '<p class="tier">' + esc(e.tier) + '</p>' : "") +
-        paraHtml(e.explanation) +
-        (ev ? '<p class="ev">Bukti:</p>' + ev : "") +
-      '</section>';
+    var terms = (rt.terminology || []).map(function(e){
+      var ev = rtDocEvidence(e.evidence);
+      return '<section class="block"><h3>' + esc(e.term || "(tanpa nama)") + '</h3>' +
+        paraHtml(e.definition) + (ev ? '<p class="ev">Bukti:</p>' + ev : "") + '</section>';
     }).join("\n");
+    var feats = (rt.feats || []).map(function(e){
+      var ev = rtDocEvidence(e.evidence);
+      return '<section class="block"><h3>' + esc(e.name || "(tanpa nama)") + '</h3>' +
+        (e.tier ? '<p class="tier">' + esc(e.tier) + '</p>' : "") +
+        paraHtml(e.explanation) + (ev ? '<p class="ev">Bukti:</p>' + ev : "") + '</section>';
+    }).join("\n");
+    var stats = (rt.stats || []).length
+      ? '<table class="stats"><tbody>' + rt.stats.map(function(s){
+          return '<tr><th>' + esc(s.label || "—") + '</th><td>' + esc(s.value || "—") +
+            (s.note ? '<br><span class="note">' + esc(s.note) + '</span>' : "") + '</td></tr>';
+        }).join("") + '</tbody></table>'
+      : em;
 
     return '<!doctype html>\n<html lang="id">\n<head>\n<meta charset="utf-8">\n' +
       '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
@@ -833,22 +845,27 @@
       'h2{font-size:17pt;border-bottom:2px solid #111;padding-bottom:4px;margin:36px 0 14px;text-transform:uppercase;letter-spacing:.03em}\n' +
       'h3{font-size:13pt;margin:22px 0 2px;color:#111}\n' +
       '.tier{color:#666;font-size:9.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px}\n' +
-      'p{margin:0 0 12px}\n.ev{font-weight:700;margin:14px 0 6px}\n' +
+      'p{margin:0 0 12px}\n.ev{font-weight:700;margin:14px 0 6px}\n.block{margin:0 0 22px}\n' +
       'img{max-width:100%;height:auto;border:1px solid #ccc;display:block;margin:0 0 10px}\n' +
       '.evlink{display:block;font-size:9pt;color:#1155cc;word-break:break-all;margin:0 0 8px}\n' +
-      '.ability{margin:0 0 22px}\nfooter{margin-top:40px;border-top:1px solid #ddd;padding-top:10px;color:#999;font-size:9pt}\n' +
+      'table.stats{border-collapse:collapse;width:100%;margin:0 0 14px}\n' +
+      'table.stats th,table.stats td{border:1px solid #bbb;padding:7px 10px;text-align:left;vertical-align:top;font-size:10.5pt}\n' +
+      'table.stats th{background:#f2f2f2;width:34%}\ntable.stats .note{color:#666;font-size:9pt}\n' +
+      'footer{margin-top:40px;border-top:1px solid #ddd;padding-top:10px;color:#999;font-size:9pt}\n' +
       '</style>\n</head>\n<body>\n' +
       '<h1>' + esc(title) + '</h1>\n<p class="subtitle">' + sub + '</p>\n' +
-      '<h2>Introduction</h2>\n' + (paraHtml(rt.intro) || '<p><em>(Belum diisi)</em></p>') + '\n' +
-      '<h2>Abilities &amp; Powerscaling</h2>\n' + (abilities || '<p><em>(Belum ada kemampuan)</em></p>') + '\n' +
+      '<h2>Introduction</h2>\n' + (paraHtml(rt.intro) || em) + '\n' +
+      '<h2>Terminology</h2>\n' + (terms || em) + '\n' +
+      '<h2>Feats and Abilities</h2>\n' + (feats || em) + '\n' +
+      '<h2>Statistics</h2>\n' + stats + '\n' +
+      '<h2>Intelligence and In-Char</h2>\n' + (paraHtml(rt.inChar) || em) + '\n' +
       '<footer>Dibuat dengan Battleboarding Business Entry — ' + esc(fmtDate(Date.now())) + '</footer>\n' +
       '</body>\n</html>';
   }
   function exportRespectThread(catId, jobId){
     var j = jobById(catId, jobId); if (!j) return;
-    var cat = state.categories.filter(function(c){ return c.id === catId; })[0];
     var safe = (j.title || "Respect Thread").replace(/[^\w\s.-]/g, "").replace(/\s+/g, " ").trim() || "Respect Thread";
-    var okd = downloadHtml(safe + " — Respect Thread.html", buildRespectThreadDoc(j, cat));
+    var okd = downloadHtml(safe + " — Respect Thread.html", buildRespectThreadDoc(j));
     if (!okd) alert("Tidak bisa mengekspor di lingkungan ini. Coba buka app-nya di browser desktop.");
   }
 
@@ -1097,8 +1114,29 @@
            '</div>';
   }
 
-  function rtEvidenceHtml(j, entry){
-    var ev = entry.evidence || [];
+  var RT_LISTS = [
+    { key: "terminology", label: "Terminology", add: "+ Tambah istilah", evidence: true,
+      fields: [
+        { f: "term", type: "input", ph: "Istilah / konsep" },
+        { f: "definition", type: "textarea", ph: "Definisi & konteks dari sumber…" }
+      ] },
+    { key: "feats", label: "Feats and Abilities", add: "+ Tambah feat / kemampuan", evidence: true,
+      fields: [
+        { f: "name", type: "input", ph: "Nama feat / kemampuan" },
+        { f: "tier", type: "input", ph: "Tier / kategori (mis. Universal Abilities)" },
+        { f: "explanation", type: "textarea", ph: "Penjelasan feat beserta konteks sumber…" }
+      ] },
+    { key: "stats", label: "Statistics", add: "+ Tambah statistik", evidence: false,
+      fields: [
+        { f: "label", type: "input", ph: "Statistik (mis. Attack Potency)" },
+        { f: "value", type: "input", ph: "Nilai (mis. Multiversal+)" },
+        { f: "note", type: "input", ph: "Justifikasi singkat (opsional)" }
+      ] }
+  ];
+  function rtCfg(key){ for (var i = 0; i < RT_LISTS.length; i++) if (RT_LISTS[i].key === key) return RT_LISTS[i]; return null; }
+
+  function rtEvidenceHtml(j, listKey, item){
+    var ev = item.evidence || [];
     if (!ev.length) return "";
     return '<div class="rt-ev-grid">' + ev.map(function(u, i){
       var info = classifyEmbed(u) || { kind: "link", url: u };
@@ -1107,32 +1145,46 @@
         : '<span class="rt-ev-link">' + esc(hostOf(u)) + '</span>';
       return '<figure class="rt-ev">' +
                '<a href="' + esc(safeHref(u)) + '" target="_blank" rel="noopener noreferrer">' + inner + '</a>' +
-               '<button class="icon-btn rt-ev-del" data-act="del-rt-ev" data-job="' + esc(j.id) + '" data-entry="' + esc(entry.id) + '" data-idx="' + i + '" aria-label="Hapus bukti">✕</button>' +
+               '<button class="icon-btn rt-ev-del" data-act="del-rt-ev" data-job="' + esc(j.id) + '" data-list="' + listKey + '" data-entry="' + esc(item.id) + '" data-idx="' + i + '" aria-label="Hapus bukti">✕</button>' +
              '</figure>';
     }).join("") + '</div>';
   }
-  function rtEntryHtml(j, entry){
-    return '<div class="rt-entry" data-rt="' + esc(entry.id) + '">' +
-             '<button class="icon-btn rt-del" data-act="del-rt" data-job="' + esc(j.id) + '" data-id="' + esc(entry.id) + '" aria-label="Hapus kemampuan">✕</button>' +
-             '<div class="reb-line"><label>Nama kemampuan</label><input class="txt" data-rt-field="name" placeholder="mis. Higher-Dimensional Manipulation" value="' + esc(entry.name || "") + '"></div>' +
-             '<div class="reb-line"><label>Kategori / tier</label><input class="txt" data-rt-field="tier" placeholder="mis. Universal Abilities / Tier X" value="' + esc(entry.tier || "") + '"></div>' +
-             '<div class="reb-line"><label>Penjelasan</label><textarea data-rt-field="explanation" placeholder="Jelaskan kemampuannya beserta konteks dari sumber…">' + esc(entry.explanation || "") + '</textarea></div>' +
-             '<div class="reb-line"><label>Bukti (link scan / gambar)</label>' +
-               '<form class="chip-form rt-ev-add" data-job="' + esc(j.id) + '" data-entry="' + esc(entry.id) + '" autocomplete="off"><input type="text" placeholder="Tempel link gambar / Imgur / Gyazo…" aria-label="Link bukti"><button type="submit">Tambah</button></form>' +
-               rtEvidenceHtml(j, entry) +
-             '</div>' +
+  function rtItemHtml(j, cfg, item){
+    var fields = cfg.fields.map(function(fd){
+      var v = esc(item[fd.f] || "");
+      if (fd.type === "textarea")
+        return '<div class="reb-line"><label>' + esc(fd.ph) + '</label><textarea data-rt-field="' + fd.f + '" placeholder="' + esc(fd.ph) + '">' + v + '</textarea></div>';
+      return '<div class="reb-line"><label>' + esc(fd.ph) + '</label><input class="txt" data-rt-field="' + fd.f + '" placeholder="' + esc(fd.ph) + '" value="' + v + '"></div>';
+    }).join("");
+    var ev = cfg.evidence
+      ? '<div class="reb-line"><label>Bukti (link scan / gambar)</label>' +
+          '<form class="chip-form rt-ev-add" data-job="' + esc(j.id) + '" data-list="' + cfg.key + '" data-entry="' + esc(item.id) + '" autocomplete="off"><input type="text" placeholder="Tempel link gambar / Imgur / Gyazo…" aria-label="Link bukti"><button type="submit">Tambah</button></form>' +
+          rtEvidenceHtml(j, cfg.key, item) +
+        '</div>'
+      : "";
+    return '<div class="rt-entry" data-rt-list="' + cfg.key + '" data-rt="' + esc(item.id) + '">' +
+             '<button class="icon-btn rt-del" data-act="del-rt" data-job="' + esc(j.id) + '" data-list="' + cfg.key + '" data-id="' + esc(item.id) + '" aria-label="Hapus">✕</button>' +
+             fields + ev +
+           '</div>';
+  }
+  function rtListHtml(j, cfg){
+    var items = (j.rt && j.rt[cfg.key]) || [];
+    return '<div class="fld"><span class="rt-sub">' + esc(cfg.label) + '</span>' +
+             '<div class="rt-entries">' + (items.length ? items.map(function(it){ return rtItemHtml(j, cfg, it); }).join("") : '<p class="reb-empty">Belum ada.</p>') + '</div>' +
+             '<div><button type="button" class="mini-btn" data-act="add-rt" data-id="' + esc(j.id) + '" data-list="' + cfg.key + '">' + esc(cfg.add) + '</button></div>' +
            '</div>';
   }
   function rtSectionHtml(j){
-    var rt = j.rt || { intro: "", entries: [] };
-    var entries = rt.entries || [];
+    var rt = j.rt || {};
     return '<div class="fld rt-section"><span>Respect Thread &middot; format</span>' +
              '<label class="fld"><span class="rt-sub">Introduction</span>' +
-               '<textarea data-rt-intro rows="4" placeholder="Latar belakang karakter / verse: siapa dia, asal-usul, peran dalam cerita…">' + esc(rt.intro || "") + '</textarea>' +
+               '<textarea data-rt-text="intro" rows="4" placeholder="Latar belakang karakter / verse: siapa dia, asal-usul, peran dalam cerita…">' + esc(rt.intro || "") + '</textarea>' +
              '</label>' +
-             '<div class="rt-entries">' + (entries.length ? entries.map(function(e){ return rtEntryHtml(j, e); }).join("") : '<p class="reb-empty">Belum ada kemampuan. Tambahkan satu per satu: nama, tier, penjelasan, bukti.</p>') + '</div>' +
+             RT_LISTS.map(function(cfg){ return rtListHtml(j, cfg); }).join("") +
+             '<label class="fld"><span class="rt-sub">Intelligence and In-Char</span>' +
+               '<textarea data-rt-text="inChar" rows="4" placeholder="Kecerdasan, gaya bertarung, pengalaman tempur, kecenderungan in-character…">' + esc(rt.inChar || "") + '</textarea>' +
+             '</label>' +
              '<div class="rt-actions">' +
-               '<button type="button" class="mini-btn" data-act="add-rt" data-id="' + esc(j.id) + '">+ Tambah kemampuan</button>' +
                '<button type="button" class="mini-btn rt-export-btn" data-act="rt-export" data-id="' + esc(j.id) + '">⬇ Export ke HTML</button>' +
              '</div>' +
            '</div>';
@@ -1656,15 +1708,17 @@
     });
 
     // Respect Thread builder
-    var rtIntro = panel.querySelector("[data-rt-intro]");
-    if (rtIntro) rtIntro.addEventListener("blur", function(){
-      if (state.expandedId) DATA.setRtIntro(catId, state.expandedId, rtIntro.value);
+    Array.prototype.forEach.call(panel.querySelectorAll("[data-rt-text]"), function(el){
+      el.addEventListener("blur", function(){
+        if (state.expandedId) DATA.setRtText(catId, state.expandedId, el.getAttribute("data-rt-text"), el.value);
+      });
     });
     Array.prototype.forEach.call(panel.querySelectorAll(".rt-entry"), function(card){
+      var listKey = card.getAttribute("data-rt-list");
       var entryId = card.getAttribute("data-rt");
       Array.prototype.forEach.call(card.querySelectorAll("[data-rt-field]"), function(el){
         el.addEventListener("blur", function(){
-          DATA.updateRtEntry(catId, state.expandedId, entryId, el.getAttribute("data-rt-field"), el.value);
+          DATA.updateRtItem(catId, state.expandedId, listKey, entryId, el.getAttribute("data-rt-field"), el.value);
         });
       });
     });
@@ -1672,7 +1726,7 @@
       f.addEventListener("submit", function(e){
         e.preventDefault();
         var inp = f.querySelector("input");
-        if (inp.value.trim()) DATA.addRtEvidence(catId, f.getAttribute("data-job"), f.getAttribute("data-entry"), inp.value.trim());
+        if (inp.value.trim()) DATA.addRtEvidence(catId, f.getAttribute("data-job"), f.getAttribute("data-list"), f.getAttribute("data-entry"), inp.value.trim());
         inp.value = "";
       });
     });
@@ -1708,9 +1762,9 @@
     else if (act === "del-tag" && cat){ DATA.removeTag(cat.id, t.getAttribute("data-job"), t.getAttribute("data-tag")); }
     else if (act === "add-reb" && cat){ DATA.addRebuttal(cat.id, id); }
     else if (act === "del-reb" && cat){ DATA.deleteRebuttal(cat.id, t.getAttribute("data-job"), id); }
-    else if (act === "add-rt" && cat){ DATA.addRtEntry(cat.id, id); }
-    else if (act === "del-rt" && cat){ DATA.deleteRtEntry(cat.id, t.getAttribute("data-job"), id); }
-    else if (act === "del-rt-ev" && cat){ DATA.deleteRtEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-entry"), parseInt(t.getAttribute("data-idx"), 10)); }
+    else if (act === "add-rt" && cat){ DATA.addRtItem(cat.id, id, t.getAttribute("data-list")); }
+    else if (act === "del-rt" && cat){ DATA.deleteRtItem(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), id); }
+    else if (act === "del-rt-ev" && cat){ DATA.deleteRtEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), t.getAttribute("data-entry"), parseInt(t.getAttribute("data-idx"), 10)); }
     else if (act === "rt-export" && cat){ exportRespectThread(cat.id, id); }
     else if (act === "del-embed" && cat){ DATA.deleteEmbed(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "embed-play"){
@@ -2055,14 +2109,25 @@
       r.claim = r.claim || ""; r.counter = r.counter || ""; r.rebuttal = r.rebuttal || "";
       if (!r.createdAt) r.createdAt = Date.now();
     });
-    if (!j.rt || typeof j.rt !== "object") j.rt = { intro: "", entries: [] };
+    if (!j.rt || typeof j.rt !== "object") j.rt = {};
     if (typeof j.rt.intro !== "string") j.rt.intro = "";
-    if (!Array.isArray(j.rt.entries)) j.rt.entries = [];
-    j.rt.entries.forEach(function(e){
+    if (typeof j.rt.inChar !== "string") j.rt.inChar = "";
+    if (Array.isArray(j.rt.entries) && !Array.isArray(j.rt.feats)) j.rt.feats = j.rt.entries;  // v3 pre-revision -> feats
+    delete j.rt.entries;
+    ["terminology", "feats", "stats"].forEach(function(k){ if (!Array.isArray(j.rt[k])) j.rt[k] = []; });
+    j.rt.terminology.forEach(function(e){
+      if (!e.id) e.id = uid();
+      e.term = e.term || ""; e.definition = e.definition || "";
+      if (!Array.isArray(e.evidence)) e.evidence = [];
+    });
+    j.rt.feats.forEach(function(e){
       if (!e.id) e.id = uid();
       e.name = e.name || ""; e.tier = e.tier || ""; e.explanation = e.explanation || "";
       if (!Array.isArray(e.evidence)) e.evidence = [];
-      if (!e.createdAt) e.createdAt = Date.now();
+    });
+    j.rt.stats.forEach(function(e){
+      if (!e.id) e.id = uid();
+      e.label = e.label || ""; e.value = e.value || ""; e.note = e.note || "";
     });
     return j;
   }
@@ -2180,43 +2245,47 @@
       j.rebuttals = (j.rebuttals || []).filter(function(x){ return x.id !== rebId; });
       renderPanel(); save();
     },
-    setRtIntro: function(catId, jobId, text){
+    setRtText: function(catId, jobId, field, text){
       var j = jobById(catId, jobId); if (!j || !j.rt) return;
-      j.rt.intro = String(text || "");
+      if (field !== "intro" && field !== "inChar") return;
+      j.rt[field] = String(text || "");
       save();
     },
-    addRtEntry: function(catId, jobId){
-      var j = jobById(catId, jobId); if (!j) return;
-      j.rt = j.rt || { intro: "", entries: [] };
-      j.rt.entries.push({ id: uid(), name: "", tier: "", explanation: "", evidence: [], createdAt: Date.now() });
+    addRtItem: function(catId, jobId, listKey){
+      var j = jobById(catId, jobId); if (!j || !j.rt || !Array.isArray(j.rt[listKey])) return;
+      var cfg = rtCfg(listKey); if (!cfg) return;
+      var it = { id: uid(), createdAt: Date.now() };
+      cfg.fields.forEach(function(fd){ it[fd.f] = ""; });
+      if (cfg.evidence) it.evidence = [];
+      j.rt[listKey].push(it);
       renderPanel(); save();
     },
-    updateRtEntry: function(catId, jobId, entryId, field, val){
-      var j = jobById(catId, jobId); if (!j || !j.rt) return;
-      var e = (j.rt.entries || []).filter(function(x){ return x.id === entryId; })[0];
-      if (!e) return;
-      e[field] = String(val || "");
+    updateRtItem: function(catId, jobId, listKey, itemId, field, val){
+      var j = jobById(catId, jobId); if (!j || !j.rt || !Array.isArray(j.rt[listKey])) return;
+      var it = j.rt[listKey].filter(function(x){ return x.id === itemId; })[0];
+      if (!it) return;
+      it[field] = String(val || "");
       save();
     },
-    deleteRtEntry: function(catId, jobId, entryId){
-      var j = jobById(catId, jobId); if (!j || !j.rt) return;
-      j.rt.entries = (j.rt.entries || []).filter(function(x){ return x.id !== entryId; });
+    deleteRtItem: function(catId, jobId, listKey, itemId){
+      var j = jobById(catId, jobId); if (!j || !j.rt || !Array.isArray(j.rt[listKey])) return;
+      j.rt[listKey] = j.rt[listKey].filter(function(x){ return x.id !== itemId; });
       renderPanel(); save();
     },
-    addRtEvidence: function(catId, jobId, entryId, url){
-      var j = jobById(catId, jobId); if (!j || !j.rt) return;
+    addRtEvidence: function(catId, jobId, listKey, itemId, url){
+      var j = jobById(catId, jobId); if (!j || !j.rt || !Array.isArray(j.rt[listKey])) return;
       url = String(url || "").trim(); if (!url) return;
-      var e = (j.rt.entries || []).filter(function(x){ return x.id === entryId; })[0];
-      if (!e) return;
-      e.evidence = e.evidence || [];
-      e.evidence.push(url);
+      var it = j.rt[listKey].filter(function(x){ return x.id === itemId; })[0];
+      if (!it) return;
+      it.evidence = it.evidence || [];
+      it.evidence.push(url);
       renderPanel(); save();
     },
-    deleteRtEvidence: function(catId, jobId, entryId, idx){
-      var j = jobById(catId, jobId); if (!j || !j.rt) return;
-      var e = (j.rt.entries || []).filter(function(x){ return x.id === entryId; })[0];
-      if (!e || !e.evidence) return;
-      e.evidence.splice(idx, 1);
+    deleteRtEvidence: function(catId, jobId, listKey, itemId, idx){
+      var j = jobById(catId, jobId); if (!j || !j.rt || !Array.isArray(j.rt[listKey])) return;
+      var it = j.rt[listKey].filter(function(x){ return x.id === itemId; })[0];
+      if (!it || !it.evidence) return;
+      it.evidence.splice(idx, 1);
       renderPanel(); save();
     },
     addEmbed: function(catId, jobId, e){
