@@ -108,8 +108,11 @@ global **Ctrl/⌘ + K** search palette.
 - **Price + status** — `Penawaran` / `Terjual` / `Contoh (estimasi)`.
 - a **photo log** (downscaled, stored on-device).
 
-**Respect Thread jobs** swap the generic *Rebuttals* and *Embed & scan
-eksternal* sections for a structured **Respect Thread** section in five parts
+**Judgement Battleboarding jobs** hide the *Rebuttals* and *Embed & scan
+eksternal* sections (Notes / Photos / everything else stay).
+
+**Respect Thread jobs** likewise hide those two, and instead get a structured
+**Respect Thread** section in five parts
 — **Introduction · Terminology · Feats and Abilities · Statistics ·
 Intelligence and In-Char**. Terminology and Feats entries take
 name/tier/explanation + evidence links; Statistics is a label/value/note

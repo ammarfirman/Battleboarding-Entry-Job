@@ -1191,6 +1191,8 @@
 
   function jobDetailHtml(j, cat){
     var isRT = !!(cat && cat.kind === "respect-thread");
+    var hideReb = catHides(cat, "rebuttals");
+    var hideEmb = catHides(cat, "embeds");
     var imgs = state.imagesByJob[j.id] || [];
     var grid = imgs.length ? '<div class="img-grid">' + imgs.map(function(im, i){
       return '<div class="img-card" data-act="zoom" data-job="' + esc(j.id) + '" data-idx="' + i + '">' +
@@ -1250,7 +1252,7 @@
                '</span>' +
              '</div>' +
 
-             (isRT ? "" :
+             (hideReb ? "" :
                '<div class="fld"><span>Rebuttals</span>' +
                  rebHtml +
                  '<div><button type="button" class="mini-btn" data-act="add-reb" data-id="' + esc(j.id) + '">+ Tambah rebuttal</button></div>' +
@@ -1262,7 +1264,7 @@
                '</div>' +
              '</div>' +
 
-             (isRT ? "" :
+             (hideEmb ? "" :
                '<div class="fld"><span>Embed &amp; scan eksternal</span>' +
                  '<form class="embed-add" data-embedform data-id="' + esc(j.id) + '" autocomplete="off">' +
                    '<input class="embed-url" type="text" placeholder="Link Imgur / Gyazo / gambar / YouTube…" aria-label="URL embed">' +
@@ -2132,11 +2134,17 @@
     return j;
   }
   var CATEGORY_KIND = { "Respect Thread": "respect-thread" };
+  var CATEGORY_HIDE = {
+    "Respect Thread": ["rebuttals", "embeds"],
+    "Judgement Battleboarding": ["rebuttals", "embeds"]
+  };
   function normalizeCat(c){
     if (SERVICE_CATEGORIES.indexOf(c.name) !== -1) c.locked = true;
     if (CATEGORY_KIND[c.name]) c.kind = CATEGORY_KIND[c.name];
+    c.hide = CATEGORY_HIDE[c.name] || [];
     return c;
   }
+  function catHides(cat, key){ return !!(cat && cat.hide && cat.hide.indexOf(key) !== -1); }
   function seedServices(){
     var t = Date.now();
     state.categories = SERVICE_CATEGORIES.map(function(n, i){ return normalizeCat({ id: uid(), name: n, createdAt: t + i }); });
