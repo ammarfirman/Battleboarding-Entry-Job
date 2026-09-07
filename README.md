@@ -16,7 +16,7 @@ account, works fully offline.
 
 | Target | What | How to get it |
 |---|---|---|
-| **Browser** | one self-contained ~10 MB HTML file | double-click `battleboarding-standalone.html`, or open the live demo above |
+| **Browser** | one self-contained ~22 MB HTML file | double-click `battleboarding-standalone.html`, or open the live demo above |
 | **Android** | installable APK, Android 7.0+ (debug-signed) | **[Releases](../../releases/latest)** → `BattleboardingEntry-debug.apk` · build: `SETUP-ANDROID.md` |
 | **Windows** | Electron desktop app | **[Releases](../../releases/latest)** → `BattleboardingEntry-Windows-x64.zip` · build: `windows-app/README.md` |
 
@@ -30,9 +30,9 @@ battleboarding/
 │  ├─ index.html                 markup + styles + all the logic (one file)
 │  ├─ fonts.css  fonts/*.woff2   bundled Anton / Barlow / IBM Plex Mono (offline)
 │  ├─ vendor/katex/              bundled KaTeX (math rendering for Calculation jobs)
-│  └─ assets/                    joker-bg.webp, loading.gif, wipe-joker.gif, life-will-change.mp3
+│  └─ assets/                    joker-bg.webp, loading.gif, wipe-joker.gif, life-will-change.mp3, no-more-what-ifs.mp3
 │
-├─ battleboarding-standalone.html   everything inlined into one ~10 MB file
+├─ battleboarding-standalone.html   everything inlined into one ~22 MB file (two music tracks inlined)
 │
 ├─ windows-app/
 │  ├─ electron/                  the Electron wrapper source (main.js + package.json)
@@ -157,7 +157,9 @@ job; customers & tags filter the board.
 Discord / External Web, each with name + link + note.
 
 Persona 5 screen-wipe on every tab change; "Processing to Meta-Listing" launch
-screen; looping background music with a remembered mute toggle.
+screen. The corner 🔊 button opens a Persona-5 decision-style menu to pick the
+background theme — **Tema Aksi** (Life Will Change, default), **Tema Tenang**
+(No More What Ifs), or off — remembered per browser/install.
 
 > Embeds load on GitHub Pages, the standalone file, and the Android/Windows
 > apps. They do **not** load inside the claude.ai artifact preview (its CSP

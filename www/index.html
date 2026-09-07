@@ -614,6 +614,34 @@
   #soundBtn.off{opacity:.7}
   @media (max-width:520px){#soundBtn{width:38px;height:38px;top:10px;right:10px}}
 
+  /* Persona 5 decision-style music picker */
+  #musicMenu{
+    position:fixed;top:64px;right:14px;z-index:81;
+    display:flex;flex-direction:column;gap:7px;width:210px;
+  }
+  @media (max-width:520px){#musicMenu{top:54px;right:10px}}
+  .mm-opt{
+    display:flex;align-items:center;gap:10px;cursor:pointer;
+    font-family:var(--anton);font-weight:400;font-size:.92rem;letter-spacing:.06em;text-transform:uppercase;
+    color:#fff;background:#000;border:2px solid var(--ink);
+    padding:9px 14px;transform:skewX(-11deg);
+    clip-path:polygon(0 0,100% 0,calc(100% - 8px) 100%,0 100%);
+    box-shadow:var(--hard-sm);transition:transform .1s,background .1s,border-color .1s;
+    animation:mmIn .16s cubic-bezier(.3,1.5,.5,1) both;
+  }
+  .mm-opt > *{transform:skewX(11deg)}
+  .mm-opt .mm-ico{font-size:1rem}
+  .mm-opt:nth-child(2){animation-delay:.03s}
+  .mm-opt:nth-child(3){animation-delay:.06s}
+  .mm-opt:nth-child(4){animation-delay:.09s}
+  .mm-opt:hover{background:var(--red);border-color:var(--red);transform:skewX(-11deg) translateX(-8px)}
+  .mm-opt.on{background:var(--red);border-color:var(--warn);transform:skewX(-11deg) translateX(-8px)}
+  .mm-opt:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+  .mm-off{color:var(--muted)}
+  .mm-off:hover,.mm-off.on{color:#fff}
+  @keyframes mmIn{from{opacity:0;transform:skewX(-11deg) translateX(26px)}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.mm-opt{animation:none}}
+
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -624,8 +652,9 @@
   <span class="lbl">Processing to Meta-Listing</span>
 </div>
 
-<audio id="bgm" loop preload="none" src="assets/life-will-change.mp3"></audio>
-<button id="soundBtn" type="button" aria-pressed="true" title="Musik"><span class="ico">🔊</span></button>
+<audio id="bgm" loop preload="none"></audio>
+<button id="soundBtn" type="button" aria-pressed="true" aria-haspopup="true" title="Musik"><span class="ico">🔊</span></button>
+<div id="musicMenu" hidden role="menu" aria-label="Tema musik"></div>
 
 <div class="app">
   <header>
@@ -2841,38 +2870,101 @@
   (function arm(n){ requestAnimationFrame(function(){ if (n > 0){ arm(n - 1); return; } setTimeout(hideLoader, MIN_LOADER_MS); }); })(3);
   setTimeout(hideLoader, 20000);
 
-  /* ---------- music ---------- */
+  /* ---------- music (Persona 5 decision-style theme picker) ---------- */
   (function(){
-    var bgm = $("bgm"), btn = $("soundBtn");
-    if (!bgm || !btn) return;
-    bgm.volume = 0.32; bgm.loop = true;
-    bgm.addEventListener("ended", function(){ if (musicOn){ try { bgm.currentTime = 0; } catch (e) {} tryPlay(); } });
-    var musicOn = true;
-    try { musicOn = localStorage.getItem("bbe-music") !== "off"; } catch (e) {}
-    function sync(){
-      btn.classList.toggle("off", !musicOn);
-      btn.setAttribute("aria-pressed", musicOn ? "true" : "false");
-      btn.title = musicOn ? "Musik: nyala" : "Musik: mati";
-      btn.querySelector(".ico").textContent = musicOn ? "🔊" : "🔇";
+    var bgm = $("bgm"), btn = $("soundBtn"), menu = $("musicMenu");
+    if (!bgm || !btn || !menu) return;
+
+    var TRACKS = {
+      "life-will-change": { file: "assets/life-will-change.mp3", label: "Tema Aksi", icon: "🔥", vol: 0.32 },
+      "no-more-what-ifs": { file: "assets/no-more-what-ifs.mp3", label: "Tema Tenang", icon: "🌙", vol: 0.40 }
+    };
+    var DEFAULT_TRACK = "life-will-change";
+
+    function readPref(){
+      var v = null;
+      try { v = localStorage.getItem("bbe-music"); } catch (e) {}
+      if (v == null || v === "on") return DEFAULT_TRACK;
+      if (v === "off") return "off";
+      return TRACKS[v] ? v : DEFAULT_TRACK;
     }
-    function tryPlay(){ if (!musicOn) return; var p = bgm.play(); if (p && p.catch) p.catch(function(){}); }
-    sync();
+    var current = readPref();
+    var loadedTrack = null;
     var armed = false;
+
+    bgm.loop = true;
+    bgm.addEventListener("ended", function(){
+      if (current !== "off"){ try { bgm.currentTime = 0; } catch (e) {} tryPlay(); }
+    });
+
+    function tryPlay(){
+      if (current === "off") return;
+      var p = bgm.play();
+      if (p && p.catch) p.catch(function(){});
+    }
+    function apply(startPlaying){
+      if (current === "off"){ bgm.pause(); return; }
+      var t = TRACKS[current];
+      if (loadedTrack !== current){
+        bgm.src = t.file;
+        try { bgm.load(); } catch (e) {}
+        loadedTrack = current;
+      }
+      bgm.volume = t.vol;
+      bgm.loop = true;
+      if (startPlaying) tryPlay();
+    }
+    function syncBtn(){
+      var off = current === "off";
+      btn.classList.toggle("off", off);
+      btn.setAttribute("aria-pressed", off ? "false" : "true");
+      btn.title = off ? "Musik: mati" : ("Musik: " + TRACKS[current].label);
+      btn.querySelector(".ico").textContent = off ? "🔇" : TRACKS[current].icon;
+    }
+    function renderMenu(){
+      var rows = "";
+      Object.keys(TRACKS).forEach(function(k){
+        rows += '<button type="button" class="mm-opt' + (current === k ? " on" : "") + '" data-track="' + k + '">' +
+                  '<span class="mm-ico">' + TRACKS[k].icon + '</span><span>' + esc(TRACKS[k].label) + '</span></button>';
+      });
+      rows += '<button type="button" class="mm-opt mm-off' + (current === "off" ? " on" : "") + '" data-track="off">' +
+                '<span class="mm-ico">🔇</span><span>Matikan</span></button>';
+      menu.innerHTML = rows;
+    }
+    function openMenu(){ renderMenu(); menu.hidden = false; }
+    function closeMenu(){ menu.hidden = true; }
+    function toggleMenu(){ if (menu.hidden) openMenu(); else closeMenu(); }
+
+    function choose(k){
+      current = k;
+      try { localStorage.setItem("bbe-music", k); } catch (e) {}
+      armed = true;
+      apply(true);
+      syncBtn();
+      closeMenu();
+    }
+
+    menu.addEventListener("click", function(e){
+      var b = e.target.closest("[data-track]");
+      if (b) choose(b.getAttribute("data-track"));
+    });
+    btn.addEventListener("click", function(e){ e.stopPropagation(); toggleMenu(); });
+    document.addEventListener("click", function(e){
+      if (!menu.hidden && !menu.contains(e.target) && e.target !== btn) closeMenu();
+    });
+    document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !menu.hidden) closeMenu(); });
+
     function firstGesture(){
       if (armed) return; armed = true;
       document.removeEventListener("pointerdown", firstGesture, true);
       document.removeEventListener("keydown", firstGesture, true);
-      tryPlay();
+      apply(true);
     }
     document.addEventListener("pointerdown", firstGesture, true);
     document.addEventListener("keydown", firstGesture, true);
-    btn.addEventListener("click", function(e){
-      e.stopPropagation();
-      musicOn = !musicOn;
-      try { localStorage.setItem("bbe-music", musicOn ? "on" : "off"); } catch (err) {}
-      if (musicOn){ armed = true; tryPlay(); } else bgm.pause();
-      sync();
-    });
+
+    apply(false);
+    syncBtn();
   })();
 
   /* ---------- boot ---------- */
