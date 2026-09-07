@@ -53,7 +53,7 @@
 
   header{margin-bottom:24px;position:relative}
   header::before{content:"";position:absolute;inset:-30px -24px -10px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 80% 100% at 22% 45%,rgba(11,11,12,.9),rgba(11,11,12,.45) 60%,rgba(11,11,12,0) 100%)}
-  .brand{display:flex;align-items:center;gap:14px}
+  .brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
   .mark{
     font-size:19px;width:44px;height:44px;display:grid;place-items:center;flex:none;
     background:var(--red);border:2px solid #000;box-shadow:var(--hard-sm);transform:rotate(-4deg);
@@ -63,8 +63,12 @@
     letter-spacing:.015em;line-height:.96;text-transform:uppercase;color:var(--ink);
     text-shadow:4px 4px 0 var(--red);transform:skewX(-5deg);text-wrap:balance;
   }
+  .ver{
+    font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;
+    padding:3px 8px;background:var(--warn);color:#000;transform:skewX(-10deg);
+  }
   .tagline{
-    color:var(--muted);margin:16px 0 0;max-width:62ch;font-size:.98rem;
+    color:var(--muted);margin:16px 0 0;max-width:64ch;font-size:.98rem;
     border-left:4px solid var(--red);padding-left:13px;
   }
 
@@ -82,7 +86,7 @@
   .stat.is-accent b{color:var(--red)}
   .stat.is-danger{border-color:var(--warn)}
   .stat.is-danger b{color:var(--warn)}
-  .stat.is-money b{font-size:1.15rem;color:#fff}
+  .stat.is-money b{font-size:1.05rem;color:#fff}
 
   .view-switch{display:flex;flex-wrap:wrap;margin-top:22px;gap:10px}
   .view-switch button{
@@ -93,6 +97,20 @@
   .view-switch button:hover{background:var(--red-wash)}
   .view-switch button.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:var(--hard-sm)}
   .view-switch button:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+
+  .search-row{display:flex;gap:8px;margin-top:18px;max-width:560px}
+  #searchInput{
+    flex:1;min-width:0;font:inherit;color:var(--ink);
+    background:#000;border:2px solid var(--line);border-left:4px solid var(--warn);padding:10px 13px;
+  }
+  #searchInput::placeholder{color:var(--faint)}
+  #searchInput:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .search-clear{
+    flex:none;width:44px;cursor:pointer;font-size:1rem;
+    background:#000;border:2px solid var(--line);color:var(--muted);transform:skewX(-10deg);
+  }
+  .search-clear:hover{border-color:var(--red);color:#fff}
+  mark{background:var(--warn);color:#000;padding:0 2px;border-radius:1px}
 
   .conn{
     margin-top:16px;font-size:.85rem;padding:10px 14px;
@@ -229,6 +247,8 @@
     padding:2px 8px;border:1.5px solid var(--ink);color:var(--ink);background:#000;
     white-space:nowrap;transform:skewX(-10deg);
   }
+  .price-chip.sold{border-color:#fff;color:#fff;background:#151515}
+  .price-chip.est{border-color:var(--warn);color:var(--warn)}
   .job.done .price-chip{border-color:var(--faint);color:var(--faint)}
   .icon-btn{
     flex:none;font:inherit;background:none;border:none;color:var(--faint);cursor:pointer;
@@ -240,6 +260,7 @@
 
   /* job detail */
   .job-detail{padding:8px 10px 20px 45px;display:flex;flex-direction:column;gap:16px}
+  @media (max-width:560px){.job-detail{padding-left:14px}}
   .fld{display:flex;flex-direction:column;gap:7px}
   .fld > span{font-family:var(--anton);font-weight:400;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
   .job-desc-input{
@@ -255,12 +276,100 @@
   }
   .job-sched-input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
   .price-input{
-    font:inherit;color:var(--ink);color-scheme:dark;width:200px;max-width:100%;
+    font:inherit;color:var(--ink);color-scheme:dark;width:170px;max-width:100%;
     background:#000;border:2px solid var(--line);padding:8px 11px;
   }
   .price-input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
-  .price-tag{color:var(--muted);font-size:.86rem;white-space:nowrap}
-  .sched-price{font-size:.72rem;color:var(--muted)}
+  .price-kind{
+    font:inherit;color:var(--ink);color-scheme:dark;
+    background:#000;border:2px solid var(--line);padding:8px 10px;
+  }
+  .price-kind:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .price-hint{font-size:.76rem;color:var(--faint);text-wrap:pretty}
+
+  /* tags */
+  .tag-wrap{display:flex;flex-wrap:wrap;gap:6px}
+  .tag-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:"IBM Plex Mono",monospace;font-size:.72rem;
+    padding:3px 5px 3px 9px;background:#000;border:1.5px solid var(--ink);color:var(--ink);
+    transform:skewX(-10deg);
+  }
+  .tag-chip > *{transform:skewX(10deg)}
+  .tag-chip.mini{padding:2px 7px;font-size:.66rem;color:var(--muted);border-color:var(--line)}
+  .tag-x{background:none;border:none;color:var(--faint);cursor:pointer;font-size:.68rem;line-height:1;padding:2px 3px}
+  .tag-x:hover{color:var(--red)}
+  .job-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px}
+  .tag-edit{display:flex;gap:8px;margin-top:2px}
+  .tag-edit input{
+    flex:1;min-width:0;font:inherit;color:var(--ink);background:#000;border:2px solid var(--line);padding:8px 10px;
+  }
+  .tag-edit input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .tag-edit button,.embed-add button,.tag-add-btn{
+    font-family:var(--anton);font-weight:400;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;
+    cursor:pointer;background:#000;border:2px solid var(--ink);color:#fff;padding:6px 13px;transform:skewX(-10deg);
+  }
+  .tag-edit button:hover,.tag-add-btn:hover{background:var(--red);border-color:var(--red)}
+
+  /* arguments editor */
+  .argdoc{border:2px solid var(--line);background:#000}
+  .argdoc-toolbar{display:flex;flex-wrap:wrap;border-bottom:2px solid var(--line)}
+  .argdoc-toolbar button{
+    min-width:34px;height:32px;cursor:pointer;font:inherit;font-size:.82rem;font-weight:700;
+    background:#000;border:0;border-right:1px solid var(--line);color:var(--muted);
+  }
+  .argdoc-toolbar button:hover{background:var(--red);color:#fff}
+  .argdoc-toolbar button:focus-visible{outline:2px solid var(--warn);outline-offset:-2px}
+  .argdoc-editor{
+    min-height:120px;max-height:440px;overflow:auto;padding:12px 14px;color:var(--ink);
+    font-size:.93rem;line-height:1.62;
+  }
+  .argdoc-editor:focus{outline:none;box-shadow:inset 0 0 0 2px var(--red)}
+  .argdoc-editor:empty::before{content:attr(data-ph);color:var(--faint)}
+  .argdoc-editor h3{font-family:var(--anton);font-weight:400;letter-spacing:.03em;text-transform:uppercase;color:var(--warn);margin:.7em 0 .3em;font-size:1.05rem}
+  .argdoc-editor blockquote{margin:.5em 0;padding-left:12px;border-left:3px solid var(--red);color:var(--muted)}
+  .argdoc-editor ul,.argdoc-editor ol{margin:.4em 0;padding-left:1.5em}
+  .argdoc-editor a{color:var(--warn)}
+
+  /* embeds */
+  .embed-add{display:flex;flex-wrap:wrap;gap:8px}
+  .embed-add input{
+    flex:1 1 160px;min-width:0;font:inherit;color:var(--ink);background:#000;border:2px solid var(--line);padding:8px 10px;
+  }
+  .embed-add input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .embed-add button{background:var(--red);border-color:#000;box-shadow:var(--hard-sm)}
+  .embed-add button:hover{background:#fff;color:var(--red)}
+  .embed-hint{font-size:.74rem;color:var(--faint)}
+  .embed-grid{
+    margin-top:12px;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  }
+  .embed-card{
+    margin:0;position:relative;border:3px solid #fff;background:#000;box-shadow:4px 4px 0 #000;
+    display:flex;flex-direction:column;
+  }
+  .embed-card img,.embed-card video,.embed-frame{width:100%;display:block;border:0}
+  .embed-card img{max-height:300px;object-fit:contain;background:#000}
+  .embed-frame{aspect-ratio:16/9}
+  .embed-facade{
+    aspect-ratio:16/9;width:100%;cursor:pointer;border:0;
+    background:#111 center/cover no-repeat;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;
+  }
+  .embed-facade .embed-play{
+    width:52px;height:52px;display:grid;place-items:center;font-size:1.15rem;
+    background:var(--red);border:2px solid #fff;transform:skewX(-10deg);
+  }
+  .embed-facade .embed-prov{
+    font-family:"IBM Plex Mono",monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;
+    background:#000;padding:2px 8px;
+  }
+  .embed-link{display:flex;flex-direction:column;gap:4px;padding:14px;text-decoration:none;color:var(--ink)}
+  .embed-link b{font-family:var(--anton);font-weight:400;text-transform:uppercase;letter-spacing:.04em;color:#fff}
+  .embed-link span{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--muted);word-break:break-all}
+  .embed-link:hover b{color:var(--red)}
+  .embed-cap{padding:6px 9px;font-size:.74rem;color:var(--muted);font-family:"IBM Plex Mono",monospace;border-top:1px solid var(--line)}
+  .embed-del{position:absolute;top:3px;right:3px;background:#000;color:#fff;opacity:1;width:26px;height:26px}
+  .embed-del:hover{background:var(--red)}
 
   .dropzone{
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
@@ -290,7 +399,7 @@
     background:var(--red);color:#fff;font-family:"IBM Plex Mono",monospace;
   }
 
-  /* schedule view */
+  /* schedule view + search rows */
   .sched-item{
     width:100%;text-align:left;font:inherit;cursor:pointer;
     display:grid;grid-template-columns:140px 1fr auto;gap:16px;align-items:center;
@@ -314,9 +423,12 @@
   .sched-flag.ok{background:#fff;color:#000}
   .empty-inline{color:var(--faint);font-size:.88rem;margin:4px 2px}
   @media (max-width:560px){.sched-item{grid-template-columns:1fr auto}.sched-when{grid-column:1/-1}}
+  .sr-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+  .sr-wo{padding:9px 12px;background:#000;border:2px solid var(--line);margin-bottom:6px;font-size:.86rem}
+  .sr-wo a{color:var(--warn)}
 
   .empty{padding:60px 24px;text-align:center;color:var(--faint)}
-  .empty p{margin:0 auto;max-width:34ch;text-wrap:pretty;font-family:var(--anton);font-size:1.1rem;line-height:1.3;text-transform:uppercase;letter-spacing:.03em}
+  .empty p{margin:0 auto;max-width:36ch;text-wrap:pretty;font-family:var(--anton);font-size:1.1rem;line-height:1.3;text-transform:uppercase;letter-spacing:.03em}
 
   /* history view */
   .history{padding:24px 28px 30px;max-width:74ch}
@@ -336,6 +448,7 @@
 
   /* services view */
   .svc-list{padding:22px 24px 28px;display:flex;flex-direction:column;gap:14px;max-width:80ch}
+  .svc-note{margin:0 0 4px;color:var(--faint);font-size:.8rem}
   .svc{
     background:#000;border:2px solid var(--line);border-left:5px solid var(--red);
     padding:14px 16px;transition:transform .12s,border-left-color .12s;
@@ -346,6 +459,32 @@
     color:#fff;margin:0 0 6px;
   }
   .svc p{margin:0;color:var(--muted);font-size:.92rem}
+  .svc-price{margin-top:9px !important;font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--warn)}
+
+  /* work on view */
+  .wo-grid{margin-top:16px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .wo-col{background:#000;border:2px solid var(--line);border-top:4px solid var(--red);padding:14px}
+  .wo-col h3{
+    font-family:var(--anton);font-weight:400;font-size:1.05rem;letter-spacing:.05em;text-transform:uppercase;
+    color:#fff;margin:0 0 3px;display:block;
+  }
+  .wo-col h3::before{display:none}
+  .wo-hint{font-size:.74rem;color:var(--faint);margin:0 0 10px}
+  .wo-add{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+  .wo-add input{font:inherit;color:var(--ink);background:#0b0b0c;border:2px solid var(--line);padding:7px 9px;font-size:.85rem}
+  .wo-add input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .wo-add button{
+    font-family:var(--anton);font-weight:400;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;
+    cursor:pointer;background:var(--red);border:2px solid #000;color:#fff;padding:6px 10px;transform:skewX(-10deg);
+  }
+  .wo-add button:hover{background:#fff;color:var(--red)}
+  .wo-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .wo-item{display:flex;align-items:flex-start;gap:8px;background:#0b0b0c;border:1.5px solid var(--line);padding:7px 8px}
+  .wo-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:.85rem;word-break:break-word}
+  .wo-main a{color:var(--warn)}
+  .wo-note{font-size:.74rem;color:var(--faint)}
+  .wo-empty{color:var(--faint);font-size:.8rem;font-style:italic}
+  .wo-item .icon-btn{opacity:1;width:24px;height:24px}
 
   /* lightbox */
   .lightbox{
@@ -441,14 +580,20 @@
     <div class="brand">
       <span class="mark">📋</span>
       <h1>Battleboarding Business Entry</h1>
+      <span class="ver mono">v2</span>
     </div>
-    <p class="tagline">Gunakan alat ini untuk melakukan list dengan baik mengenai pekerjaan battleboarding kalian. Dengan berisi deskripsi, harga, jadwal, dan log foto yang menjadi bukti.</p>
+    <p class="tagline">Alat untuk mencatat pekerjaan battleboarding: deskripsi, tag fiksi/karya, jadwal, harga &amp; status jual, dokumen argumen, embed scan eksternal, dan galeri foto — semuanya tersimpan di perangkat ini.</p>
     <div class="stats" id="stats"></div>
     <div class="view-switch" role="tablist" aria-label="View">
       <button type="button" data-view="board" class="on">Board</button>
       <button type="button" data-view="schedule">Schedule</button>
       <button type="button" data-view="history">History</button>
       <button type="button" data-view="services">Services</button>
+      <button type="button" data-view="workon">Work On</button>
+    </div>
+    <div class="search-row">
+      <input id="searchInput" type="search" placeholder="Cari kata: judul, deskripsi, tag, argumen, link…" aria-label="Cari" autocomplete="off">
+      <button type="button" id="searchClear" class="search-clear" aria-label="Bersihkan pencarian">✕</button>
     </div>
   </header>
 
@@ -466,6 +611,7 @@
   </div>
 
   <div id="scheduleWrap" hidden></div>
+  <div id="searchWrap" hidden></div>
 
   <div id="historyWrap" hidden>
     <div class="panel">
@@ -489,25 +635,32 @@
     <div class="panel">
       <div class="panel-head"><h2>Layanan</h2><span class="pill mono">4 jasa</span></div>
       <div class="svc-list">
+        <p class="svc-note">Kisaran harga di bawah adalah estimasi/pancingan — sesuaikan dengan kesepakatan dan kompleksitas tiap pekerjaan.</p>
         <div class="svc">
           <h3>Respect Thread</h3>
           <p>Jasa yang menyediakan analisis dan pengumpulan data-data dari suatu karakter di fiksi. Di mana, pembuat jasa akan membentuk suatu penjelasan power-scaling yang memperkirakan seberapa kuat karakter dengan bukti-bukti yang bisa dipertanggungjawabkan dari sumber aslinya secara langsung.</p>
+          <p class="svc-price">Estimasi jika dijual: Rp 30.000 – Rp 120.000 / karakter — tergantung jumlah feat &amp; kerapian sumber.</p>
         </div>
         <div class="svc">
           <h3>Joki Private Debate</h3>
           <p>Jasa yang menyediakan argumen untuk pihak yang melakukan perdebatan.</p>
+          <p class="svc-price">Estimasi jika dijual: Rp 50.000 – Rp 250.000 / debat — tergantung jumlah ronde &amp; tingkat kesulitan.</p>
         </div>
         <div class="svc">
           <h3>Judgement Battleboarding</h3>
           <p>Jasa yang menyediakan penilaian untuk pihak-pihak yang melakukan perdebatan.</p>
+          <p class="svc-price">Estimasi jika dijual: Rp 25.000 – Rp 100.000 / penilaian.</p>
         </div>
         <div class="svc">
           <h3>Calculation Battleboarding</h3>
           <p>Jasa yang menyediakan perhitungan untuk mencari tahu estimasi kekuatan, kecepatan, ketahanan, atau energi yang dikeluarkan dari karakter menggunakan kemampuan berhitung secara Fisika dan Matematis.</p>
+          <p class="svc-price">Estimasi jika dijual: Rp 40.000 – Rp 200.000 / kalkulasi — tergantung kompleksitas fisika/matematika.</p>
         </div>
       </div>
     </div>
   </div>
+
+  <div id="workonWrap" hidden></div>
 </div>
 
 <div class="lightbox" id="lightbox" hidden>
@@ -527,11 +680,20 @@
   var CHECK_SVG = '<svg viewBox="0 0 16 16"><path d="M2 8.5l4 4 8-9"/></svg>';
   var HUES = ["#0E6E66","#B5641E","#3457A6","#8A3FA0","#2E7D57","#B23B3B","#546170","#0C7C92"];
 
+  var PLATFORMS = [
+    { key: "facebook", name: "Facebook",     hint: "Grup, halaman, atau thread tempat order masuk" },
+    { key: "whatsapp", name: "WhatsApp",     hint: "Grup atau kontak klien" },
+    { key: "discord",  name: "Discord",      hint: "Server dan channel battleboarding" },
+    { key: "web",      name: "External Web", hint: "Forum, wiki, situs, atau marketplace" }
+  ];
+
   var state = {
     view: "board",
+    query: "",
     categories: [],          // [{id,name,createdAt}]
-    jobsByCat: {},            // catId -> [{id,title,description,price,done,doneAt,scheduledAt,createdAt}]
+    jobsByCat: {},            // catId -> [{id,title,description,tags,argDoc,embeds,price,priceKind,done,doneAt,scheduledAt,createdAt}]
     imagesByJob: {},          // jobId -> [{id,dataUrl,name,createdAt}]
+    workOn: {},               // platformKey -> [{id,name,url,note,createdAt}]
     selectedId: null,
     expandedId: null
   };
@@ -544,6 +706,14 @@
   }
   function uid(){
     return (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
+  }
+  function debounce(fn, ms){
+    var tmr;
+    return function(){
+      var ctx = this, args = arguments;
+      clearTimeout(tmr);
+      tmr = setTimeout(function(){ fn.apply(ctx, args); }, ms);
+    };
   }
   function hueFor(id){
     var h = 0;
@@ -581,28 +751,154 @@
     }
   }
   function jobPrice(j){ return typeof j.price === "number" && isFinite(j.price) ? j.price : 0; }
+  function stripHtml(h){
+    var d = document.createElement("div");
+    d.innerHTML = String(h || "");
+    return (d.textContent || d.innerText || "").replace(/\s+/g, " ").trim();
+  }
+  function hostOf(u){
+    try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e){ return "link"; }
+  }
+  function cssUrl(u){ return "'" + String(u).replace(/['"\\)\s]/g, "") + "'"; }
 
-  /* ---------- rendering ---------- */
+  /* ---------- rich-text sanitiser (arguments doc) ---------- */
+
+  var ALLOW_TAGS = { A:1, B:1, STRONG:1, I:1, EM:1, U:1, S:1, STRIKE:1, P:1, BR:1, UL:1, OL:1, LI:1, H3:1, H4:1, BLOCKQUOTE:1, DIV:1, SPAN:1 };
+  function cleanHtml(html){
+    var box = document.createElement("div");
+    box.innerHTML = String(html || "");
+    (function walk(node){
+      var kids = Array.prototype.slice.call(node.childNodes);
+      kids.forEach(function(n){
+        if (n.nodeType === 1){
+          if (!ALLOW_TAGS[n.nodeName]){
+            n.parentNode.replaceChild(document.createTextNode(n.textContent || ""), n);
+            return;
+          }
+          Array.prototype.slice.call(n.attributes).forEach(function(a){
+            var name = a.name.toLowerCase();
+            if (name === "href"){
+              if (/^\s*javascript:/i.test(a.value)) n.removeAttribute("href");
+            } else {
+              n.removeAttribute(a.name);
+            }
+          });
+          if (n.nodeName === "A"){ n.setAttribute("target", "_blank"); n.setAttribute("rel", "noopener noreferrer"); }
+          walk(n);
+        } else if (n.nodeType === 8){
+          n.parentNode.removeChild(n);
+        }
+      });
+    })(box);
+    return box.innerHTML;
+  }
+
+  /* ---------- embed URL classification ---------- */
+
+  function classifyEmbed(raw){
+    var url = String(raw || "").trim();
+    if (!url) return null;
+    if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+    var u;
+    try { u = new URL(url); } catch (e){ return { url: url, kind: "link" }; }
+    var host = u.hostname.replace(/^www\./, "").toLowerCase();
+    var path = u.pathname;
+
+    // YouTube
+    var yt = null;
+    if (host === "youtu.be") yt = path.slice(1).split(/[/?#]/)[0];
+    else if (/(^|\.)youtube\.com$/.test(host)){
+      if (u.searchParams.get("v")) yt = u.searchParams.get("v");
+      else {
+        var m = path.match(/\/(embed|shorts|live|v)\/([^/?#]+)/);
+        if (m) yt = m[2];
+      }
+    }
+    if (yt) return { url: url, kind: "video", provider: "youtube",
+      embedUrl: "https://www.youtube.com/embed/" + yt,
+      thumbUrl: "https://i.ytimg.com/vi/" + yt + "/hqdefault.jpg" };
+
+    // Vimeo
+    if (/(^|\.)vimeo\.com$/.test(host)){
+      var vm = path.match(/\/(\d+)/);
+      if (vm) return { url: url, kind: "video", provider: "vimeo", embedUrl: "https://player.vimeo.com/video/" + vm[1] };
+    }
+    // Streamable
+    if (host === "streamable.com"){
+      var sm = path.match(/\/([a-z0-9]+)/i);
+      if (sm) return { url: url, kind: "video", provider: "streamable", embedUrl: "https://streamable.com/e/" + sm[1] };
+    }
+    // Dailymotion
+    if (host === "dailymotion.com" || host === "dai.ly"){
+      var dm = (host === "dai.ly") ? path.slice(1) : (path.match(/\/video\/([a-z0-9]+)/i) || [])[1];
+      if (dm) return { url: url, kind: "video", provider: "dailymotion", embedUrl: "https://www.dailymotion.com/embed/video/" + dm };
+    }
+    // Gyazo
+    if (host === "gyazo.com"){
+      var gm = path.match(/\/([a-f0-9]{16,})/i);
+      if (gm) return { url: url, kind: "image", provider: "gyazo", embedUrl: "https://i.gyazo.com/" + gm[1] + ".png" };
+    }
+    if (host === "i.gyazo.com") return { url: url, kind: "image", provider: "gyazo", embedUrl: url };
+
+    // Imgur
+    if (host === "i.imgur.com") return { url: url, kind: "image", provider: "imgur", embedUrl: url };
+    if (host === "imgur.com" || host === "m.imgur.com"){
+      if (/^\/(a|gallery|t)\//.test(path)) return { url: url, kind: "link", provider: "imgur" };
+      var im = path.match(/^\/([a-z0-9]+)$/i);
+      if (im) return { url: url, kind: "image", provider: "imgur", embedUrl: "https://i.imgur.com/" + im[1] + ".jpeg" };
+    }
+    // prnt.sc / lightshot -> link (no direct hotlink)
+    if (host === "prnt.sc" || host === "prntscr.com") return { url: url, kind: "link", provider: "lightshot" };
+
+    // Direct media files
+    if (/\.(png|jpe?g|gif|webp|bmp|svg|avif)(\?|#|$)/i.test(path)) return { url: url, kind: "image", embedUrl: url };
+    if (/\.(mp4|webm|ogg|ogv|mov)(\?|#|$)/i.test(path)) return { url: url, kind: "file-video", embedUrl: url };
+
+    return { url: url, kind: "link" };
+  }
+
+  /* ---------- lookups ---------- */
 
   function jobsFor(id){ return state.jobsByCat[id] || []; }
   function selectedCat(){
     return state.categories.filter(function(c){ return c.id === state.selectedId; })[0] || null;
   }
+  function jobById(catId, jobId){
+    return jobsFor(catId).filter(function(x){ return x.id === jobId; })[0] || null;
+  }
+  function findJobAnywhere(jobId){
+    for (var i = 0; i < state.categories.length; i++){
+      var c = state.categories[i];
+      var j = jobById(c.id, jobId);
+      if (j) return { cat: c, job: j };
+    }
+    return null;
+  }
+  function isSearching(){ return !!(state.query && state.query.trim()); }
+
+  /* ---------- rendering ---------- */
 
   function renderStats(){
-    var total = 0, done = 0, overdue = 0, value = 0;
+    var total = 0, done = 0, overdue = 0, sold = 0, est = 0, quote = 0;
     state.categories.forEach(function(c){
       jobsFor(c.id).forEach(function(j){
-        total++; if (j.done) done++; if (isOverdue(j)) overdue++; value += jobPrice(j);
+        total++;
+        if (j.done) done++;
+        if (isOverdue(j)) overdue++;
+        var p = jobPrice(j);
+        if (j.priceKind === "sold") sold += p;
+        else if (j.priceKind === "example") est += p;
+        else quote += p;
       });
     });
     $("stats").innerHTML =
       stat(state.categories.length, "Categories", "") +
       stat(total, "Jobs", "is-accent") +
       stat(done, "Done", "is-done") +
-      stat(total - done, "Open", "") +
       stat(overdue, "Overdue", overdue ? "is-danger" : "") +
-      stat(fmtIDR(value), "Nilai total", "is-money");
+      stat(fmtIDR(sold), "Terjual", "is-money") +
+      stat(fmtIDR(est), "Est. nilai", "is-money") +
+      (quote ? stat(fmtIDR(quote), "Penawaran", "is-money") : "");
   }
   function stat(n, label, cls){
     return '<div class="stat ' + cls + '"><b>' + esc(n) + '</b><span>' + esc(label) + '</span></div>';
@@ -621,6 +917,53 @@
     $("railHint").hidden = state.categories.length !== 0;
   }
 
+  function priceHintText(j){
+    var p = jobPrice(j);
+    if (!p) return "Isi angka, lalu pilih: penawaran, sudah terjual, atau contoh/estimasi.";
+    if (j.priceKind === "sold") return "Sudah terjual seharga " + fmtIDR(p) + ".";
+    if (j.priceKind === "example") return "Contoh pekerjaan — estimasi nilai jika dijual: " + fmtIDR(p) + ".";
+    return "Penawaran " + fmtIDR(p) + " (belum tentu terjual).";
+  }
+  function priceChipHtml(j){
+    if (!jobPrice(j)) return "";
+    var cls = j.priceKind === "sold" ? "sold" : (j.priceKind === "example" ? "est" : "");
+    var pre = j.priceKind === "example" ? "≈ " : (j.priceKind === "sold" ? "✔ " : "");
+    return '<span class="price-chip ' + cls + ' mono">' + esc(pre + fmtIDR(j.price)) + '</span>';
+  }
+  function opt(v, label, cur){
+    return '<option value="' + v + '"' + (cur === v ? " selected" : "") + '>' + esc(label) + '</option>';
+  }
+  function tbBtn(cmd, label, title){
+    return '<button type="button" data-cmd="' + esc(cmd) + '" title="' + esc(title) + '">' + label + '</button>';
+  }
+  function tbBlock(tag, label, title){
+    return '<button type="button" data-cmd="formatBlock" data-val="' + esc(tag) + '" title="' + esc(title) + '">' + label + '</button>';
+  }
+
+  function embedCardHtml(job, e){
+    var cap = e.caption ? '<figcaption class="embed-cap">' + esc(e.caption) + '</figcaption>' : "";
+    var del = '<button class="icon-btn embed-del" data-act="del-embed" data-job="' + esc(job.id) + '" data-id="' + esc(e.id) + '" aria-label="Hapus embed">✕</button>';
+    var body;
+    if (e.kind === "image"){
+      body = '<a href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">' +
+               '<img loading="lazy" src="' + esc(e.embedUrl || e.url) + '" alt="' + esc(e.caption || "scan eksternal") + '">' +
+             '</a>';
+    } else if (e.kind === "video"){
+      var thumb = e.thumbUrl ? ' style="background-image:url(' + cssUrl(e.thumbUrl) + ')"' : "";
+      body = '<button type="button" class="embed-facade" data-act="embed-play" data-src="' + esc(e.embedUrl) + '"' + thumb + '>' +
+               '<span class="embed-play">▶</span>' +
+               '<span class="embed-prov">' + esc(e.provider || "video") + '</span>' +
+             '</button>';
+    } else if (e.kind === "file-video"){
+      body = '<video controls preload="none" src="' + esc(e.embedUrl || e.url) + '"></video>';
+    } else {
+      body = '<a class="embed-link" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">' +
+               '<b>' + esc(hostOf(e.url)) + '</b><span>' + esc(e.url) + '</span>' +
+             '</a>';
+    }
+    return '<figure class="embed-card">' + body + cap + del + '</figure>';
+  }
+
   function jobDetailHtml(j){
     var imgs = state.imagesByJob[j.id] || [];
     var grid = imgs.length ? '<div class="img-grid">' + imgs.map(function(im, i){
@@ -631,26 +974,83 @@
              '</div>';
     }).join("") + '</div>' : "";
 
+    var tags = j.tags || [];
+    var tagChips = tags.map(function(tg){
+      return '<span class="tag-chip">' + esc(tg) +
+               '<button type="button" class="tag-x" data-act="del-tag" data-job="' + esc(j.id) + '" data-tag="' + esc(tg) + '" aria-label="Hapus tag">✕</button>' +
+             '</span>';
+    }).join("");
+
+    var embeds = j.embeds || [];
+    var embHtml = embeds.length ? '<div class="embed-grid">' + embeds.map(function(e){ return embedCardHtml(j, e); }).join("") + '</div>' : "";
+
+    var toolbar =
+      tbBtn("bold", "B", "Tebal") +
+      tbBtn("italic", "<i>I</i>", "Miring") +
+      tbBtn("underline", "<u>U</u>", "Garis bawah") +
+      tbBtn("strikeThrough", "<s>S</s>", "Coret") +
+      tbBlock("<h3>", "H", "Judul bagian") +
+      tbBlock("<blockquote>", "&#10077;", "Kutipan") +
+      tbBlock("<p>", "&para;", "Paragraf biasa") +
+      tbBtn("insertUnorderedList", "&bull;", "Daftar butir") +
+      tbBtn("insertOrderedList", "1.", "Daftar nomor") +
+      tbBtn("createLink", "&#128279;", "Tautan") +
+      tbBtn("removeFormat", "&#9003;", "Bersihkan format");
+
     return '<div class="job-detail">' +
              '<label class="fld"><span>Description</span>' +
-               '<textarea class="job-desc-input" data-id="' + esc(j.id) + '" rows="3" placeholder="Scope, notes, materials, who’s doing it…">' + esc(j.description || "") + '</textarea>' +
+               '<textarea class="job-desc-input" data-id="' + esc(j.id) + '" rows="3" placeholder="Scope, catatan, siapa yang mengerjakan…">' + esc(j.description || "") + '</textarea>' +
              '</label>' +
+
+             '<div class="fld"><span>Tags &middot; fiksi / karya</span>' +
+               '<div class="tag-wrap">' + tagChips + '</div>' +
+               '<form class="tag-edit" data-id="' + esc(j.id) + '" autocomplete="off">' +
+                 '<input placeholder="Judul fiksi/karya, lalu Enter" maxlength="60" aria-label="Tag baru">' +
+                 '<button type="submit">Tambah</button>' +
+               '</form>' +
+             '</div>' +
+
              '<div class="fld"><span>Scheduled for</span>' +
                '<span class="sched-row">' +
                  '<input type="datetime-local" class="job-sched-input" data-id="' + esc(j.id) + '" value="' + esc(toLocalInput(j.scheduledAt)) + '">' +
                  (j.scheduledAt ? '<button type="button" class="link-danger" data-act="sched-clear" data-id="' + esc(j.id) + '">Clear</button>' : "") +
                '</span>' +
              '</div>' +
-             '<div class="fld"><span>Harga (Rp)</span>' +
+
+             '<div class="fld"><span>Harga &amp; status</span>' +
                '<span class="sched-row">' +
                  '<input type="number" min="0" step="1000" inputmode="numeric" class="price-input" data-id="' + esc(j.id) + '" placeholder="0" value="' + (typeof j.price === "number" ? j.price : "") + '">' +
-                 (jobPrice(j) ? '<span class="price-tag mono">' + esc(fmtIDR(j.price)) + '</span>' : "") +
+                 '<select class="price-kind" data-id="' + esc(j.id) + '" aria-label="Status harga">' +
+                   opt("quote", "Penawaran", j.priceKind) +
+                   opt("sold", "Terjual", j.priceKind) +
+                   opt("example", "Contoh / estimasi", j.priceKind) +
+                 '</select>' +
                  (jobPrice(j) ? '<button type="button" class="link-danger" data-act="price-clear" data-id="' + esc(j.id) + '">Clear</button>' : "") +
                '</span>' +
+               '<span class="price-hint">' + esc(priceHintText(j)) + '</span>' +
              '</div>' +
+
+             '<div class="fld"><span>Arguments &middot; dokumen</span>' +
+               '<div class="argdoc">' +
+                 '<div class="argdoc-toolbar">' + toolbar + '</div>' +
+                 '<div class="argdoc-editor" contenteditable="true" data-id="' + esc(j.id) + '" data-ph="Tulis dan susun argumen di sini…" role="textbox" aria-multiline="true" aria-label="Dokumen argumen"></div>' +
+               '</div>' +
+               '<span class="price-hint">Tersimpan otomatis di perangkat ini. Toolbar: tebal, miring, judul, kutipan, daftar, tautan.</span>' +
+             '</div>' +
+
+             '<div class="fld"><span>Embed &amp; scan eksternal</span>' +
+               '<form class="embed-add" data-id="' + esc(j.id) + '" autocomplete="off">' +
+                 '<input class="embed-url" type="text" placeholder="Tempel link Imgur / Gyazo / gambar / YouTube…" aria-label="URL embed">' +
+                 '<input class="embed-cap-input" type="text" placeholder="Keterangan (opsional)" aria-label="Keterangan embed">' +
+                 '<button type="submit">Tambah</button>' +
+               '</form>' +
+               '<span class="embed-hint">Gambar &amp; video dari host lain (Imgur, Gyazo, YouTube, dll). Muncul di web/aplikasi; di pratinjau claude.ai bisa diblokir.</span>' +
+               embHtml +
+             '</div>' +
+
              '<div class="fld"><span>Photos</span>' +
                '<label class="dropzone" data-drop="' + esc(j.id) + '">' +
-                 '<b>Add photos</b><small>Click to choose, or drop image files here</small>' +
+                 '<b>Add photos</b><small>Klik untuk pilih, atau jatuhkan berkas gambar</small>' +
                  '<input type="file" class="file-input" data-file="' + esc(j.id) + '" accept="image/*" multiple hidden>' +
                '</label>' +
                grid +
@@ -668,8 +1068,8 @@
 
     if (!cat){
       panel.innerHTML = '<div class="empty"><p>' +
-        (state.categories.length ? "Pick a category on the left to see its jobs, notes and photos." :
-         "No categories yet.") + '</p></div>';
+        (state.categories.length ? "Pilih kategori di kiri untuk melihat job, catatan, dan foto." :
+         "Belum ada kategori.") + '</p></div>';
       return;
     }
 
@@ -686,16 +1086,17 @@
                    '<div class="job-title-row">' +
                      '<span class="job-title">' + esc(j.title) + '</span>' +
                      (j.scheduledAt ? '<span class="sched-chip' + (isOverdue(j) ? " over" : "") + ' mono">' + esc(fmtSched(j.scheduledAt)) + '</span>' : "") +
-                     (jobPrice(j) ? '<span class="price-chip mono">' + esc(fmtIDR(j.price)) + '</span>' : "") +
+                     priceChipHtml(j) +
                    '</div>' +
                    (j.done && j.doneAt ? '<span class="job-time mono">Done ' + esc(fmtTime(j.doneAt)) + '</span>' : "") +
+                   (!exp && (j.tags || []).length ? '<span class="job-tags">' + j.tags.map(function(tg){ return '<span class="tag-chip mini">' + esc(tg) + '</span>'; }).join("") + '</span>' : "") +
                    (!exp && j.description ? '<span class="job-desc-prev">' + esc(j.description) + '</span>' : "") +
                  '</div>' +
                  '<button class="icon-btn" data-act="del-job" data-id="' + esc(j.id) + '" aria-label="Delete job">✕</button>' +
                '</div>' +
                (exp ? jobDetailHtml(j) : "") +
              '</li>';
-    }).join("") + '</ul>' : '<div class="empty"><p>No jobs in this category yet. Add the first one above.</p></div>';
+    }).join("") + '</ul>' : '<div class="empty"><p>Belum ada job di kategori ini. Tambahkan yang pertama di atas.</p></div>';
 
     panel.innerHTML =
       '<div class="panel-head">' +
@@ -707,7 +1108,7 @@
       '<div class="section">' +
         '<h3>Jobs</h3>' +
         '<form class="add-row" id="jobForm" autocomplete="off">' +
-          '<input id="jobInput" placeholder="Add a job…" maxlength="140" required aria-label="New job">' +
+          '<input id="jobInput" placeholder="Tambah job…" maxlength="140" required aria-label="New job">' +
           '<button type="submit">Add job</button>' +
         '</form>' +
         jobsHtml +
@@ -731,7 +1132,7 @@
     });
 
     if (!items.length){
-      wrap.innerHTML = '<div class="panel"><div class="empty"><p>No jobs scheduled yet. Open a job on the board and pick a date under “Scheduled for.”</p></div></div>';
+      wrap.innerHTML = '<div class="panel"><div class="empty"><p>Belum ada job terjadwal. Buka job di board lalu pilih tanggal di &ldquo;Scheduled for.&rdquo;</p></div></div>';
       return;
     }
 
@@ -745,7 +1146,7 @@
                '<span class="sched-info">' +
                  '<span class="sched-title">' + esc(x.j.title) + '</span>' +
                  '<span class="sched-cat"><span class="dot" style="background:' + hueFor(x.c.id) + '"></span>' + esc(x.c.name) +
-                   (jobPrice(x.j) ? ' <span class="sched-price mono">· ' + esc(fmtIDR(x.j.price)) + '</span>' : "") +
+                   (jobPrice(x.j) ? ' <span class="sched-price mono">&middot; ' + esc(fmtIDR(x.j.price)) + '</span>' : "") +
                  '</span>' +
                '</span>' +
                (over ? '<span class="sched-flag">Overdue</span>' : (x.j.done ? '<span class="sched-flag ok">Done</span>' : '<span></span>')) +
@@ -754,22 +1155,159 @@
 
     wrap.innerHTML = '<div class="panel">' +
       '<div class="section"><h3>Upcoming &amp; open</h3>' +
-        (open.length ? open.map(row).join("") : '<p class="empty-inline">Nothing open on the schedule.</p>') +
+        (open.length ? open.map(row).join("") : '<p class="empty-inline">Tidak ada yang terbuka di jadwal.</p>') +
       '</div>' +
       (done.length ? '<div class="section"><h3>Completed</h3>' + done.map(row).join("") + '</div>' : "") +
     '</div>';
   }
 
+  function highlight(text, tokens){
+    var out = esc(String(text == null ? "" : text));
+    tokens.forEach(function(t){
+      if (!t) return;
+      var re = new RegExp("(" + t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+      out = out.replace(re, "<mark>$1</mark>");
+    });
+    return out;
+  }
+
+  function renderSearch(){
+    var wrap = $("searchWrap");
+    var raw = state.query.trim();
+    var tokens = raw.toLowerCase().split(/\s+/).filter(Boolean);
+
+    var groups = [];
+    state.categories.forEach(function(c){
+      var hits = jobsFor(c.id).filter(function(j){
+        var hay = [
+          j.title, j.description, (j.tags || []).join(" "),
+          stripHtml(j.argDoc),
+          (j.embeds || []).map(function(e){ return e.url + " " + (e.caption || ""); }).join(" "),
+          c.name
+        ].join("  ").toLowerCase();
+        return tokens.every(function(t){ return hay.indexOf(t) !== -1; });
+      });
+      if (hits.length) groups.push({ c: c, hits: hits });
+    });
+
+    var woHits = [];
+    PLATFORMS.forEach(function(p){
+      (state.workOn[p.key] || []).forEach(function(it){
+        var hay = [it.name, it.note, it.url, p.name].join("  ").toLowerCase();
+        if (tokens.every(function(t){ return hay.indexOf(t) !== -1; })) woHits.push({ p: p, it: it });
+      });
+    });
+
+    var totalJobs = groups.reduce(function(s, g){ return s + g.hits.length; }, 0);
+
+    if (!totalJobs && !woHits.length){
+      wrap.innerHTML = '<div class="panel">' +
+        '<div class="panel-head"><h2>Cari</h2><span class="pill mono">0</span>' +
+          '<button class="link-danger" data-act="search-clear">Tutup</button></div>' +
+        '<div class="empty"><p>Tidak ada hasil untuk &ldquo;' + esc(raw) + '&rdquo;.</p></div></div>';
+      return;
+    }
+
+    var body = groups.map(function(g){
+      return '<div class="section"><h3><span class="dot" style="background:' + hueFor(g.c.id) + '"></span>' + esc(g.c.name) + ' &middot; ' + g.hits.length + '</h3>' +
+        g.hits.map(function(j){
+          var snip = j.description || stripHtml(j.argDoc);
+          return '<button class="sched-item" data-act="goto" data-cat="' + esc(g.c.id) + '" data-id="' + esc(j.id) + '">' +
+                   '<span class="sched-when mono">' + (j.done ? "SELESAI" : (j.scheduledAt ? esc(fmtSched(j.scheduledAt)) : "—")) + '</span>' +
+                   '<span class="sched-info">' +
+                     '<span class="sched-title">' + highlight(j.title, tokens) + '</span>' +
+                     (snip ? '<span class="sched-cat">' + highlight(snip.slice(0, 120), tokens) + '</span>' : "") +
+                     ((j.tags || []).length ? '<span class="sr-tags">' + j.tags.map(function(tg){ return '<span class="tag-chip mini">' + highlight(tg, tokens) + '</span>'; }).join("") + '</span>' : "") +
+                   '</span>' +
+                   (jobPrice(j) ? '<span class="sched-flag ok">' + esc(fmtIDR(j.price)) + '</span>' : '<span></span>') +
+                 '</button>';
+        }).join("") +
+      '</div>';
+    }).join("");
+
+    var woBody = woHits.length ? '<div class="section"><h3>Work On &middot; ' + woHits.length + '</h3>' +
+      woHits.map(function(h){
+        var whref = h.it.url ? (/^https?:\/\//i.test(h.it.url) ? h.it.url : "https://" + h.it.url) : "";
+        return '<div class="sr-wo">' + esc(h.p.name) + ' — ' +
+          (whref ? '<a href="' + esc(whref) + '" target="_blank" rel="noopener noreferrer">' + highlight(h.it.name, tokens) + '</a>' : highlight(h.it.name, tokens)) +
+          (h.it.note ? ' <span class="wo-note">' + highlight(h.it.note, tokens) + '</span>' : "") + '</div>';
+      }).join("") + '</div>' : "";
+
+    wrap.innerHTML = '<div class="panel">' +
+      '<div class="panel-head"><h2>Cari</h2><span class="pill mono">' + totalJobs + ' job</span>' +
+        '<button class="link-danger" data-act="search-clear">Tutup</button></div>' +
+      body + woBody +
+    '</div>';
+  }
+
+  function workOnCount(){
+    return PLATFORMS.reduce(function(s, p){ return s + (state.workOn[p.key] || []).length; }, 0);
+  }
+  function renderWorkOn(){
+    var wrap = $("workonWrap");
+    var cols = PLATFORMS.map(function(p){
+      var items = state.workOn[p.key] || [];
+      var list = items.length ? items.map(function(it){
+        var href = it.url ? (/^https?:\/\//i.test(it.url) ? it.url : "https://" + it.url) : "";
+        var nm = href
+          ? '<a href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">' + esc(it.name) + '</a>'
+          : esc(it.name);
+        return '<li class="wo-item"><div class="wo-main">' + nm +
+                 (it.note ? '<span class="wo-note">' + esc(it.note) + '</span>' : "") +
+               '</div>' +
+               '<button class="icon-btn" data-act="wo-del" data-plat="' + esc(p.key) + '" data-id="' + esc(it.id) + '" aria-label="Hapus">✕</button></li>';
+      }).join("") : '<li class="wo-empty">Belum ada.</li>';
+
+      return '<section class="wo-col">' +
+               '<h3>' + esc(p.name) + '</h3>' +
+               '<p class="wo-hint">' + esc(p.hint) + '</p>' +
+               '<form class="wo-add" data-plat="' + esc(p.key) + '" autocomplete="off">' +
+                 '<input class="wo-name" placeholder="Nama grup / server / situs" maxlength="80" required aria-label="Nama">' +
+                 '<input class="wo-url" type="text" placeholder="Link (opsional)" aria-label="Link">' +
+                 '<input class="wo-note-in" placeholder="Catatan (opsional)" maxlength="120" aria-label="Catatan">' +
+                 '<button type="submit">Tambah</button>' +
+               '</form>' +
+               '<ul class="wo-list">' + list + '</ul>' +
+             '</section>';
+    }).join("");
+
+    wrap.innerHTML = '<div class="panel">' +
+      '<div class="panel-head"><h2>Work On</h2><span class="pill mono">' + workOnCount() + ' entri</span></div>' +
+      '<div class="section"><h3>Kanal &amp; tempat kerja</h3><div class="wo-grid">' + cols + '</div></div>' +
+    '</div>';
+
+    Array.prototype.forEach.call(wrap.querySelectorAll(".wo-add"), function(f){
+      f.addEventListener("submit", function(e){
+        e.preventDefault();
+        var plat = f.getAttribute("data-plat");
+        var nm = f.querySelector(".wo-name").value.trim();
+        if (!nm) return;
+        DATA.addWorkOn(plat, {
+          name: nm,
+          url: f.querySelector(".wo-url").value.trim(),
+          note: f.querySelector(".wo-note-in").value.trim()
+        });
+      });
+    });
+  }
+
   function renderView(){
-    $("boardWrap").hidden = state.view !== "board";
-    $("scheduleWrap").hidden = state.view !== "schedule";
-    $("historyWrap").hidden = state.view !== "history";
-    $("servicesWrap").hidden = state.view !== "services";
+    var searching = isSearching();
+    $("boardWrap").hidden    = searching || state.view !== "board";
+    $("scheduleWrap").hidden = searching || state.view !== "schedule";
+    $("historyWrap").hidden  = searching || state.view !== "history";
+    $("servicesWrap").hidden = searching || state.view !== "services";
+    $("workonWrap").hidden   = searching || state.view !== "workon";
+    $("searchWrap").hidden   = !searching;
+
     Array.prototype.forEach.call(document.querySelectorAll(".view-switch button"), function(b){
       b.classList.toggle("on", b.getAttribute("data-view") === state.view);
     });
+
+    if (searching){ renderSearch(); return; }
     if (state.view === "board"){ renderRail(); renderPanel(); }
     else if (state.view === "schedule"){ renderSchedule(); }
+    else if (state.view === "workon"){ renderWorkOn(); }
   }
 
   function renderAll(){ renderStats(); renderView(); }
@@ -777,6 +1315,8 @@
   /* ---------- panel event binding ---------- */
 
   function bindPanel(catId){
+    var panel = $("panel");
+
     var jf = $("jobForm");
     if (jf) jf.addEventListener("submit", function(e){
       e.preventDefault();
@@ -784,8 +1324,6 @@
       var t = inp.value.trim();
       if (t){ DATA.addJob(catId, t); inp.value = ""; }
     });
-
-    var panel = $("panel");
 
     var ta = panel.querySelector(".job-desc-input");
     if (ta) ta.addEventListener("blur", function(){
@@ -804,6 +1342,71 @@
       var n = v === "" ? null : Math.max(0, Math.round(Number(v)));
       if (n !== null && !isFinite(n)) n = null;
       DATA.updateJob(catId, pi.getAttribute("data-id"), { price: n });
+    });
+
+    var pk = panel.querySelector(".price-kind");
+    if (pk) pk.addEventListener("change", function(){
+      DATA.updateJob(catId, pk.getAttribute("data-id"), { priceKind: pk.value });
+    });
+
+    var tagForm = panel.querySelector(".tag-edit");
+    if (tagForm) tagForm.addEventListener("submit", function(e){
+      e.preventDefault();
+      var inp = tagForm.querySelector("input");
+      var val = inp.value.trim();
+      if (val) DATA.addTag(catId, tagForm.getAttribute("data-id"), val);
+      inp.value = "";
+    });
+
+    var ed = panel.querySelector(".argdoc-editor");
+    if (ed){
+      var jid = ed.getAttribute("data-id");
+      var j0 = jobById(catId, jid);
+      ed.innerHTML = (j0 && j0.argDoc) || "";
+      var flush = function(){
+        var jj = jobById(catId, jid);
+        if (jj){ jj.argDoc = cleanHtml(ed.innerHTML); save(); }
+      };
+      ed.addEventListener("input", debounce(flush, 300));
+      ed.addEventListener("blur", flush);
+
+      var tb = panel.querySelector(".argdoc-toolbar");
+      if (tb) tb.addEventListener("mousedown", function(e){
+        var b = e.target.closest("button[data-cmd]");
+        if (!b) return;
+        e.preventDefault();           // keep the editor's text selection
+        var cmd = b.getAttribute("data-cmd");
+        ed.focus();
+        try { document.execCommand("styleWithCSS", false, false); } catch (_){}
+        if (cmd === "createLink"){
+          var href = window.prompt("URL tautan:");
+          if (href) document.execCommand("createLink", false, href);
+        } else if (cmd === "formatBlock"){
+          document.execCommand("formatBlock", false, b.getAttribute("data-val"));
+        } else {
+          document.execCommand(cmd, false, null);
+        }
+        flush();
+      });
+    }
+
+    var embForm = panel.querySelector(".embed-add");
+    if (embForm) embForm.addEventListener("submit", function(e){
+      e.preventDefault();
+      var jidE = embForm.getAttribute("data-id");
+      var urlI = embForm.querySelector(".embed-url");
+      var capI = embForm.querySelector(".embed-cap-input");
+      var info = classifyEmbed(urlI.value);
+      if (!info){ urlI.focus(); return; }
+      DATA.addEmbed(catId, jidE, {
+        url: info.url,
+        kind: info.kind,
+        provider: info.provider || "",
+        embedUrl: info.embedUrl || info.url,
+        thumbUrl: info.thumbUrl || "",
+        caption: capI.value.trim()
+      });
+      urlI.value = ""; capI.value = "";
     });
 
     var fi = panel.querySelector(".file-input");
@@ -840,19 +1443,32 @@
     if (act === "select"){ selectCategory(id); }
     else if (act === "expand"){ toggleExpand(id); }
     else if (act === "toggle" && cat){
-      var job = jobsFor(cat.id).filter(function(j){ return j.id === id; })[0];
+      var job = jobById(cat.id, id);
       if (job) DATA.toggleJob(cat.id, id, !job.done);
     }
     else if (act === "del-job" && cat){ DATA.deleteJob(cat.id, id); }
     else if (act === "del-cat" && cat){
-      if (confirm('Delete "' + cat.name + '" and all its jobs, notes and photos?')) DATA.deleteCategory(cat.id);
+      if (confirm('Hapus "' + cat.name + '" beserta semua job, catatan, dan foto?')) DATA.deleteCategory(cat.id);
     }
     else if (act === "sched-clear" && cat){ DATA.updateJob(cat.id, id, { scheduledAt: null }); }
     else if (act === "price-clear" && cat){ DATA.updateJob(cat.id, id, { price: null }); }
+    else if (act === "del-tag" && cat){ DATA.removeTag(cat.id, t.getAttribute("data-job"), t.getAttribute("data-tag")); }
+    else if (act === "del-embed" && cat){ DATA.deleteEmbed(cat.id, t.getAttribute("data-job"), id); }
+    else if (act === "embed-play"){
+      var card = t.closest(".embed-card");
+      if (card){
+        card.innerHTML = '<iframe class="embed-frame" src="' + esc(t.getAttribute("data-src")) +
+          '" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen loading="lazy"></iframe>';
+      }
+    }
     else if (act === "del-img" && cat){ DATA.deleteImage(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "zoom"){ openLightbox(t.getAttribute("data-job"), parseInt(t.getAttribute("data-idx"), 10)); }
+    else if (act === "wo-del"){ DATA.deleteWorkOn(t.getAttribute("data-plat"), id); }
+    else if (act === "search-clear"){ clearSearch(); }
     else if (act === "goto"){
       var gCat = t.getAttribute("data-cat"), gJob = t.getAttribute("data-id");
+      state.query = "";
+      var sInp = $("searchInput"); if (sInp) sInp.value = "";
       playTransition(function(){
         state.view = "board";
         state.selectedId = gCat;
@@ -907,6 +1523,7 @@
   Array.prototype.forEach.call(document.querySelectorAll(".view-switch button"), function(b){
     b.addEventListener("click", function(){
       var v = b.getAttribute("data-view");
+      if (isSearching()){ clearSearch(); }
       if (v === state.view && !transitioning) return;
       playTransition(function(){ state.view = v; renderView(); });
     });
@@ -918,7 +1535,27 @@
     if (name && name.trim()) DATA.addCategory(name.trim());
   });
 
+  /* ---------- search box ---------- */
+  var searchInput = $("searchInput");
+  if (searchInput){
+    var runSearch = debounce(function(){ state.query = searchInput.value; renderView(); }, 130);
+    searchInput.addEventListener("input", runSearch);
+    searchInput.addEventListener("keydown", function(e){
+      if (e.key === "Escape"){ clearSearch(); }
+    });
+  }
+  var searchClearBtn = $("searchClear");
+  if (searchClearBtn) searchClearBtn.addEventListener("click", clearSearch);
+
+  function clearSearch(){
+    if (!state.query) { if ($("searchInput")) $("searchInput").value = ""; return; }
+    state.query = "";
+    if ($("searchInput")) $("searchInput").value = "";
+    renderView();
+  }
+
   function selectCategory(id){
+    if (isSearching()) clearSearch();
     if (state.selectedId === id) return;
     state.selectedId = id;
     state.expandedId = null;
@@ -955,12 +1592,12 @@
       return chain.then(function(){
         return downscale(f).then(function(dataUrl){
           if (dataUrl.length > MAX_CHARS){
-            alert('"' + f.name + '" is too large to store even after compression. Try a smaller image.');
+            alert('"' + f.name + '" terlalu besar untuk disimpan walau sudah dikompres. Coba gambar lebih kecil.');
             return;
           }
           return DATA.addImage(catId, jobId, { dataUrl: dataUrl, name: f.name, createdAt: Date.now() });
         });
-      }).catch(function(err){ console.error(err); alert('Could not add "' + f.name + '".'); });
+      }).catch(function(err){ console.error(err); alert('Tidak bisa menambahkan "' + f.name + '".'); });
     }, Promise.resolve());
   }
 
@@ -1034,13 +1671,16 @@
     _saveTimer = setTimeout(function(){
       _saveTimer = null;
       idbSet({
-        v: 1,
+        v: 2,
         categories: state.categories,
         jobsByCat: state.jobsByCat,
-        imagesByJob: state.imagesByJob
+        imagesByJob: state.imagesByJob,
+        workOn: state.workOn
       }).catch(function(e){ console.error("save failed", e); });
     }, 250);
   }
+
+  /* ---------- seeding + migration ---------- */
 
   var SERVICE_CATEGORIES = [
     "Respect Thread",
@@ -1048,6 +1688,32 @@
     "Judgement Battleboarding",
     "Calculation Battleboarding"
   ];
+  var EXAMPLE_JOBS = {
+    "Respect Thread":           { title: "Contoh — Respect Thread satu karakter", price: 80000,
+      desc: "Contoh hasil: kompilasi feat kekuatan, kecepatan, dan ketahanan lengkap dengan sumber panel/episode." },
+    "Joki Private Debate":      { title: "Contoh — Joki 1 ronde Private Debate", price: 150000,
+      desc: "Contoh: penyusunan argumen pembuka, bantahan, dan penutup untuk satu pihak." },
+    "Judgement Battleboarding": { title: "Contoh — Judgement satu match", price: 60000,
+      desc: "Contoh: penilaian pemenang beserta alasan poin per poin." },
+    "Calculation Battleboarding":{ title: "Contoh — Kalkulasi energi serangan", price: 120000,
+      desc: "Contoh: estimasi Joule dari feat penghancuran, lengkap dengan rumus." }
+  };
+
+  function normalizeWorkOn(w){
+    w = w || {};
+    var out = {};
+    PLATFORMS.forEach(function(p){ out[p.key] = Array.isArray(w[p.key]) ? w[p.key] : []; });
+    return out;
+  }
+  function normalizeJob(j){
+    if (!Array.isArray(j.tags)) j.tags = [];
+    if (typeof j.argDoc !== "string") j.argDoc = "";
+    if (!Array.isArray(j.embeds)) j.embeds = [];
+    if (typeof j.priceKind !== "string") j.priceKind = "quote";
+    if (typeof j.price !== "number"){ var n = Number(j.price); j.price = isFinite(n) && j.price != null && j.price !== "" ? n : null; }
+    return j;
+  }
+
   function seedServices(){
     var t = Date.now();
     state.categories = SERVICE_CATEGORIES.map(function(n, i){
@@ -1055,8 +1721,30 @@
     });
     state.jobsByCat = {};
     state.imagesByJob = {};
-    state.categories.forEach(function(c){ state.jobsByCat[c.id] = []; });
+    state.workOn = normalizeWorkOn({});
+    state.categories.forEach(function(c){
+      state.jobsByCat[c.id] = [];
+      var ex = EXAMPLE_JOBS[c.name];
+      if (ex){
+        state.jobsByCat[c.id].push(normalizeJob({
+          id: uid(), title: ex.title, description: ex.desc,
+          tags: ["Contoh"], argDoc: "", embeds: [],
+          price: ex.price, priceKind: "example",
+          done: false, doneAt: null, scheduledAt: null, createdAt: Date.now()
+        }));
+      }
+    });
     save();
+  }
+
+  function migrate(saved){
+    state.categories  = saved.categories  || [];
+    state.jobsByCat   = saved.jobsByCat   || {};
+    state.imagesByJob = saved.imagesByJob || {};
+    state.workOn      = normalizeWorkOn(saved.workOn);
+    Object.keys(state.jobsByCat).forEach(function(cid){
+      (state.jobsByCat[cid] || []).forEach(normalizeJob);
+    });
   }
 
   /* ---------- data layer ---------- */
@@ -1080,19 +1768,21 @@
     },
     addJob: function(catId, title){
       if (!state.jobsByCat[catId]) state.jobsByCat[catId] = [];
-      state.jobsByCat[catId].push({
-        id: uid(), title: title, description: "", price: null,
+      state.jobsByCat[catId].push(normalizeJob({
+        id: uid(), title: title, description: "", tags: [], argDoc: "", embeds: [],
+        price: null, priceKind: "quote",
         done: false, doneAt: null, scheduledAt: null, createdAt: Date.now()
-      });
+      }));
       renderAll(); save();
     },
-    updateJob: function(catId, jobId, patch){
-      var j = jobsFor(catId).filter(function(x){ return x.id === jobId; })[0];
+    updateJob: function(catId, jobId, patch, opts){
+      var j = jobById(catId, jobId);
       if (j) Object.keys(patch).forEach(function(k){ j[k] = patch[k]; });
-      renderAll(); save();
+      if (!opts || opts.render !== false) renderAll();
+      save();
     },
     toggleJob: function(catId, id, done){
-      var j = jobsFor(catId).filter(function(x){ return x.id === id; })[0];
+      var j = jobById(catId, id);
       if (j){ j.done = done; j.doneAt = done ? new Date().toISOString() : null; }
       renderAll(); save();
     },
@@ -1101,6 +1791,39 @@
       state.jobsByCat[catId] = jobsFor(catId).filter(function(j){ return j.id !== id; });
       delete state.imagesByJob[id];
       renderAll(); save();
+    },
+    addTag: function(catId, jobId, tag){
+      var j = jobById(catId, jobId);
+      if (!j) return;
+      tag = String(tag).replace(/\s+/g, " ").trim();
+      if (!tag) return;
+      j.tags = j.tags || [];
+      var lc = j.tags.map(function(x){ return x.toLowerCase(); });
+      if (lc.indexOf(tag.toLowerCase()) === -1) j.tags.push(tag);
+      renderPanel(); renderStats(); save();
+    },
+    removeTag: function(catId, jobId, tag){
+      var j = jobById(catId, jobId);
+      if (!j) return;
+      j.tags = (j.tags || []).filter(function(x){ return x !== tag; });
+      renderPanel(); save();
+    },
+    addEmbed: function(catId, jobId, e){
+      var j = jobById(catId, jobId);
+      if (!j) return;
+      j.embeds = j.embeds || [];
+      j.embeds.push({
+        id: uid(), url: e.url, kind: e.kind, provider: e.provider || "",
+        embedUrl: e.embedUrl || e.url, thumbUrl: e.thumbUrl || "",
+        caption: e.caption || "", createdAt: Date.now()
+      });
+      renderPanel(); save();
+    },
+    deleteEmbed: function(catId, jobId, id){
+      var j = jobById(catId, jobId);
+      if (!j) return;
+      j.embeds = (j.embeds || []).filter(function(x){ return x.id !== id; });
+      renderPanel(); save();
     },
     addImage: function(catId, jobId, img){
       (state.imagesByJob[jobId] = state.imagesByJob[jobId] || []).unshift({
@@ -1111,6 +1834,17 @@
     deleteImage: function(catId, jobId, id){
       state.imagesByJob[jobId] = (state.imagesByJob[jobId] || []).filter(function(im){ return im.id !== id; });
       renderPanel(); save();
+    },
+    addWorkOn: function(plat, item){
+      if (!state.workOn[plat]) state.workOn[plat] = [];
+      state.workOn[plat].push({
+        id: uid(), name: item.name, url: item.url || "", note: item.note || "", createdAt: Date.now()
+      });
+      renderWorkOn(); save();
+    },
+    deleteWorkOn: function(plat, id){
+      state.workOn[plat] = (state.workOn[plat] || []).filter(function(x){ return x.id !== id; });
+      renderWorkOn(); save();
     }
   };
 
@@ -1124,10 +1858,6 @@
     el.classList.add("done");
     setTimeout(function(){ el.hidden = true; }, 650);
   }
-  // Start the countdown only once the frame is actually painting. The artifact
-  // frame can stay hidden for several seconds on a heavy page, and rAF is paused
-  // while it is hidden — so this guarantees the loader gets its full time on
-  // screen regardless of how long the frame took to appear.
   var MIN_LOADER_MS = 2600;
   (function arm(n){
     requestAnimationFrame(function(){
@@ -1143,7 +1873,6 @@
     if (!bgm || !btn) return;
     bgm.volume = 0.32;
     bgm.loop = true;
-    // Safety net in case the browser drops the loop on the data: source
     bgm.addEventListener("ended", function(){
       if (musicOn){ try { bgm.currentTime = 0; } catch (e) {} tryPlay(); }
     });
@@ -1187,6 +1916,7 @@
   renderAll();
   (function(){
     function finish(){
+      state.workOn = normalizeWorkOn(state.workOn);
       state.categories.forEach(function(c){ if (!state.jobsByCat[c.id]) state.jobsByCat[c.id] = []; });
       if (!state.selectedId || !state.categories.some(function(c){ return c.id === state.selectedId; })){
         state.selectedId = state.categories[0] ? state.categories[0].id : null;
@@ -1201,9 +1931,7 @@
     if (!("indexedDB" in window)){ fresh(); return; }
     idbGet().then(function(saved){
       if (saved && saved.categories && saved.categories.length){
-        state.categories = saved.categories;
-        state.jobsByCat = saved.jobsByCat || {};
-        state.imagesByJob = saved.imagesByJob || {};
+        migrate(saved);
         finish();
       } else {
         fresh();

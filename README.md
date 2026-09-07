@@ -87,35 +87,53 @@ lives in `%APPDATA%\battleboarding-entry\`.
 
 - **Board** — the four service lines are the starting categories (Respect
   Thread, Joki Private Debate, Judgement Battleboarding, Calculation
-  Battleboarding). Add more with **+ Tambah kategori**. Each category holds a
-  job list; every job has a description, an IDR price, a scheduled date/time,
-  and its own photo log. Checking a job off stamps the time it was done.
-- **Schedule** — every scheduled job across all categories, soonest first,
-  overdue flagged. Click one to jump to it.
-- **History / Services** — the company story and the service descriptions.
-- Persona 5 screen-wipe (Joker GIF) on every tab change.
-- "Processing to Meta-Listing" GIF screen on launch.
-- Looping background music with a remembered mute toggle (top-right).
+  Battleboarding). Add more with **+ Tambah kategori**. Each job has:
+  - a description and a **tag list** (the fiction / work it's about);
+  - a **price + status** — `Penawaran` (quote), `Terjual` (sold), or
+    `Contoh / estimasi` (worth-if-sold), rolled up in the header as
+    *Terjual* vs *Est. nilai*;
+  - a scheduled date/time; checking it off stamps the completion time;
+  - an **Arguments doc** — a lightweight rich-text editor (bold, headings,
+    lists, quote, links) that autosaves to the device;
+  - **Embeds** — paste an Imgur / Gyazo / direct-image / YouTube / Vimeo /
+    Streamable link and it renders inline (image, or click-to-play video);
+  - a **photo log** (downscaled, stored on-device).
+- **Search** — word-tokenized search across titles, descriptions, tags,
+  argument text, embed links and Work On entries; results jump to the job.
+- **Schedule** — every scheduled job, soonest first, overdue flagged.
+- **History / Services** — company story; service descriptions with price ranges.
+- **Work On** — a directory of where work comes from: **Facebook**,
+  **WhatsApp**, **Discord**, **External Web**, each with name + link + note.
+- Persona 5 screen-wipe (Joker GIF) on every tab change; "Processing to
+  Meta-Listing" launch screen; looping background music with a remembered
+  mute toggle.
+
+> Embeds load on GitHub Pages, the standalone file, and the Android/Windows
+> apps. They do **not** load inside the claude.ai artifact preview (its CSP
+> blocks third-party images/iframes).
 
 ## Data & storage
 
 Everything is one record in **IndexedDB** (`bbe` database → `kv` store →
-`state` key): `categories`, `jobsByCat`, `imagesByJob`. Photos are downscaled
-to ~1000 px JPEG and stored as data URLs.
+`state` key, schema `v2`): `categories`, `jobsByCat` (jobs carry `tags`,
+`argDoc`, `embeds`, `price`, `priceKind`), `imagesByJob`, `workOn`. Photos are
+downscaled to ~1000 px JPEG and stored as data URLs. A `v1` record migrates
+forward automatically on first load.
 
 It is **local to each install / browser** — no sync between devices, and
-clearing the app's storage resets it to the four starter categories. There is
-no export button yet (a small addition if you want it).
+clearing the app's storage resets it to the four starter categories (each
+seeded with one worked example). There is no export button yet.
 
 ## Editing the code
 
 All logic is the single `<script>` at the bottom of `www/index.html` — plain
 ES5, no framework, no build step:
 
-- `DATA` — every create/update/delete; each ends with `renderAll()` then `save()`.
+- `DATA` — every create/update/delete; most end with `renderAll()` then `save()`.
 - `save()` / `idbGet()` / `idbSet()` — the IndexedDB layer (debounced 250 ms).
-- `seedServices()` — first-run categories.
-- `render*` — rebuild the DOM from `state`.
+- `seedServices()` — first-run categories + one example job each; `migrate()` — v1 → v2.
+- `render*` — `renderPanel` / `renderSchedule` / `renderSearch` / `renderWorkOn` rebuild the DOM from `state`.
+- `classifyEmbed()` — URL → `{kind, embedUrl, thumbUrl}`; `cleanHtml()` — sanitises the Arguments doc.
 - `playTransition()` — the P5 wipe.
 
 After editing `www/`:
