@@ -121,15 +121,16 @@ table. Notes and the photo log stay. An **Export to HTML** button writes a
 clean formatted document with those five headings (evidence rendered as
 images, stats as a table).
 
-**Calculation Battleboarding jobs** get a **Calculation · LaTeX** section — a
-list of calculation blocks (title + body), each with a live math preview.
-Write `$…$` for inline and `$$…$$` for display math; rendered with a bundled
-copy of **KaTeX** (`www/vendor/katex/`, works fully offline). `\[ … \]` and
-`\( … \)` are also recognised. Calc jobs drop the *Photos* upload — scans go
-in *Embed & scan eksternal* instead.
+**Calculation Battleboarding jobs** are just the **Calculation · LaTeX**
+section (Rebuttals, the global Embed section, and Photos are all hidden).
+Each calculation block is *title → body → live math preview → its own
+**Embed & scan eksternal***, so every figure carries its evidence with it.
+Write `$…$` for inline and `$$…$$` for display math (also `\[ … \]` / `\( … \)`);
+rendered with a bundled copy of **KaTeX** (`www/vendor/katex/`, fully offline).
 
 Embed captions are editable in place — click the caption line under any embed
-card and type; it saves on blur (all categories).
+card and type; it saves on blur (everywhere embeds appear, per-block ones
+included).
 
 **Schedule** — deadline buckets (🔴 Overdue · 🟠 Due soon · 🟡 Upcoming ·
 🟢 Completed) plus a month **calendar** with per-day deadline dots.

@@ -362,6 +362,10 @@
   .calc-preview .katex{color:var(--ink)}
   .calc-preview .katex-display{margin:.4em 0;text-align:left}
   .math-err{color:var(--red);font-family:"IBM Plex Mono",monospace;font-size:.85em;background:var(--red-wash);padding:1px 4px}
+  .calc-ev{border-top:1px dashed var(--line);padding-top:9px;margin-top:2px}
+  .calc-ev-label{display:block;font-family:"IBM Plex Mono",monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--warn);margin-bottom:6px}
+  .calc-ev-label span{color:var(--faint)}
+  .calc-ev .embed-grid{margin-top:10px}
 
   /* arguments editor */
   .argdoc{border:2px solid var(--line);background:#000}
@@ -1106,21 +1110,26 @@
   function tbBtn(cmd, label, title){ return '<button type="button" data-cmd="' + esc(cmd) + '" title="' + esc(title) + '">' + label + '</button>'; }
   function tbBlock(tag, label, title){ return '<button type="button" data-cmd="formatBlock" data-val="' + esc(tag) + '" title="' + esc(title) + '">' + label + '</button>'; }
 
+  function embedBodyHtml(e){
+    if (e.kind === "image")
+      return '<a href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="' + esc(e.embedUrl || e.url) + '" alt="' + esc(e.caption || "scan") + '"></a>';
+    if (e.kind === "video"){
+      var thumb = e.thumbUrl ? ' style="background-image:url(' + cssUrl(e.thumbUrl) + ')"' : "";
+      return '<button type="button" class="embed-facade" data-act="embed-play" data-src="' + esc(e.embedUrl) + '"' + thumb + '><span class="embed-play">▶</span><span class="embed-prov">' + esc(e.provider || "video") + '</span></button>';
+    }
+    if (e.kind === "file-video")
+      return '<video controls preload="none" src="' + esc(e.embedUrl || e.url) + '"></video>';
+    return '<a class="embed-link" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer"><b>' + esc(hostOf(e.url)) + '</b><span>' + esc(e.url) + '</span></a>';
+  }
   function embedCardHtml(job, e){
     var cap = '<input class="embed-cap-edit" data-embed-cap data-job="' + esc(job.id) + '" data-id="' + esc(e.id) + '" placeholder="Keterangan…" value="' + esc(e.caption || "") + '" aria-label="Keterangan embed">';
     var del = '<button class="icon-btn embed-del" data-act="del-embed" data-job="' + esc(job.id) + '" data-id="' + esc(e.id) + '" aria-label="Hapus embed">✕</button>';
-    var body;
-    if (e.kind === "image"){
-      body = '<a href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="' + esc(e.embedUrl || e.url) + '" alt="' + esc(e.caption || "scan") + '"></a>';
-    } else if (e.kind === "video"){
-      var thumb = e.thumbUrl ? ' style="background-image:url(' + cssUrl(e.thumbUrl) + ')"' : "";
-      body = '<button type="button" class="embed-facade" data-act="embed-play" data-src="' + esc(e.embedUrl) + '"' + thumb + '><span class="embed-play">▶</span><span class="embed-prov">' + esc(e.provider || "video") + '</span></button>';
-    } else if (e.kind === "file-video"){
-      body = '<video controls preload="none" src="' + esc(e.embedUrl || e.url) + '"></video>';
-    } else {
-      body = '<a class="embed-link" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer"><b>' + esc(hostOf(e.url)) + '</b><span>' + esc(e.url) + '</span></a>';
-    }
-    return '<figure class="embed-card">' + body + cap + del + '</figure>';
+    return '<figure class="embed-card">' + embedBodyHtml(e) + cap + del + '</figure>';
+  }
+  function calcEvCardHtml(job, blockId, e, idx){
+    var cap = '<input class="embed-cap-edit" data-calc-ev-cap data-job="' + esc(job.id) + '" data-block="' + esc(blockId) + '" data-idx="' + idx + '" placeholder="Keterangan…" value="' + esc(e.caption || "") + '" aria-label="Keterangan bukti">';
+    var del = '<button class="icon-btn embed-del" data-act="del-calc-ev" data-job="' + esc(job.id) + '" data-block="' + esc(blockId) + '" data-idx="' + idx + '" aria-label="Hapus bukti">✕</button>';
+    return '<figure class="embed-card">' + embedBodyHtml(e) + cap + del + '</figure>';
   }
 
   function rebCardHtml(j, r){
@@ -1234,11 +1243,20 @@
     el.innerHTML = out || '<span class="calc-ph">Pratinjau muncul di sini…</span>';
   }
   function calcBlockHtml(j, b){
+    var ev = b.evidence || [];
+    var evGrid = ev.length ? '<div class="embed-grid">' + ev.map(function(e, i){ return calcEvCardHtml(j, b.id, e, i); }).join("") + '</div>' : "";
     return '<div class="calc-block" data-calc="' + esc(b.id) + '">' +
              '<button class="icon-btn calc-del" data-act="del-calc" data-job="' + esc(j.id) + '" data-id="' + esc(b.id) + '" aria-label="Hapus blok">✕</button>' +
              '<div class="reb-line"><label>Judul langkah</label><input class="txt" data-calc-field="label" placeholder="mis. Energi kinetik proyektil" value="' + esc(b.label || "") + '"></div>' +
              '<div class="reb-line"><label>Isi (teks + LaTeX: $...$ inline, $$...$$ display)</label><textarea data-calc-field="body" rows="3" placeholder="Massa $m = 5\\,\\text{kg}$, kecepatan $v = 200\\,\\text{m/s}$.&#10;$$E_k = \\tfrac12 m v^2 = 1.0\\times10^{5}\\ \\text{J}$$">' + esc(b.body || "") + '</textarea></div>' +
              '<div class="calc-preview" data-calc-preview></div>' +
+             '<div class="calc-ev">' +
+               '<label class="calc-ev-label">Embed &amp; scan eksternal <span>(opsional)</span></label>' +
+               '<form class="chip-form calc-ev-add" data-job="' + esc(j.id) + '" data-block="' + esc(b.id) + '" autocomplete="off">' +
+                 '<input type="text" placeholder="Link Imgur / Gyazo / gambar / YouTube…" aria-label="Link bukti"><button type="submit">Tambah</button>' +
+               '</form>' +
+               evGrid +
+             '</div>' +
            '</div>';
   }
   function calcSectionHtml(j){
@@ -1818,6 +1836,18 @@
           DATA.updateCalcBlock(catId, state.expandedId, blockId, el.getAttribute("data-calc-field"), el.value);
         });
       });
+      var evForm = card.querySelector(".calc-ev-add");
+      if (evForm) evForm.addEventListener("submit", function(e){
+        e.preventDefault();
+        var inp = evForm.querySelector("input");
+        if (inp.value.trim()) DATA.addCalcEvidence(catId, evForm.getAttribute("data-job"), evForm.getAttribute("data-block"), inp.value.trim());
+        inp.value = "";
+      });
+      Array.prototype.forEach.call(card.querySelectorAll("[data-calc-ev-cap]"), function(el){
+        el.addEventListener("blur", function(){
+          DATA.updateCalcEvidenceCaption(catId, el.getAttribute("data-job"), el.getAttribute("data-block"), parseInt(el.getAttribute("data-idx"), 10), el.value);
+        });
+      });
     });
 
     var fi = panel.querySelector(".file-input");
@@ -1857,6 +1887,7 @@
     else if (act === "rt-export" && cat){ exportRespectThread(cat.id, id); }
     else if (act === "add-calc" && cat){ DATA.addCalcBlock(cat.id, id); }
     else if (act === "del-calc" && cat){ DATA.deleteCalcBlock(cat.id, t.getAttribute("data-job"), id); }
+    else if (act === "del-calc-ev" && cat){ DATA.deleteCalcEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-block"), parseInt(t.getAttribute("data-idx"), 10)); }
     else if (act === "del-embed" && cat){ DATA.deleteEmbed(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "embed-play"){
       var card = t.closest(".embed-card");
@@ -2225,6 +2256,7 @@
     j.calc.blocks.forEach(function(b){
       if (!b.id) b.id = uid();
       b.label = b.label || ""; b.body = b.body || "";
+      if (!Array.isArray(b.evidence)) b.evidence = [];
       if (!b.createdAt) b.createdAt = Date.now();
     });
     return j;
@@ -2233,7 +2265,7 @@
   var CATEGORY_HIDE = {
     "Respect Thread": ["rebuttals", "embeds"],
     "Judgement Battleboarding": ["rebuttals", "embeds"],
-    "Calculation Battleboarding": ["photos"]
+    "Calculation Battleboarding": ["rebuttals", "photos", "embeds"]
   };
   function normalizeCat(c){
     if (SERVICE_CATEGORIES.indexOf(c.name) !== -1) c.locked = true;
@@ -2396,7 +2428,7 @@
     addCalcBlock: function(catId, jobId){
       var j = jobById(catId, jobId); if (!j) return;
       j.calc = j.calc || { blocks: [] };
-      j.calc.blocks.push({ id: uid(), label: "", body: "", createdAt: Date.now() });
+      j.calc.blocks.push({ id: uid(), label: "", body: "", evidence: [], createdAt: Date.now() });
       renderPanel(); save();
     },
     updateCalcBlock: function(catId, jobId, blockId, field, val){
@@ -2410,6 +2442,27 @@
       var j = jobById(catId, jobId); if (!j || !j.calc) return;
       j.calc.blocks = (j.calc.blocks || []).filter(function(x){ return x.id !== blockId; });
       renderPanel(); save();
+    },
+    calcBlock_: function(j, blockId){ return (j && j.calc && (j.calc.blocks || []).filter(function(x){ return x.id === blockId; })[0]) || null; },
+    addCalcEvidence: function(catId, jobId, blockId, url){
+      var j = jobById(catId, jobId); var b = DATA.calcBlock_(j, blockId);
+      if (!b) return;
+      var info = classifyEmbed(url); if (!info) return;
+      b.evidence = b.evidence || [];
+      b.evidence.push({ url: info.url, kind: info.kind, provider: info.provider || "", embedUrl: info.embedUrl || info.url, thumbUrl: info.thumbUrl || "", caption: "" });
+      renderPanel(); save();
+    },
+    deleteCalcEvidence: function(catId, jobId, blockId, idx){
+      var j = jobById(catId, jobId); var b = DATA.calcBlock_(j, blockId);
+      if (!b || !b.evidence) return;
+      b.evidence.splice(idx, 1);
+      renderPanel(); save();
+    },
+    updateCalcEvidenceCaption: function(catId, jobId, blockId, idx, caption){
+      var j = jobById(catId, jobId); var b = DATA.calcBlock_(j, blockId);
+      if (!b || !b.evidence || !b.evidence[idx]) return;
+      b.evidence[idx].caption = String(caption || "");
+      save();
     },
     addEmbed: function(catId, jobId, e){
       var j = jobById(catId, jobId); if (!j) return;
