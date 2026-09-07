@@ -1251,10 +1251,11 @@
                '</span>' +
              '</div>' +
 
-             '<div class="fld"><span>Rebuttals</span>' +
-               rebHtml +
-               '<div><button type="button" class="mini-btn" data-act="add-reb" data-id="' + esc(j.id) + '">+ Tambah rebuttal</button></div>' +
-             '</div>' +
+             (isRT ? "" :
+               '<div class="fld"><span>Rebuttals</span>' +
+                 rebHtml +
+                 '<div><button type="button" class="mini-btn" data-act="add-reb" data-id="' + esc(j.id) + '">+ Tambah rebuttal</button></div>' +
+               '</div>') +
 
              '<div class="fld"><span>Notes &middot; dokumen bebas</span>' +
                '<div class="argdoc"><div class="argdoc-toolbar">' + toolbar + '</div>' +
@@ -1262,15 +1263,16 @@
                '</div>' +
              '</div>' +
 
-             '<div class="fld"><span>Embed &amp; scan eksternal</span>' +
-               '<form class="embed-add" data-embedform data-id="' + esc(j.id) + '" autocomplete="off">' +
-                 '<input class="embed-url" type="text" placeholder="Link Imgur / Gyazo / gambar / YouTube…" aria-label="URL embed">' +
-                 '<input class="embed-cap-input" type="text" placeholder="Keterangan (opsional)" aria-label="Keterangan">' +
-                 '<button type="submit">Tambah</button>' +
-               '</form>' +
-               '<span class="embed-hint">Muncul di web/aplikasi; pratinjau claude.ai bisa memblokir konten pihak ketiga.</span>' +
-               embHtml +
-             '</div>' +
+             (isRT ? "" :
+               '<div class="fld"><span>Embed &amp; scan eksternal</span>' +
+                 '<form class="embed-add" data-embedform data-id="' + esc(j.id) + '" autocomplete="off">' +
+                   '<input class="embed-url" type="text" placeholder="Link Imgur / Gyazo / gambar / YouTube…" aria-label="URL embed">' +
+                   '<input class="embed-cap-input" type="text" placeholder="Keterangan (opsional)" aria-label="Keterangan">' +
+                   '<button type="submit">Tambah</button>' +
+                 '</form>' +
+                 '<span class="embed-hint">Muncul di web/aplikasi; pratinjau claude.ai bisa memblokir konten pihak ketiga.</span>' +
+                 embHtml +
+               '</div>') +
 
              '<div class="fld"><span>Photos</span>' +
                '<label class="dropzone" data-drop="' + esc(j.id) + '"><b>Add photos</b><small>Klik untuk pilih, atau jatuhkan berkas gambar</small>' +
