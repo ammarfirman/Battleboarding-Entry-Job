@@ -134,6 +134,13 @@ Embed captions are editable in place — click the caption line under any embed
 card and type; it saves on blur (everywhere embeds appear, per-block ones
 included).
 
+The Calculation panel header has a **🧮 Kalkulator** button — a built-in
+scientific calculator (own recursive-descent parser, no `eval`, no network):
+`+ − × ÷ ^ %`, `!`, `√`, `sin/cos/tan` (DEG/RAD toggle), `ln/log`, `π`/`e`,
+parentheses & implicit multiplication, `1e5` notation, `Ans`, a persisted
+history. **↳ Sisipkan sebagai blok LaTeX** drops `$$expr = result$$` into the
+open job as a new calculation block.
+
 **Schedule** — deadline buckets (🔴 Overdue · 🟠 Due soon · 🟡 Upcoming ·
 🟢 Completed) plus a month **calendar** with per-day deadline dots.
 

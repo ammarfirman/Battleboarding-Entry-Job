@@ -538,6 +538,49 @@
   .pal-empty{padding:22px 16px;color:var(--faint);font-size:.9rem}
   .pal-foot{display:flex;gap:16px;padding:8px 16px;border-top:1.5px solid var(--line);font-family:"IBM Plex Mono",monospace;font-size:.68rem;color:var(--faint)}
 
+  /* scientific calculator */
+  .pill.calc-open{cursor:pointer;background:var(--warn);color:#000;border:0;font-family:var(--anton);font-weight:400;letter-spacing:.04em;text-transform:uppercase;font-size:.8rem}
+  .pill.calc-open:hover{background:#fff}
+  #calc{position:fixed;inset:0;z-index:72;background:rgba(0,0,0,.72);display:flex;justify-content:center;align-items:flex-start;padding:6vh 14px 14px;overflow:auto}
+  .calc-box{width:min(390px,100%);background:var(--panel);border:2px solid var(--ink);box-shadow:var(--hard);display:flex;flex-direction:column}
+  .calc-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:2px solid var(--red)}
+  .calc-head b{font-family:var(--anton);font-weight:400;text-transform:uppercase;letter-spacing:.06em;flex:1}
+  .calc-deg{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;background:#000;border:1.5px solid var(--warn);color:var(--warn);padding:3px 9px;transform:skewX(-10deg)}
+  .calc-deg:hover{background:var(--warn);color:#000}
+  .calc-x{background:var(--red);border:2px solid #000;color:#fff;cursor:pointer;width:32px;height:30px;transform:skewX(-10deg);font-size:.9rem}
+  .calc-x:hover{background:#fff;color:var(--red)}
+  #calcExpr{margin:12px 14px 0;font-family:"IBM Plex Mono",monospace;font-size:1.05rem;color:var(--ink);background:#000;border:2px solid var(--line);padding:10px 12px;outline:none}
+  #calcExpr:focus{border-color:var(--red)}
+  .calc-out{margin:6px 14px 2px;min-height:26px;text-align:right;font-family:"IBM Plex Mono",monospace;font-size:1.15rem;color:var(--faint);word-break:break-all}
+  .calc-out.ok{color:var(--warn)}
+  .calc-out.err{color:var(--red);font-size:.82rem;text-align:left}
+  .calc-grid{display:flex;flex-direction:column;gap:6px;padding:10px 14px}
+  .calc-row{display:flex;gap:6px}
+  .calc-key{
+    flex:1;min-width:0;height:42px;cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:.9rem;
+    background:#000;border:2px solid var(--line);color:var(--ink);transition:background .1s,border-color .1s;
+  }
+  .calc-key:hover{border-color:var(--ink);background:var(--red-wash)}
+  .calc-key:active{background:var(--red);color:#fff}
+  .calc-key.k-op{color:var(--warn);border-color:#3a3a20}
+  .calc-key.k-fn{color:var(--muted);font-size:.8rem}
+  .calc-key.k-eq{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
+  .calc-key.k-eq:hover{background:#fff;color:var(--red)}
+  .calc-ins{
+    margin:0 14px 12px;cursor:pointer;font-family:var(--anton);font-weight:400;font-size:.82rem;letter-spacing:.05em;text-transform:uppercase;
+    background:#000;border:2px solid var(--warn);color:var(--warn);padding:8px 12px;
+  }
+  .calc-ins:hover{background:var(--warn);color:#000}
+  .calc-hist{border-top:2px solid var(--line);max-height:150px;overflow:auto}
+  .calc-hrow{
+    width:100%;display:flex;justify-content:space-between;gap:12px;align-items:baseline;cursor:pointer;
+    background:none;border:0;border-bottom:1px solid var(--line);color:var(--muted);
+    font-family:"IBM Plex Mono",monospace;font-size:.76rem;padding:7px 14px;text-align:left;
+  }
+  .calc-hrow:hover{background:var(--red-wash)}
+  .calc-hrow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .calc-hrow b{color:var(--ink);flex:none}
+
   /* lightbox */
   .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.93);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:28px;z-index:75}
   .lightbox img{max-width:100%;max-height:76vh;border:4px solid #fff;box-shadow:12px 12px 0 var(--red)}
@@ -683,6 +726,10 @@
     <div class="pal-results" id="palResults"></div>
     <div class="pal-foot"><span>&uarr;&darr; pilih</span><span>&crarr; buka</span><span>esc tutup</span></div>
   </div>
+</div>
+
+<div id="calc" hidden>
+  <div class="calc-box" role="dialog" aria-modal="true" aria-label="Kalkulator ilmiah"></div>
 </div>
 
 <div id="wipe" hidden aria-hidden="true">
@@ -1403,6 +1450,7 @@
     panel.innerHTML =
       '<div class="panel-head">' +
         '<h2>' + esc(cat.name) + '</h2>' +
+        (cat.kind === "calc" ? '<button type="button" class="pill calc-open" data-act="calc-open" title="Kalkulator ilmiah">🧮 Kalkulator</button>' : "") +
         '<span class="pill mono">' + doneN + " / " + js.length + ' selesai</span>' +
         (catTotal ? '<span class="pill mono">' + esc(fmtIDR(catTotal)) + '</span>' : "") +
         (cat.locked ? '<span class="pill mono" title="Kategori inti — tidak bisa dihapus">🔒 inti</span>'
@@ -1913,6 +1961,7 @@
     else if (act === "del-rt" && cat){ DATA.deleteRtItem(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), id); }
     else if (act === "del-rt-ev" && cat){ DATA.deleteRtEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), t.getAttribute("data-entry"), parseInt(t.getAttribute("data-idx"), 10)); }
     else if (act === "rt-export" && cat){ exportRespectThread(cat.id, id); }
+    else if (act === "calc-open"){ openCalc(); }
     else if (act === "add-calc" && cat){ DATA.addCalcBlock(cat.id, id); }
     else if (act === "del-calc" && cat){ DATA.deleteCalcBlock(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "del-calc-ev" && cat){ DATA.deleteCalcEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-block"), parseInt(t.getAttribute("data-idx"), 10)); }
@@ -1931,6 +1980,7 @@
   document.addEventListener("keydown", function(e){
     if ((e.ctrlKey || e.metaKey) && String(e.key).toLowerCase() === "k"){ e.preventDefault(); openPalette(); return; }
     if (e.key === "Escape"){
+      if (!$("calc").hidden){ closeCalc(); return; }
       if (!$("palette").hidden){ closePalette(); return; }
       if (!$("lightbox").hidden){ closeLightbox(); return; }
     }
@@ -2127,6 +2177,235 @@
   });
   $("palette").addEventListener("click", function(e){ if (e.target === $("palette")) closePalette(); });
   $("searchBtn").addEventListener("click", openPalette);
+
+  /* ---------- scientific calculator ---------- */
+  function factorial(x){
+    if (isNaN(x) || x < 0 || Math.floor(x) !== x) return NaN;
+    if (x > 170) return Infinity;
+    var r = 1; for (var k = 2; k <= x; k++) r *= k; return r;
+  }
+  function mathEval(input, deg, ans){
+    var s = String(input || "");
+    if (s.length > 600) throw new Error("terlalu panjang");
+    var i = 0, n = s.length;
+    var toR = deg ? Math.PI / 180 : 1, frR = deg ? 180 / Math.PI : 1;
+    var FN = {
+      sin: function(x){ return Math.sin(x * toR); }, cos: function(x){ return Math.cos(x * toR); }, tan: function(x){ return Math.tan(x * toR); },
+      asin: function(x){ return Math.asin(x) * frR; }, acos: function(x){ return Math.acos(x) * frR; }, atan: function(x){ return Math.atan(x) * frR; },
+      sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh,
+      ln: Math.log, log: function(x){ return Math.log(x) / Math.LN10; }, log2: function(x){ return Math.log(x) / Math.LN2; },
+      sqrt: Math.sqrt, cbrt: Math.cbrt, abs: Math.abs, exp: Math.exp,
+      floor: Math.floor, ceil: Math.ceil, round: Math.round, sign: function(x){ return x > 0 ? 1 : x < 0 ? -1 : 0; },
+      fact: factorial
+    };
+    var CO = { pi: Math.PI, e: Math.E, tau: Math.PI * 2, phi: (1 + Math.sqrt(5)) / 2 };
+    function ws(){ while (i < n && s.charCodeAt(i) <= 32) i++; }
+    function expr(){ return add(); }
+    function add(){
+      var v = mul();
+      for (;;){ ws(); var c = s[i];
+        if (c === "+"){ i++; v += mul(); }
+        else if (c === "-" || c === "−"){ i++; v -= mul(); }
+        else return v;
+      }
+    }
+    function mul(){
+      var v = unary();
+      for (;;){ ws(); var c = s[i], op;
+        if (c === "*" || c === "×"){ i++; op = "*"; }
+        else if (c === "/" || c === "÷"){ i++; op = "/"; }
+        else if (c === "%"){ i++; op = "%"; }
+        else if (c === "(" || c === "√" || c === "π" || (c && /[a-z]/i.test(c))){ op = "*"; }
+        else return v;
+        var r = unary();
+        v = op === "*" ? v * r : op === "/" ? v / r : v % r;
+      }
+    }
+    function unary(){
+      ws();
+      if (s[i] === "-" || s[i] === "−"){ i++; return -unary(); }
+      if (s[i] === "+"){ i++; return unary(); }
+      return pow();
+    }
+    function pow(){
+      var v = postfix();
+      ws();
+      if (s[i] === "^"){ i++; return Math.pow(v, unary()); }
+      return v;
+    }
+    function postfix(){
+      var v = atom();
+      for (;;){ ws();
+        if (s[i] === "!"){ i++; v = factorial(v); }
+        else if (s[i] === "²"){ i++; v = v * v; }
+        else if (s[i] === "³"){ i++; v = v * v * v; }
+        else return v;
+      }
+    }
+    function atom(){
+      ws();
+      var c = s[i];
+      if (c === "("){ i++; var v = expr(); ws(); if (s[i] === ")") i++; else throw new Error("kurung ) hilang"); return v; }
+      if (c === "√"){ i++; return Math.sqrt(unary()); }
+      if (c === "π"){ i++; return Math.PI; }
+      var num = /^(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/.exec(s.slice(i));
+      if (num && num[0]){ i += num[0].length; return parseFloat(num[0]); }
+      var id = /^[a-zA-Z_]\w*/.exec(s.slice(i));
+      if (id){
+        var name = id[0].toLowerCase(); i += id[0].length;
+        if (name === "ans") return Number(ans) || 0;
+        if (Object.prototype.hasOwnProperty.call(CO, name)) return CO[name];
+        if (FN[name]){
+          ws();
+          if (s[i] === "("){ i++; var a = expr(); ws(); if (s[i] === ")") i++; else throw new Error("kurung ) hilang"); return FN[name](a); }
+          return FN[name](unary());
+        }
+        throw new Error("tak dikenal: " + name);
+      }
+      throw new Error("sintaks tidak valid");
+    }
+    ws();
+    if (i >= n) throw new Error("kosong");
+    var out = expr();
+    ws();
+    if (i < n) throw new Error("sisa tak terbaca: " + s.slice(i, i + 8));
+    return out;
+  }
+  function fmtNum(v){
+    if (typeof v !== "number" || isNaN(v)) return "NaN";
+    if (!isFinite(v)) return v > 0 ? "∞" : "-∞";
+    if (v !== 0 && (Math.abs(v) >= 1e12 || Math.abs(v) < 1e-6))
+      return v.toExponential(6).replace(/(\.\d*?)0+e/, "$1e").replace(/\.e/, "e");
+    var r = Math.round(v * 1e10) / 1e10;
+    return String(r);
+  }
+  function exprToTeX(e){
+    var s = String(e);
+    s = s.replace(/\bsqrt\(([^()]*)\)/g, "\\sqrt{$1}").replace(/√\(([^()]*)\)/g, "\\sqrt{$1}").replace(/√/g, "\\sqrt ");
+    s = s.replace(/\bpi\b/gi, "\\pi").replace(/π/g, "\\pi");
+    s = s.replace(/\*/g, " \\cdot ").replace(/×/g, " \\cdot ").replace(/÷/g, " / ").replace(/−/g, "-");
+    s = s.replace(/\^(\([^()]*\)|[\d.]+|[a-zA-Z]+)/g, "^{$1}");
+    s = s.replace(/\b(sin|cos|tan|asin|acos|atan|sinh|cosh|tanh|ln|log|log2|exp|abs)\(/g, "\\$1(");
+    return s;
+  }
+
+  var calcState = { expr: "", ans: 0, deg: true, history: [] };
+  try { var hh = JSON.parse(localStorage.getItem("bbe-calc-history") || "[]"); if (hh && hh.length) calcState.history = hh; } catch (e) {}
+  try { calcState.deg = localStorage.getItem("bbe-calc-deg") !== "rad"; } catch (e) {}
+
+  var CALC_ROWS = [
+    [["DEG/RAD", "@deg", "k-op"], ["C", "@clr", "k-op"], ["⌫", "@back", "k-op"], ["(", "("], [")", ")"]],
+    [["sin", "sin(", "k-fn"], ["cos", "cos(", "k-fn"], ["tan", "tan(", "k-fn"], ["√", "√(", "k-fn"], ["^", "^", "k-op"]],
+    [["ln", "ln(", "k-fn"], ["log", "log(", "k-fn"], ["π", "π", "k-fn"], ["e", "e", "k-fn"], ["!", "!", "k-op"]],
+    [["7", "7"], ["8", "8"], ["9", "9"], ["×", "*", "k-op"], ["÷", "/", "k-op"]],
+    [["4", "4"], ["5", "5"], ["6", "6"], ["+", "+", "k-op"], ["−", "-", "k-op"]],
+    [["1", "1"], ["2", "2"], ["3", "3"], ["x²", "²", "k-op"], ["%", "%", "k-op"]],
+    [["0", "0"], [".", "."], ["Ans", "Ans", "k-fn"], ["=", "@eq", "k-eq"]]
+  ];
+
+  function calcCanInsert(){
+    var c = selectedCat();
+    return state.view === "board" && c && c.kind === "calc" && !!state.expandedId;
+  }
+  function openCalc(){
+    $("calc").hidden = false;
+    renderCalc();
+    setTimeout(function(){ var x = $("calcExpr"); if (x) x.focus(); }, 20);
+  }
+  function closeCalc(){ $("calc").hidden = true; }
+  $("calc").addEventListener("click", function(e){ if (e.target === $("calc")) closeCalc(); });
+
+  function renderCalc(){
+    var box = $("calc").querySelector(".calc-box");
+    var grid = '<div class="calc-grid">' + CALC_ROWS.map(function(row){
+      return '<div class="calc-row">' + row.map(function(k){
+        var label = k[0] === "DEG/RAD" ? (calcState.deg ? "DEG" : "RAD") : k[0];
+        return '<button type="button" class="calc-key ' + (k[2] || "") + '" data-ck="' + esc(k[1]) + '">' + esc(label) + '</button>';
+      }).join("") + '</div>';
+    }).join("") + '</div>';
+    var hist = calcState.history.length
+      ? '<div class="calc-hist">' + calcState.history.slice(0, 14).map(function(h, idx){
+          return '<button type="button" class="calc-hrow" data-ch="' + idx + '"><span>' + esc(h.expr) + '</span><b>' + esc(h.result) + '</b></button>';
+        }).join("") + '</div>'
+      : "";
+    box.innerHTML =
+      '<div class="calc-head"><b>Kalkulator</b>' +
+        '<span class="calc-deg" data-ck="@deg" role="button" tabindex="0">' + (calcState.deg ? "DEG" : "RAD") + '</span>' +
+        '<button type="button" class="calc-x" data-ck="@close" aria-label="Tutup">✕</button></div>' +
+      '<input id="calcExpr" type="text" value="' + esc(calcState.expr) + '" placeholder="mis. 0.5*80*200^2 atau sin(30)" autocomplete="off" spellcheck="false" aria-label="Ekspresi">' +
+      '<div id="calcOut" class="calc-out"></div>' +
+      grid +
+      (calcCanInsert() ? '<button type="button" class="calc-ins" data-ck="@ins">↳ Sisipkan sebagai blok LaTeX</button>' : "") +
+      hist;
+
+    if (!renderCalc._bound){
+      renderCalc._bound = true;
+      box.addEventListener("click", function(e){
+        var kb = e.target.closest("[data-ck]");
+        if (kb){ calcKey(kb.getAttribute("data-ck")); return; }
+        var hb = e.target.closest("[data-ch]");
+        if (hb){ calcState.expr = calcState.history[parseInt(hb.getAttribute("data-ch"), 10)].expr; renderCalc(); $("calcExpr").focus(); }
+      });
+    }
+    var inp = $("calcExpr");
+    inp.addEventListener("input", function(){ calcState.expr = inp.value; updateCalcOut(); });
+    inp.addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); calcEquals(); } });
+    updateCalcOut();
+  }
+  function updateCalcOut(){
+    var out = $("calcOut"); if (!out) return;
+    var e = (calcState.expr || "").trim();
+    if (!e){ out.textContent = ""; out.className = "calc-out"; return; }
+    try {
+      var v = mathEval(e, calcState.deg, calcState.ans);
+      out.textContent = "= " + fmtNum(v);
+      out.className = "calc-out ok";
+    } catch (err){ out.textContent = "…"; out.className = "calc-out"; }
+  }
+  function calcKey(k){
+    var inp = $("calcExpr");
+    if (k === "@deg"){ calcState.deg = !calcState.deg; try { localStorage.setItem("bbe-calc-deg", calcState.deg ? "deg" : "rad"); } catch (e) {} renderCalc(); $("calcExpr").focus(); return; }
+    if (k === "@close"){ closeCalc(); return; }
+    if (k === "@clr"){ calcState.expr = ""; inp.value = ""; updateCalcOut(); inp.focus(); return; }
+    if (k === "@back"){ calcState.expr = calcState.expr.slice(0, -1); inp.value = calcState.expr; updateCalcOut(); inp.focus(); return; }
+    if (k === "@eq"){ calcEquals(); return; }
+    if (k === "@ins"){ calcInsert(); return; }
+    var a = inp.selectionStart, b = inp.selectionEnd;
+    if (a == null){ a = b = calcState.expr.length; }
+    calcState.expr = calcState.expr.slice(0, a) + k + calcState.expr.slice(b);
+    inp.value = calcState.expr;
+    var p = a + k.length;
+    inp.focus();
+    try { inp.setSelectionRange(p, p); } catch (e) {}
+    updateCalcOut();
+  }
+  function calcEquals(){
+    var e = (calcState.expr || "").trim();
+    if (!e) return;
+    try {
+      var v = mathEval(e, calcState.deg, calcState.ans);
+      if (typeof v !== "number" || isNaN(v)) throw new Error("hasil bukan angka");
+      calcState.ans = v;
+      calcState.history.unshift({ expr: e, result: fmtNum(v) });
+      calcState.history = calcState.history.slice(0, 40);
+      try { localStorage.setItem("bbe-calc-history", JSON.stringify(calcState.history)); } catch (err) {}
+      calcState.expr = fmtNum(v);
+      renderCalc();
+      $("calcExpr").focus();
+    } catch (err){
+      var o = $("calcOut"); if (o){ o.textContent = "⚠ " + err.message; o.className = "calc-out err"; }
+    }
+  }
+  function calcInsert(){
+    var cat = selectedCat();
+    if (!cat || cat.kind !== "calc" || !state.expandedId) return;
+    var e = (calcState.expr || "").trim(); if (!e) return;
+    var v;
+    try { v = mathEval(e, calcState.deg, calcState.ans); } catch (err){ return; }
+    var body = "$$" + exprToTeX(e) + " = " + fmtNum(v) + "$$";
+    DATA.addCalcBlock(cat.id, state.expandedId, body);
+    closeCalc();
+  }
 
   /* ---------- lightbox ---------- */
   function openLightbox(jobId, idx){
@@ -2455,10 +2734,10 @@
       it.evidence.splice(idx, 1);
       renderPanel(); save();
     },
-    addCalcBlock: function(catId, jobId){
+    addCalcBlock: function(catId, jobId, body){
       var j = jobById(catId, jobId); if (!j) return;
       j.calc = j.calc || { blocks: [] };
-      j.calc.blocks.push({ id: uid(), label: "", body: "", evidence: [], createdAt: Date.now() });
+      j.calc.blocks.push({ id: uid(), label: "", body: typeof body === "string" ? body : "", evidence: [], createdAt: Date.now() });
       renderPanel(); save();
     },
     updateCalcBlock: function(catId, jobId, blockId, field, val){
