@@ -99,6 +99,8 @@ global **Ctrl/⌘ + K** search palette.
   has a direct picker. Completing a job stamps its completion date.
 - **Priority** — Low / Medium / High / Urgent (High & Urgent show on the row).
 - **Deadline** + **Customer** + **tags** (the fiction / verse it's about).
+- **Full Feats** — right under the tags: paste links to full-feats threads /
+  docs; they render as embed cards with editable captions.
 - **Rebuttals** — a structured list, not a text box: each entry is
   *Claim → Counter → Rebuttal* with a status (`Unanswered`, `In Progress`,
   `Resolved`, `Rejected`, `Needs Evidence`).

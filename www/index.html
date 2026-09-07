@@ -1131,6 +1131,11 @@
     var del = '<button class="icon-btn embed-del" data-act="del-calc-ev" data-job="' + esc(job.id) + '" data-block="' + esc(blockId) + '" data-idx="' + idx + '" aria-label="Hapus bukti">✕</button>';
     return '<figure class="embed-card">' + embedBodyHtml(e) + cap + del + '</figure>';
   }
+  function fullFeatCardHtml(job, e){
+    var cap = '<input class="embed-cap-edit" data-ff-cap data-job="' + esc(job.id) + '" data-id="' + esc(e.id) + '" placeholder="Keterangan…" value="' + esc(e.caption || "") + '" aria-label="Keterangan Full Feats">';
+    var del = '<button class="icon-btn embed-del" data-act="del-full-feat" data-job="' + esc(job.id) + '" data-id="' + esc(e.id) + '" aria-label="Hapus Full Feats">✕</button>';
+    return '<figure class="embed-card">' + embedBodyHtml(e) + cap + del + '</figure>';
+  }
 
   function rebCardHtml(j, r){
     return '<div class="reb-card s-' + esc(r.status) + '" data-reb="' + esc(r.id) + '">' +
@@ -1291,6 +1296,9 @@
     var embeds = j.embeds || [];
     var embHtml = embeds.length ? '<div class="embed-grid">' + embeds.map(function(e){ return embedCardHtml(j, e); }).join("") + '</div>' : "";
 
+    var ff = j.fullFeats || [];
+    var ffGrid = ff.length ? '<div class="embed-grid">' + ff.map(function(e){ return fullFeatCardHtml(j, e); }).join("") + '</div>' : "";
+
     var rebs = j.rebuttals || [];
     var rebHtml = rebs.length ? '<div class="reb-list">' + rebs.map(function(r){ return rebCardHtml(j, r); }).join("") + '</div>' : '<p class="reb-empty">Belum ada rebuttal. Tambahkan klaim + counter + responmu.</p>';
 
@@ -1314,6 +1322,12 @@
              '<div class="fld"><span>Tags &middot; fiksi / verse</span>' +
                '<div class="tag-wrap">' + tagChips + '</div>' +
                '<form class="chip-form" data-tagform data-id="' + esc(j.id) + '" autocomplete="off"><input placeholder="Judul fiksi/verse, lalu Enter" maxlength="60" aria-label="Tag baru"><button type="submit">Tambah</button></form>' +
+             '</div>' +
+
+             '<div class="fld"><span>Full Feats</span>' +
+               '<span class="hint">Tautan ke kompilasi feat lengkap (thread / dokumen).</span>' +
+               '<form class="chip-form" data-ff-form data-id="' + esc(j.id) + '" autocomplete="off"><input type="text" placeholder="Link kompilasi feat / RT lengkap…" aria-label="Link Full Feats"><button type="submit">Tambah</button></form>' +
+               ffGrid +
              '</div>' +
 
              (isRT ? rtSectionHtml(j) : "") +
@@ -1742,6 +1756,19 @@
       inp.value = "";
     });
 
+    var ffForm = panel.querySelector("[data-ff-form]");
+    if (ffForm) ffForm.addEventListener("submit", function(e){
+      e.preventDefault();
+      var inp = ffForm.querySelector("input"); var val = inp.value.trim();
+      if (val) DATA.addFullFeat(catId, ffForm.getAttribute("data-id"), val);
+      inp.value = "";
+    });
+    Array.prototype.forEach.call(panel.querySelectorAll("[data-ff-cap]"), function(el){
+      el.addEventListener("blur", function(){
+        DATA.updateFullFeatCaption(catId, el.getAttribute("data-job"), el.getAttribute("data-id"), el.value);
+      });
+    });
+
     // rebuttal card fields
     Array.prototype.forEach.call(panel.querySelectorAll(".reb-card"), function(card){
       var rebId = card.getAttribute("data-reb");
@@ -1879,6 +1906,7 @@
     else if (act === "del-cat" && cat){ if (confirm('Hapus "' + cat.name + '" beserta semua isinya?')) DATA.deleteCategory(cat.id); }
     else if (act === "deadline-clear" && cat){ DATA.updateJob(cat.id, id, "deadline", null, true); }
     else if (act === "del-tag" && cat){ DATA.removeTag(cat.id, t.getAttribute("data-job"), t.getAttribute("data-tag")); }
+    else if (act === "del-full-feat" && cat){ DATA.deleteFullFeat(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "add-reb" && cat){ DATA.addRebuttal(cat.id, id); }
     else if (act === "del-reb" && cat){ DATA.deleteRebuttal(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "add-rt" && cat){ DATA.addRtItem(cat.id, id, t.getAttribute("data-list")); }
@@ -2216,6 +2244,8 @@
     j.customer = typeof j.customer === "string" ? j.customer : "";
     if (!Array.isArray(j.tags)) j.tags = [];
     if (!Array.isArray(j.embeds)) j.embeds = [];
+    if (!Array.isArray(j.fullFeats)) j.fullFeats = [];
+    j.fullFeats.forEach(function(e){ if (!e.id) e.id = uid(); e.caption = e.caption || ""; });
     if (!Array.isArray(j.rebuttals)) j.rebuttals = [];
     if (typeof j.argDoc !== "string") j.argDoc = "";
     if (typeof j.priceKind !== "string") j.priceKind = "quote";
@@ -2478,6 +2508,25 @@
     updateEmbedCaption: function(catId, jobId, id, caption){
       var j = jobById(catId, jobId); if (!j) return;
       var e = (j.embeds || []).filter(function(x){ return x.id === id; })[0];
+      if (!e) return;
+      e.caption = String(caption || "");
+      save();
+    },
+    addFullFeat: function(catId, jobId, url){
+      var j = jobById(catId, jobId); if (!j) return;
+      var info = classifyEmbed(url); if (!info) return;
+      j.fullFeats = j.fullFeats || [];
+      j.fullFeats.push({ id: uid(), url: info.url, kind: info.kind, provider: info.provider || "", embedUrl: info.embedUrl || info.url, thumbUrl: info.thumbUrl || "", caption: "" });
+      renderPanel(); save();
+    },
+    deleteFullFeat: function(catId, jobId, id){
+      var j = jobById(catId, jobId); if (!j) return;
+      j.fullFeats = (j.fullFeats || []).filter(function(x){ return x.id !== id; });
+      renderPanel(); save();
+    },
+    updateFullFeatCaption: function(catId, jobId, id, caption){
+      var j = jobById(catId, jobId); if (!j) return;
+      var e = (j.fullFeats || []).filter(function(x){ return x.id === id; })[0];
       if (!e) return;
       e.caption = String(caption || "");
       save();
