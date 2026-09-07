@@ -89,8 +89,9 @@ lives in `%APPDATA%\battleboarding-entry\`.
 Tabs: **Board · Schedule · Stats · Work On · Services · History**, plus a
 global **Ctrl/⌘ + K** search palette.
 
-**Board** — the four service lines are the starting categories; add more with
-**+ Tambah kategori**. Every job carries:
+**Board** — the four service lines are the starting categories and are
+**locked** (🔒, can't be deleted); add your own with **+ Tambah kategori**
+(those stay deletable). Every job carries:
 
 - **Lifecycle status** — `Not Started → Researching → Writing → Reviewing →
   Completed → Delivered`. The square button on the row cycles it; the detail
@@ -106,6 +107,12 @@ global **Ctrl/⌘ + K** search palette.
   Streamable link → renders inline (image, or click-to-play video).
 - **Price + status** — `Penawaran` / `Terjual` / `Contoh (estimasi)`.
 - a **photo log** (downscaled, stored on-device).
+
+**Respect Thread jobs** get an extra structured **Respect Thread** section:
+an *Introduction* field plus an abilities list (name → tier → explanation →
+evidence links), and an **Export to HTML** button that writes a clean,
+formatted document (Introduction + Abilities & Powerscaling, each with a
+"Bukti:" evidence block).
 
 **Schedule** — deadline buckets (🔴 Overdue · 🟠 Due soon · 🟡 Upcoming ·
 🟢 Completed) plus a month **calendar** with per-day deadline dots.

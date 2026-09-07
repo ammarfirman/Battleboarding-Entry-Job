@@ -327,6 +327,25 @@
   .reb-del{position:absolute;top:6px;right:6px;opacity:1;width:24px;height:24px}
   .reb-empty{color:var(--faint);font-size:.86rem}
 
+  /* respect thread builder */
+  .rt-section{border:2px solid var(--warn);padding:12px;background:rgba(255,212,0,.04)}
+  .rt-section > span:first-child{color:var(--warn)}
+  .rt-sub{font-family:"IBM Plex Mono",monospace !important;font-size:.7rem !important;letter-spacing:.06em;color:var(--faint) !important;text-transform:uppercase}
+  .rt-entries{display:flex;flex-direction:column;gap:12px;margin:4px 0 10px}
+  .rt-entry{border:2px solid var(--line);background:#000;padding:12px 13px;display:flex;flex-direction:column;gap:9px;position:relative;border-left:4px solid var(--warn)}
+  .rt-del{position:absolute;top:6px;right:6px;opacity:1;width:24px;height:24px}
+  .rt-ev-add{margin-top:2px}
+  .rt-ev-grid{margin-top:8px;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+  .rt-ev{position:relative;margin:0;border:2px solid #fff;background:#000}
+  .rt-ev a{display:block}
+  .rt-ev img{width:100%;height:96px;object-fit:cover;display:block}
+  .rt-ev-link{display:block;padding:10px 8px;font-family:"IBM Plex Mono",monospace;font-size:.68rem;color:var(--muted);word-break:break-all}
+  .rt-ev-del{position:absolute;top:2px;right:2px;opacity:1;width:22px;height:22px;background:#000;color:#fff}
+  .rt-ev-del:hover{background:var(--red)}
+  .rt-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .rt-export-btn{border-color:var(--warn);color:var(--warn)}
+  .rt-export-btn:hover{background:var(--warn);color:#000}
+
   /* arguments editor */
   .argdoc{border:2px solid var(--line);background:#000}
   .argdoc-toolbar{display:flex;flex-wrap:wrap;border-bottom:2px solid var(--line)}
@@ -760,6 +779,79 @@
   function cssUrl(u){ return "'" + String(u).replace(/['"\\)\s]/g, "") + "'"; }
   function safeHref(u){ return /^https?:\/\//i.test(u) ? u : "https://" + u; }
 
+  function downloadHtml(filename, html){
+    try {
+      var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ try { document.body.removeChild(a); } catch (e) {} URL.revokeObjectURL(url); }, 200);
+      return true;
+    } catch (e){
+      try {
+        var w = window.open("", "_blank");
+        if (w){ w.document.open(); w.document.write(html); w.document.close(); return true; }
+      } catch (e2) {}
+      return false;
+    }
+  }
+  function paraHtml(text){
+    return String(text || "").split(/\n{2,}/).map(function(p){
+      p = p.trim(); if (!p) return "";
+      return "<p>" + esc(p).replace(/\n/g, "<br>") + "</p>";
+    }).join("\n");
+  }
+  function buildRespectThreadDoc(j, cat){
+    var rt = j.rt || { intro: "", entries: [] };
+    var title = (j.title || "Respect Thread").toUpperCase();
+    var sub = "Respect Thread &middot; Battleboarding Business" +
+      (j.customer ? " &middot; " + esc(j.customer) : "") +
+      (j.tags && j.tags.length ? " &middot; " + j.tags.map(esc).join(", ") : "");
+
+    var abilities = (rt.entries || []).map(function(e){
+      var ev = (e.evidence || []).map(function(u){
+        var info = classifyEmbed(u) || { kind: "link", url: u };
+        return info.kind === "image"
+          ? '<img src="' + esc(info.embedUrl || u) + '" alt="bukti">'
+          : '<a class="evlink" href="' + esc(safeHref(u)) + '">' + esc(u) + '</a>';
+      }).join("\n");
+      return '<section class="ability">' +
+        '<h3>' + esc(e.name || "(tanpa nama)") + '</h3>' +
+        (e.tier ? '<p class="tier">' + esc(e.tier) + '</p>' : "") +
+        paraHtml(e.explanation) +
+        (ev ? '<p class="ev">Bukti:</p>' + ev : "") +
+      '</section>';
+    }).join("\n");
+
+    return '<!doctype html>\n<html lang="id">\n<head>\n<meta charset="utf-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+      '<title>' + esc(j.title || "Respect Thread") + ' — Respect Thread</title>\n<style>\n' +
+      'body{max-width:820px;margin:44px auto;padding:0 24px;font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.55;background:#fff}\n' +
+      'h1{font-size:26pt;text-align:center;margin:0 0 4px;letter-spacing:.01em}\n' +
+      '.subtitle{text-align:center;color:#666;font-size:11pt;margin:0 0 34px}\n' +
+      'h2{font-size:17pt;border-bottom:2px solid #111;padding-bottom:4px;margin:36px 0 14px;text-transform:uppercase;letter-spacing:.03em}\n' +
+      'h3{font-size:13pt;margin:22px 0 2px;color:#111}\n' +
+      '.tier{color:#666;font-size:9.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px}\n' +
+      'p{margin:0 0 12px}\n.ev{font-weight:700;margin:14px 0 6px}\n' +
+      'img{max-width:100%;height:auto;border:1px solid #ccc;display:block;margin:0 0 10px}\n' +
+      '.evlink{display:block;font-size:9pt;color:#1155cc;word-break:break-all;margin:0 0 8px}\n' +
+      '.ability{margin:0 0 22px}\nfooter{margin-top:40px;border-top:1px solid #ddd;padding-top:10px;color:#999;font-size:9pt}\n' +
+      '</style>\n</head>\n<body>\n' +
+      '<h1>' + esc(title) + '</h1>\n<p class="subtitle">' + sub + '</p>\n' +
+      '<h2>Introduction</h2>\n' + (paraHtml(rt.intro) || '<p><em>(Belum diisi)</em></p>') + '\n' +
+      '<h2>Abilities &amp; Powerscaling</h2>\n' + (abilities || '<p><em>(Belum ada kemampuan)</em></p>') + '\n' +
+      '<footer>Dibuat dengan Battleboarding Business Entry — ' + esc(fmtDate(Date.now())) + '</footer>\n' +
+      '</body>\n</html>';
+  }
+  function exportRespectThread(catId, jobId){
+    var j = jobById(catId, jobId); if (!j) return;
+    var cat = state.categories.filter(function(c){ return c.id === catId; })[0];
+    var safe = (j.title || "Respect Thread").replace(/[^\w\s.-]/g, "").replace(/\s+/g, " ").trim() || "Respect Thread";
+    var okd = downloadHtml(safe + " — Respect Thread.html", buildRespectThreadDoc(j, cat));
+    if (!okd) alert("Tidak bisa mengekspor di lingkungan ini. Coba buka app-nya di browser desktop.");
+  }
+
   function isDone(j){ return !!DONE_STATUS[j.status]; }
   function jobPrice(j){ return typeof j.price === "number" && isFinite(j.price) ? j.price : 0; }
   function statusMeta(k){ return STATUSES[STATUS_IDX[k] == null ? 0 : STATUS_IDX[k]]; }
@@ -965,7 +1057,7 @@
                '</div>' +
                '<button class="icon-btn" data-act="del-job" data-id="' + esc(j.id) + '" aria-label="Hapus job">✕</button>' +
              '</div>' +
-             (exp ? jobDetailHtml(j) : "") +
+             (exp ? jobDetailHtml(j, cat) : "") +
            '</li>';
   }
 
@@ -1005,7 +1097,49 @@
            '</div>';
   }
 
-  function jobDetailHtml(j){
+  function rtEvidenceHtml(j, entry){
+    var ev = entry.evidence || [];
+    if (!ev.length) return "";
+    return '<div class="rt-ev-grid">' + ev.map(function(u, i){
+      var info = classifyEmbed(u) || { kind: "link", url: u };
+      var inner = info.kind === "image"
+        ? '<img loading="lazy" src="' + esc(info.embedUrl || u) + '" alt="bukti">'
+        : '<span class="rt-ev-link">' + esc(hostOf(u)) + '</span>';
+      return '<figure class="rt-ev">' +
+               '<a href="' + esc(safeHref(u)) + '" target="_blank" rel="noopener noreferrer">' + inner + '</a>' +
+               '<button class="icon-btn rt-ev-del" data-act="del-rt-ev" data-job="' + esc(j.id) + '" data-entry="' + esc(entry.id) + '" data-idx="' + i + '" aria-label="Hapus bukti">✕</button>' +
+             '</figure>';
+    }).join("") + '</div>';
+  }
+  function rtEntryHtml(j, entry){
+    return '<div class="rt-entry" data-rt="' + esc(entry.id) + '">' +
+             '<button class="icon-btn rt-del" data-act="del-rt" data-job="' + esc(j.id) + '" data-id="' + esc(entry.id) + '" aria-label="Hapus kemampuan">✕</button>' +
+             '<div class="reb-line"><label>Nama kemampuan</label><input class="txt" data-rt-field="name" placeholder="mis. Higher-Dimensional Manipulation" value="' + esc(entry.name || "") + '"></div>' +
+             '<div class="reb-line"><label>Kategori / tier</label><input class="txt" data-rt-field="tier" placeholder="mis. Universal Abilities / Tier X" value="' + esc(entry.tier || "") + '"></div>' +
+             '<div class="reb-line"><label>Penjelasan</label><textarea data-rt-field="explanation" placeholder="Jelaskan kemampuannya beserta konteks dari sumber…">' + esc(entry.explanation || "") + '</textarea></div>' +
+             '<div class="reb-line"><label>Bukti (link scan / gambar)</label>' +
+               '<form class="chip-form rt-ev-add" data-job="' + esc(j.id) + '" data-entry="' + esc(entry.id) + '" autocomplete="off"><input type="text" placeholder="Tempel link gambar / Imgur / Gyazo…" aria-label="Link bukti"><button type="submit">Tambah</button></form>' +
+               rtEvidenceHtml(j, entry) +
+             '</div>' +
+           '</div>';
+  }
+  function rtSectionHtml(j){
+    var rt = j.rt || { intro: "", entries: [] };
+    var entries = rt.entries || [];
+    return '<div class="fld rt-section"><span>Respect Thread &middot; format</span>' +
+             '<label class="fld"><span class="rt-sub">Introduction</span>' +
+               '<textarea data-rt-intro rows="4" placeholder="Latar belakang karakter / verse: siapa dia, asal-usul, peran dalam cerita…">' + esc(rt.intro || "") + '</textarea>' +
+             '</label>' +
+             '<div class="rt-entries">' + (entries.length ? entries.map(function(e){ return rtEntryHtml(j, e); }).join("") : '<p class="reb-empty">Belum ada kemampuan. Tambahkan satu per satu: nama, tier, penjelasan, bukti.</p>') + '</div>' +
+             '<div class="rt-actions">' +
+               '<button type="button" class="mini-btn" data-act="add-rt" data-id="' + esc(j.id) + '">+ Tambah kemampuan</button>' +
+               '<button type="button" class="mini-btn rt-export-btn" data-act="rt-export" data-id="' + esc(j.id) + '">⬇ Export ke HTML</button>' +
+             '</div>' +
+           '</div>';
+  }
+
+  function jobDetailHtml(j, cat){
+    var isRT = !!(cat && cat.kind === "respect-thread");
     var imgs = state.imagesByJob[j.id] || [];
     var grid = imgs.length ? '<div class="img-grid">' + imgs.map(function(im, i){
       return '<div class="img-card" data-act="zoom" data-job="' + esc(j.id) + '" data-idx="' + i + '">' +
@@ -1047,6 +1181,8 @@
                '<div class="tag-wrap">' + tagChips + '</div>' +
                '<form class="chip-form" data-tagform data-id="' + esc(j.id) + '" autocomplete="off"><input placeholder="Judul fiksi/verse, lalu Enter" maxlength="60" aria-label="Tag baru"><button type="submit">Tambah</button></form>' +
              '</div>' +
+
+             (isRT ? rtSectionHtml(j) : "") +
 
              '<div class="fld"><span>Deadline</span>' +
                '<span class="sched-row">' +
@@ -1118,7 +1254,8 @@
         '<h2>' + esc(cat.name) + '</h2>' +
         '<span class="pill mono">' + doneN + " / " + js.length + ' selesai</span>' +
         (catTotal ? '<span class="pill mono">' + esc(fmtIDR(catTotal)) + '</span>' : "") +
-        '<button class="link-danger" data-act="del-cat">Hapus kategori</button>' +
+        (cat.locked ? '<span class="pill mono" title="Kategori inti — tidak bisa dihapus">🔒 inti</span>'
+                    : '<button class="link-danger" data-act="del-cat">Hapus kategori</button>') +
       '</div>' +
       '<div class="section"><h3>Jobs</h3>' +
         '<form class="add-row" id="jobForm" autocomplete="off"><input id="jobInput" placeholder="Tambah job…" maxlength="140" required aria-label="Job baru"><button type="submit">Add job</button></form>' +
@@ -1518,6 +1655,28 @@
       urlI.value = ""; capI.value = "";
     });
 
+    // Respect Thread builder
+    var rtIntro = panel.querySelector("[data-rt-intro]");
+    if (rtIntro) rtIntro.addEventListener("blur", function(){
+      if (state.expandedId) DATA.setRtIntro(catId, state.expandedId, rtIntro.value);
+    });
+    Array.prototype.forEach.call(panel.querySelectorAll(".rt-entry"), function(card){
+      var entryId = card.getAttribute("data-rt");
+      Array.prototype.forEach.call(card.querySelectorAll("[data-rt-field]"), function(el){
+        el.addEventListener("blur", function(){
+          DATA.updateRtEntry(catId, state.expandedId, entryId, el.getAttribute("data-rt-field"), el.value);
+        });
+      });
+    });
+    Array.prototype.forEach.call(panel.querySelectorAll(".rt-ev-add"), function(f){
+      f.addEventListener("submit", function(e){
+        e.preventDefault();
+        var inp = f.querySelector("input");
+        if (inp.value.trim()) DATA.addRtEvidence(catId, f.getAttribute("data-job"), f.getAttribute("data-entry"), inp.value.trim());
+        inp.value = "";
+      });
+    });
+
     var fi = panel.querySelector(".file-input");
     if (fi) fi.addEventListener("change", function(){ handleFiles(catId, fi.getAttribute("data-file"), fi.files); fi.value = ""; });
 
@@ -1549,6 +1708,10 @@
     else if (act === "del-tag" && cat){ DATA.removeTag(cat.id, t.getAttribute("data-job"), t.getAttribute("data-tag")); }
     else if (act === "add-reb" && cat){ DATA.addRebuttal(cat.id, id); }
     else if (act === "del-reb" && cat){ DATA.deleteRebuttal(cat.id, t.getAttribute("data-job"), id); }
+    else if (act === "add-rt" && cat){ DATA.addRtEntry(cat.id, id); }
+    else if (act === "del-rt" && cat){ DATA.deleteRtEntry(cat.id, t.getAttribute("data-job"), id); }
+    else if (act === "del-rt-ev" && cat){ DATA.deleteRtEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-entry"), parseInt(t.getAttribute("data-idx"), 10)); }
+    else if (act === "rt-export" && cat){ exportRespectThread(cat.id, id); }
     else if (act === "del-embed" && cat){ DATA.deleteEmbed(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "embed-play"){
       var card = t.closest(".embed-card");
@@ -1892,11 +2055,26 @@
       r.claim = r.claim || ""; r.counter = r.counter || ""; r.rebuttal = r.rebuttal || "";
       if (!r.createdAt) r.createdAt = Date.now();
     });
+    if (!j.rt || typeof j.rt !== "object") j.rt = { intro: "", entries: [] };
+    if (typeof j.rt.intro !== "string") j.rt.intro = "";
+    if (!Array.isArray(j.rt.entries)) j.rt.entries = [];
+    j.rt.entries.forEach(function(e){
+      if (!e.id) e.id = uid();
+      e.name = e.name || ""; e.tier = e.tier || ""; e.explanation = e.explanation || "";
+      if (!Array.isArray(e.evidence)) e.evidence = [];
+      if (!e.createdAt) e.createdAt = Date.now();
+    });
     return j;
+  }
+  var CATEGORY_KIND = { "Respect Thread": "respect-thread" };
+  function normalizeCat(c){
+    if (SERVICE_CATEGORIES.indexOf(c.name) !== -1) c.locked = true;
+    if (CATEGORY_KIND[c.name]) c.kind = CATEGORY_KIND[c.name];
+    return c;
   }
   function seedServices(){
     var t = Date.now();
-    state.categories = SERVICE_CATEGORIES.map(function(n, i){ return { id: uid(), name: n, createdAt: t + i }; });
+    state.categories = SERVICE_CATEGORIES.map(function(n, i){ return normalizeCat({ id: uid(), name: n, createdAt: t + i }); });
     state.jobsByCat = {}; state.imagesByJob = {}; state.workOn = normalizeWorkOn({});
     state.categories.forEach(function(c){
       state.jobsByCat[c.id] = [];
@@ -1916,6 +2094,7 @@
     state.jobsByCat = saved.jobsByCat || {};
     state.imagesByJob = saved.imagesByJob || {};
     state.workOn = normalizeWorkOn(saved.workOn);
+    state.categories.forEach(normalizeCat);
     Object.keys(state.jobsByCat).forEach(function(cid){ (state.jobsByCat[cid] || []).forEach(normalizeJob); });
   }
 
@@ -1928,6 +2107,8 @@
       renderAll(); save();
     },
     deleteCategory: function(id){
+      var target = state.categories.filter(function(c){ return c.id === id; })[0];
+      if (!target || target.locked) return;
       (state.jobsByCat[id] || []).forEach(function(j){ delete state.imagesByJob[j.id]; });
       state.categories = state.categories.filter(function(c){ return c.id !== id; });
       delete state.jobsByCat[id];
@@ -1997,6 +2178,45 @@
     deleteRebuttal: function(catId, jobId, rebId){
       var j = jobById(catId, jobId); if (!j) return;
       j.rebuttals = (j.rebuttals || []).filter(function(x){ return x.id !== rebId; });
+      renderPanel(); save();
+    },
+    setRtIntro: function(catId, jobId, text){
+      var j = jobById(catId, jobId); if (!j || !j.rt) return;
+      j.rt.intro = String(text || "");
+      save();
+    },
+    addRtEntry: function(catId, jobId){
+      var j = jobById(catId, jobId); if (!j) return;
+      j.rt = j.rt || { intro: "", entries: [] };
+      j.rt.entries.push({ id: uid(), name: "", tier: "", explanation: "", evidence: [], createdAt: Date.now() });
+      renderPanel(); save();
+    },
+    updateRtEntry: function(catId, jobId, entryId, field, val){
+      var j = jobById(catId, jobId); if (!j || !j.rt) return;
+      var e = (j.rt.entries || []).filter(function(x){ return x.id === entryId; })[0];
+      if (!e) return;
+      e[field] = String(val || "");
+      save();
+    },
+    deleteRtEntry: function(catId, jobId, entryId){
+      var j = jobById(catId, jobId); if (!j || !j.rt) return;
+      j.rt.entries = (j.rt.entries || []).filter(function(x){ return x.id !== entryId; });
+      renderPanel(); save();
+    },
+    addRtEvidence: function(catId, jobId, entryId, url){
+      var j = jobById(catId, jobId); if (!j || !j.rt) return;
+      url = String(url || "").trim(); if (!url) return;
+      var e = (j.rt.entries || []).filter(function(x){ return x.id === entryId; })[0];
+      if (!e) return;
+      e.evidence = e.evidence || [];
+      e.evidence.push(url);
+      renderPanel(); save();
+    },
+    deleteRtEvidence: function(catId, jobId, entryId, idx){
+      var j = jobById(catId, jobId); if (!j || !j.rt) return;
+      var e = (j.rt.entries || []).filter(function(x){ return x.id === entryId; })[0];
+      if (!e || !e.evidence) return;
+      e.evidence.splice(idx, 1);
       renderPanel(); save();
     },
     addEmbed: function(catId, jobId, e){
