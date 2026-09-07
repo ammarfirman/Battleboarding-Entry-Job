@@ -593,8 +593,9 @@
   .lightbox .close{position:absolute;top:16px;right:20px;font-size:1.6rem;background:var(--red);border:2px solid #000;color:#fff;cursor:pointer;line-height:1;width:44px;height:44px;transform:skewX(-10deg)}
   .lightbox .close:hover{background:#fff;color:var(--red)}
 
-  /* view transition — Persona 5 pause-menu style */
-  #wipe{position:fixed;inset:0;z-index:70;pointer-events:none;overflow:hidden}
+  /* view transition — Persona 5 pause-menu style, per-destination motif */
+  #wipe{position:fixed;inset:0;z-index:70;overflow:hidden;pointer-events:none}
+  #wipe.in,#wipe.out{pointer-events:auto}
   #wipe>*{position:absolute;will-change:transform,opacity}
 
   /* solid cover — guarantees the DOM swap is hidden */
@@ -613,36 +614,103 @@
   #wipe.out .w-red{transform:translateX(150%) skewX(-11deg);transition:transform .44s cubic-bezier(.5,0,.3,1)}
   #wipe.out .w-blk{transform:translateX(150%) skewX(-11deg);transition:transform .42s cubic-bezier(.5,0,.3,1) .04s}
 
-  /* barber-pole stripe band through the middle */
-  #wipe .w-stripe{left:-12vw;right:-12vw;top:37%;height:26%;opacity:.96;
-    background:repeating-linear-gradient(115deg,var(--red) 0 34px,#fff 34px 68px);
-    transform:scaleX(0) skewX(-11deg)}
+  /* barber-pole stripe band */
+  #wipe .w-stripe{left:-12vw;right:-12vw;top:29%;height:22%;opacity:.96;
+    background:repeating-linear-gradient(115deg,var(--red) 0 34px,#fff 34px 68px);transform:scaleX(0) skewX(-11deg)}
   #wipe.in  .w-stripe{transform:scaleX(1) skewX(-11deg);transition:transform .26s cubic-bezier(.2,.9,.2,1) .04s}
   #wipe.out .w-stripe{transform:translateX(155%) scaleX(1) skewX(-11deg);transition:transform .42s cubic-bezier(.5,0,.3,1)}
 
-  /* Joker silhouette sweeping across */
-  #wipe .w-joker{top:50%;left:50%;width:min(62vw,400px);height:auto;
-    filter:drop-shadow(6px 6px 0 rgba(0,0,0,.55));transform:translate(-250%,-50%) rotate(-8deg);opacity:0}
-  #wipe.in  .w-joker{transform:translate(-104%,-50%) rotate(-4deg);opacity:.9;transition:transform .3s cubic-bezier(.3,.9,.2,1) .02s,opacity .12s}
-  #wipe.out .w-joker{transform:translate(120%,-50%) rotate(6deg);opacity:0;transition:transform .38s cubic-bezier(.5,0,1,1),opacity .3s}
+  /* central motif stage */
+  #wipe .w-mo{top:41%;left:50%;width:min(46vmin,340px);height:min(46vmin,340px);transform:translate(-50%,-50%)}
+  #wipe .w-mo .mo{position:absolute;inset:0;width:100%;height:100%;display:none;
+    filter:drop-shadow(7px 8px 0 rgba(0,0,0,.4));opacity:0;transform:scale(.14) rotate(-16deg)}
+  #wipe[data-motif="board"]    .m-board,
+  #wipe[data-motif="schedule"] .m-schedule,
+  #wipe[data-motif="stats"]    .m-stats,
+  #wipe[data-motif="workon"]   .m-workon,
+  #wipe[data-motif="services"] .m-services,
+  #wipe[data-motif="history"]  .m-history,
+  #wipe[data-motif="rt"]       .m-rt,
+  #wipe[data-motif="joki"]     .m-joki,
+  #wipe[data-motif="judge"]    .m-judge,
+  #wipe[data-motif="calc"]     .m-calc,
+  #wipe[data-motif="star"]     .m-star{display:block}
+  #wipe.in  .w-mo .mo{opacity:1;transform:scale(1) rotate(-4deg);transition:transform .36s cubic-bezier(.16,1.5,.3,1) .04s,opacity .16s .04s}
+  #wipe.out .w-mo .mo{opacity:0;transform:scale(1.7) rotate(9deg);transition:transform .34s cubic-bezier(.5,0,1,1),opacity .26s}
 
-  /* section-name stamp with chromatic split */
-  #wipe .w-word{top:50%;left:50%;transform:translate(-50%,-50%);width:92vw;text-align:center}
+  #wipe .mo{overflow:visible}
+  #wipe .mo *{transform-box:fill-box}
+  #wipe .mo .jd-beam,#wipe .mo .jk-armL,#wipe .mo .jk-armR,#wipe .mo .jk-legL,#wipe .mo .jk-legR,
+  #wipe .mo .sch-hand,#wipe .mo .piv-tag,#wipe .mo .piv-hg{transform-box:view-box}
+  #wipe .mo .fw{fill:#fff;stroke:#0B0B0C;stroke-width:3}
+  #wipe .mo .fr{fill:var(--red);stroke:#0B0B0C;stroke-width:3}
+  #wipe .mo .fy{fill:var(--warn);stroke:#0B0B0C;stroke-width:3}
+  #wipe .mo .fk{fill:#0B0B0C}
+  #wipe .mo .ln{stroke:#0B0B0C;fill:none;stroke-linecap:round}
+  #wipe .mo text{font-family:var(--anton);fill:#0B0B0C}
+  #wipe .m-calc .burst text{fill:var(--red);stroke:#fff;stroke-width:3.5;paint-order:stroke;font-size:17px}
+  #wipe .mo .pop,#wipe .mo .rise,#wipe .mo .burst,#wipe .mo .rt-line{opacity:0}
+  #wipe.in .mo .pop{animation:mopop .34s both cubic-bezier(.2,1.4,.35,1)}
+  #wipe.in .mo .rise{animation:morise .3s both cubic-bezier(.2,.9,.2,1)}
+  #wipe.in .mo .burst{animation:moburst .38s both cubic-bezier(.2,1.3,.4,1)}
+  #wipe.in .mo .d1{animation-delay:.05s}
+  #wipe.in .mo .d2{animation-delay:.10s}
+  #wipe.in .mo .d3{animation-delay:.15s}
+  #wipe.in .mo .d4{animation-delay:.20s}
+  #wipe.in .mo .d5{animation-delay:.25s}
+  #wipe.in .mo .d6{animation-delay:.30s}
+  #wipe.in .m-rt .rt-line{animation:rttype .18s both;transform-origin:left center}
+  #wipe.in .m-rt .rt-line.d2{animation-delay:.12s}
+  #wipe.in .m-rt .rt-line.d3{animation-delay:.19s}
+  #wipe.in .m-rt .rt-line.d4{animation-delay:.26s}
+  #wipe.in .m-rt .rt-scan{animation:rtscan .42s .04s both}
+  #wipe.in .m-rt .rt-cursor{animation:moblink .46s 3 both}
+  #wipe.in .m-schedule .sch-hand{animation:mospin .55s .12s ease-out both;transform-origin:88px 86px}
+  #wipe.in .m-stats .st-bar{animation:stgrow .34s both cubic-bezier(.2,1.1,.3,1);transform-origin:50% 100%}
+  #wipe.in .m-stats .st-line{animation:modraw .4s .22s both}
+  #wipe.in .m-services .piv-tag{animation:svcswing .52s .1s cubic-bezier(.3,.8,.3,1) both;transform-origin:34px 18px}
+  #wipe.in .m-history .piv-hg{animation:hgflip .6s .1s cubic-bezier(.3,.7,.3,1) both;transform-origin:60px 60px}
+  #wipe.in .m-joki .jk-rig{animation:modrop .34s both cubic-bezier(.2,1.2,.4,1)}
+  #wipe.in .m-joki .jk-strings{animation:modraw .28s .14s both}
+  #wipe.in .m-joki .jk-armL{animation:moswingL .6s .18s both;transform-origin:52px 64px}
+  #wipe.in .m-joki .jk-armR{animation:moswingR .6s .18s both;transform-origin:68px 64px}
+  #wipe.in .m-joki .jk-legL{animation:moswingL .55s .22s both;transform-origin:56px 84px}
+  #wipe.in .m-joki .jk-legR{animation:moswingR .55s .24s both;transform-origin:64px 84px}
+  #wipe.in .m-judge .jd-beam{animation:motip .7s .1s ease-out both;transform-origin:60px 33px}
+  #wipe.in .m-star .st-big{animation:stspin .5s both cubic-bezier(.2,1.2,.4,1)}
+
+  @keyframes mopop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.14);opacity:1}100%{transform:scale(1);opacity:1}}
+  @keyframes morise{0%{transform:translateY(15px);opacity:0}100%{transform:translateY(0);opacity:1}}
+  @keyframes moburst{0%{transform:scale(0);opacity:0}55%{opacity:1}100%{transform:translate(var(--bx,0),var(--by,0)) scale(1);opacity:1}}
+  @keyframes rttype{0%{transform:scaleX(0);opacity:1}100%{transform:scaleX(1);opacity:1}}
+  @keyframes rtscan{0%{transform:translateY(0);opacity:.85}100%{transform:translateY(50px);opacity:0}}
+  @keyframes moblink{0%,45%{opacity:1}50%,95%{opacity:0}100%{opacity:1}}
+  @keyframes mospin{to{transform:rotate(360deg)}}
+  @keyframes stgrow{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+  @keyframes svcswing{0%{transform:rotate(-24deg)}45%{transform:rotate(13deg)}72%{transform:rotate(-6deg)}100%{transform:rotate(0)}}
+  @keyframes hgflip{0%{transform:rotate(0)}62%{transform:rotate(192deg)}100%{transform:rotate(180deg)}}
+  @keyframes modrop{0%{transform:translateY(-34px);opacity:0}62%{transform:translateY(4px);opacity:1}100%{transform:translateY(0);opacity:1}}
+  @keyframes modraw{to{stroke-dashoffset:0}}
+  @keyframes moswingL{0%{transform:rotate(0)}25%{transform:rotate(-27deg)}55%{transform:rotate(18deg)}80%{transform:rotate(-8deg)}100%{transform:rotate(0)}}
+  @keyframes moswingR{0%{transform:rotate(0)}25%{transform:rotate(25deg)}55%{transform:rotate(-16deg)}80%{transform:rotate(9deg)}100%{transform:rotate(0)}}
+  @keyframes motip{0%{transform:rotate(0)}20%{transform:rotate(-15deg)}45%{transform:rotate(11deg)}70%{transform:rotate(-6deg)}100%{transform:rotate(0)}}
+  @keyframes stspin{0%{transform:rotate(-90deg) scale(0)}100%{transform:rotate(0) scale(1)}}
+
+  /* section-name stamp (lower band) with chromatic split */
+  #wipe .w-word{top:73%;left:50%;transform:translate(-50%,-50%);width:92vw;text-align:center}
   #wipe .w-word span{display:inline-block;font-family:var(--anton);font-weight:400;text-transform:uppercase;
-    font-size:clamp(1.9rem,9.5vw,7rem);line-height:.9;letter-spacing:.015em;color:#fff;text-wrap:balance;
-    text-shadow:4px 0 0 var(--red),-4px 0 0 #17b6cc,12px 12px 0 rgba(0,0,0,.55);
-    transform:skewX(-8deg) scale(2.3) rotate(-12deg);opacity:0}
-  #wipe.in  .w-word span{transform:skewX(-8deg) scale(1) rotate(-6deg);opacity:1;
-    transition:transform .32s cubic-bezier(.16,1.5,.3,1) .06s,opacity .14s .06s}
-  #wipe.out .w-word span{transform:skewX(-8deg) scale(.35) rotate(9deg);opacity:0;
-    transition:transform .34s cubic-bezier(.5,0,1,1),opacity .26s}
+    font-size:clamp(1.5rem,6.6vw,4rem);line-height:.9;letter-spacing:.02em;color:#fff;text-wrap:balance;
+    text-shadow:3px 0 0 var(--red),-3px 0 0 #17b6cc,9px 9px 0 rgba(0,0,0,.5);
+    transform:skewX(-8deg) scale(1.9) rotate(-10deg);opacity:0}
+  #wipe.in  .w-word span{transform:skewX(-8deg) scale(1) rotate(-5deg);opacity:1;transition:transform .32s cubic-bezier(.16,1.5,.3,1) .08s,opacity .14s .08s}
+  #wipe.out .w-word span{transform:skewX(-8deg) scale(.4) rotate(8deg);opacity:0;transition:transform .32s cubic-bezier(.5,0,1,1),opacity .24s}
 
   /* hand-drawn stars scattered around */
   #wipe .w-star{background:var(--warn);transform:scale(0) rotate(-40deg);opacity:0;
     clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
-  #wipe .w-star1{top:11%;left:7%;width:min(15vw,116px);height:min(15vw,116px)}
-  #wipe .w-star2{bottom:13%;right:9%;width:min(10vw,84px);height:min(10vw,84px)}
-  #wipe .w-star3{top:20%;right:15%;width:min(7vw,58px);height:min(7vw,58px)}
+  #wipe .w-star1{top:9%;left:6%;width:min(13vw,104px);height:min(13vw,104px)}
+  #wipe .w-star2{bottom:11%;right:8%;width:min(9vw,76px);height:min(9vw,76px)}
+  #wipe .w-star3{top:16%;right:13%;width:min(6vw,52px);height:min(6vw,52px)}
   #wipe.in .w-star{opacity:1}
   #wipe.in .w-star1{transform:scale(1) rotate(-12deg);transition:transform .3s cubic-bezier(.18,1.5,.35,1) .05s,opacity .1s .05s}
   #wipe.in .w-star2{transform:scale(1) rotate(14deg);transition:transform .3s cubic-bezier(.18,1.5,.35,1) .12s,opacity .1s .12s}
@@ -650,9 +718,8 @@
   #wipe.out .w-star{transform:scale(0) rotate(30deg);opacity:0;transition:transform .22s ease-in,opacity .22s}
 
   /* corner tag */
-  #wipe .w-tag{left:5vw;bottom:8vh;font-family:"IBM Plex Mono",monospace;font-weight:700;
-    font-size:.78rem;letter-spacing:.22em;color:#fff;text-transform:uppercase;
-    transform:skewX(-10deg) translateX(-40px);opacity:0}
+  #wipe .w-tag{left:5vw;bottom:7vh;font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:.76rem;
+    letter-spacing:.22em;color:#fff;text-transform:uppercase;transform:skewX(-10deg) translateX(-40px);opacity:0}
   #wipe.in  .w-tag{transform:skewX(-10deg) translateX(0);opacity:.9;transition:transform .24s ease .12s,opacity .2s .12s}
   #wipe.out .w-tag{opacity:0;transition:opacity .16s}
 
@@ -662,11 +729,11 @@
   @keyframes wflash{0%{opacity:0}11%{opacity:.85}100%{opacity:0}}
 
   @media (max-width:520px){
+    #wipe .w-mo{width:min(58vmin,260px);height:min(58vmin,260px);top:39%}
     #wipe .w-word{width:96vw}
-    #wipe .w-word span{font-size:clamp(1.5rem,7vw,2.3rem);letter-spacing:0;text-shadow:3px 0 0 var(--red),-3px 0 0 #17b6cc,7px 7px 0 rgba(0,0,0,.55)}
-    #wipe .w-joker{width:58vw}
-    #wipe.in .w-joker{opacity:.78}
-    #wipe .w-tag{bottom:6vh;font-size:.68rem;letter-spacing:.16em}
+    #wipe .w-word span{font-size:clamp(1.3rem,6vw,2rem);letter-spacing:0;transform:skewX(-8deg) scale(1.7) rotate(-10deg)}
+    #wipe.in .w-word span{transform:skewX(-8deg) scale(1) rotate(-5deg)}
+    #wipe .w-tag{bottom:5vh;font-size:.66rem;letter-spacing:.16em}
   }
   @media (prefers-reduced-motion:reduce){#wipe{display:none!important}}
 
@@ -848,10 +915,137 @@
   <div class="w-red"></div>
   <div class="w-blk"></div>
   <div class="w-stripe"></div>
-  <img class="w-joker" src="assets/wipe-joker.gif" alt="">
   <div class="w-star w-star1"></div>
   <div class="w-star w-star2"></div>
   <div class="w-star w-star3"></div>
+  <div class="w-mo">
+    <svg class="mo m-board" viewBox="0 0 120 120" aria-hidden="true">
+      <rect x="9" y="14" width="102" height="92" rx="5" fill="none" stroke="#0B0B0C" stroke-width="4"/>
+      <line class="ln" x1="43" y1="16" x2="43" y2="104" stroke-width="2.5"/>
+      <line class="ln" x1="77" y1="16" x2="77" y2="104" stroke-width="2.5"/>
+      <rect class="fr rise d1" x="15" y="24" width="22" height="15" rx="2"/>
+      <rect class="fw rise d2" x="15" y="44" width="22" height="15" rx="2"/>
+      <rect class="fw rise d3" x="15" y="64" width="22" height="15" rx="2"/>
+      <rect class="fw rise d2" x="49" y="24" width="22" height="15" rx="2"/>
+      <rect class="fr rise d3" x="49" y="44" width="22" height="15" rx="2"/>
+      <rect class="fw rise d3" x="83" y="24" width="22" height="15" rx="2"/>
+      <rect class="fw rise d4" x="83" y="44" width="22" height="15" rx="2"/>
+      <rect class="fr rise d5" x="83" y="64" width="22" height="15" rx="2"/>
+    </svg>
+    <svg class="mo m-schedule" viewBox="0 0 120 120" aria-hidden="true">
+      <rect class="fw pop d1" x="14" y="20" width="80" height="82" rx="6"/>
+      <rect class="fr pop d1" x="14" y="20" width="80" height="18" rx="6"/>
+      <line class="ln" x1="30" y1="14" x2="30" y2="28" stroke-width="5"/>
+      <line class="ln" x1="78" y1="14" x2="78" y2="28" stroke-width="5"/>
+      <rect class="fk pop d2" x="24" y="48" width="11" height="9"/>
+      <rect class="fk pop d3" x="41" y="48" width="11" height="9"/>
+      <rect class="fk pop d4" x="58" y="48" width="11" height="9"/>
+      <rect class="fk pop d3" x="24" y="63" width="11" height="9"/>
+      <rect class="fr pop d4" x="41" y="63" width="11" height="9"/>
+      <rect class="fk pop d5" x="58" y="63" width="11" height="9"/>
+      <rect class="fk pop d5" x="24" y="78" width="11" height="9"/>
+      <rect class="fk pop d6" x="41" y="78" width="11" height="9"/>
+      <circle class="fw pop d5" cx="90" cy="88" r="17"/>
+      <g class="sch-hand"><line class="ln" x1="90" y1="88" x2="90" y2="77" stroke-width="3.5"/><line class="ln" x1="90" y1="88" x2="99" y2="88" stroke-width="3.5"/></g>
+    </svg>
+    <svg class="mo m-stats" viewBox="0 0 120 120" aria-hidden="true">
+      <line class="ln" x1="16" y1="14" x2="16" y2="102" stroke-width="4"/>
+      <line class="ln" x1="16" y1="102" x2="110" y2="102" stroke-width="4"/>
+      <rect class="fr st-bar d1" x="26" y="42" width="16" height="60"/>
+      <rect class="fw st-bar d2" x="50" y="24" width="16" height="78"/>
+      <rect class="fw st-bar d3" x="74" y="58" width="16" height="44"/>
+      <rect class="fr st-bar d4" x="98" y="48" width="12" height="54"/>
+      <polyline class="ln st-line" points="34,64 58,44 82,74 104,52" stroke-width="4" stroke-dasharray="130" stroke-dashoffset="130"/>
+    </svg>
+    <svg class="mo m-workon" viewBox="0 0 120 120" aria-hidden="true">
+      <path class="fw pop d1" d="M10 22 h62 a6 6 0 0 1 6 6 v26 a6 6 0 0 1 -6 6 h-38 l-14 12 v-12 h-10 a6 6 0 0 1 -6 -6 v-26 a6 6 0 0 1 6 -6 z"/>
+      <circle class="fk pop d2" cx="28" cy="42" r="3.6"/>
+      <circle class="fk pop d3" cx="42" cy="42" r="3.6"/>
+      <circle class="fk pop d4" cx="56" cy="42" r="3.6"/>
+      <path class="fr pop d4" d="M54 58 h46 a6 6 0 0 1 6 6 v24 a6 6 0 0 1 -6 6 h-6 v12 l-14 -12 h-26 a6 6 0 0 1 -6 -6 v-24 a6 6 0 0 1 6 -6 z"/>
+      <line class="ln pop d5" x1="66" y1="72" x2="98" y2="72" stroke-width="3"/>
+      <line class="ln pop d5" x1="66" y1="82" x2="90" y2="82" stroke-width="3"/>
+    </svg>
+    <svg class="mo m-services" viewBox="0 0 120 120" aria-hidden="true">
+      <g class="piv-tag">
+        <line class="ln" x1="34" y1="12" x2="34" y2="34" stroke-width="4"/>
+        <path class="fy" d="M34 28 L92 28 A7 7 0 0 1 99 35 L99 77 A7 7 0 0 1 92 84 L34 84 L12 56 Z"/>
+        <circle class="fw" cx="31" cy="46" r="6"/>
+        <text x="60" y="66" text-anchor="middle" font-size="24">Rp</text>
+      </g>
+    </svg>
+    <svg class="mo m-history" viewBox="0 0 120 120" aria-hidden="true">
+      <g class="piv-hg">
+        <rect class="fk" x="24" y="14" width="72" height="7" rx="2"/>
+        <rect class="fk" x="24" y="99" width="72" height="7" rx="2"/>
+        <path class="fw" d="M32 21 h56 l-28 39 z"/>
+        <path class="fw" d="M60 60 l28 39 h-56 z"/>
+        <path class="fr" d="M40 26 h40 l-20 27 z"/>
+        <path class="fr" d="M46 93 h28 l-14 -19 z"/>
+      </g>
+    </svg>
+    <svg class="mo m-rt" viewBox="0 0 120 120" aria-hidden="true">
+      <rect class="fk" x="12" y="16" width="96" height="66" rx="5"/>
+      <rect class="fw" x="18" y="22" width="84" height="54"/>
+      <rect class="rt-line fr d2" x="25" y="30" width="46" height="6"/>
+      <rect class="rt-line fk d3" x="25" y="43" width="62" height="6"/>
+      <rect class="rt-line fk d4" x="25" y="56" width="38" height="6"/>
+      <rect class="rt-cursor fk" x="66" y="56" width="8" height="6"/>
+      <rect class="rt-scan fr" x="18" y="22" width="84" height="5"/>
+      <rect class="fk" x="52" y="82" width="16" height="12"/>
+      <rect class="fk" x="34" y="94" width="52" height="8" rx="2"/>
+      <polygon class="fy pop d1" points="99,8 111,14 106,28 92,23"/>
+    </svg>
+    <svg class="mo m-joki" viewBox="0 0 120 120" aria-hidden="true">
+      <g class="jk-rig">
+        <rect class="fk" x="30" y="18" width="60" height="6" rx="2"/>
+        <rect class="fk" x="57" y="9" width="6" height="16" rx="2"/>
+        <path class="fw" d="M50 3 h20 v10 h-20 z"/>
+      </g>
+      <g class="jk-strings" stroke="#0B0B0C" stroke-width="2" stroke-dasharray="46" stroke-dashoffset="46">
+        <line x1="34" y1="24" x2="45" y2="52"/>
+        <line x1="86" y1="24" x2="75" y2="52"/>
+        <line x1="60" y1="24" x2="60" y2="44"/>
+      </g>
+      <circle class="fw" cx="60" cy="52" r="9"/>
+      <rect class="fr" x="52" y="60" width="16" height="24" rx="3"/>
+      <g class="jk-armL"><line class="ln" x1="52" y1="64" x2="40" y2="56" stroke-width="4"/></g>
+      <g class="jk-armR"><line class="ln" x1="68" y1="64" x2="80" y2="56" stroke-width="4"/></g>
+      <g class="jk-legL"><line class="ln" x1="56" y1="84" x2="49" y2="100" stroke-width="4"/></g>
+      <g class="jk-legR"><line class="ln" x1="64" y1="84" x2="71" y2="100" stroke-width="4"/></g>
+      <g class="jk-speak pop d5"><circle class="fw" cx="88" cy="42" r="9"/><text x="88" y="47" text-anchor="middle" font-size="14">!</text></g>
+    </svg>
+    <svg class="mo m-judge" viewBox="0 0 120 120" aria-hidden="true">
+      <rect class="fk" x="40" y="100" width="40" height="9" rx="2"/>
+      <rect class="fk" x="56" y="34" width="8" height="66"/>
+      <polygon class="fy pop d1" points="60,6 64,18 77,18 66,26 70,39 60,31 50,39 54,26 43,18 56,18"/>
+      <g class="jd-beam">
+        <rect class="fk" x="16" y="30" width="88" height="6" rx="3"/>
+        <line class="ln" x1="24" y1="34" x2="18" y2="48" stroke-width="2.5"/>
+        <line class="ln" x1="24" y1="34" x2="30" y2="48" stroke-width="2.5"/>
+        <line class="ln" x1="96" y1="34" x2="90" y2="48" stroke-width="2.5"/>
+        <line class="ln" x1="96" y1="34" x2="102" y2="48" stroke-width="2.5"/>
+        <path class="fw" d="M13 48 h22 l-4 11 h-14 z"/>
+        <path class="fr" d="M85 48 h22 l-4 11 h-14 z"/>
+      </g>
+    </svg>
+    <svg class="mo m-calc" viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="fw pop d1" cx="45" cy="74" r="27"/>
+      <circle class="fk" cx="37" cy="70" r="3"/>
+      <path class="ln" d="M35 86 q9 6 18 0" stroke-width="3"/>
+      <circle class="fw pop d2" cx="72" cy="46" r="5"/>
+      <circle class="fw pop d3" cx="82" cy="36" r="8"/>
+      <ellipse class="fw pop d3" cx="97" cy="24" rx="17" ry="13"/>
+      <g class="burst d4" style="--bx:-20px;--by:-22px"><text x="97" y="29" text-anchor="middle" font-size="14">7</text></g>
+      <g class="burst d5" style="--bx:-2px;--by:-36px"><text x="97" y="29" text-anchor="middle" font-size="14">&#215;</text></g>
+      <g class="burst d6" style="--bx:19px;--by:-24px"><text x="97" y="29" text-anchor="middle" font-size="14">&#960;</text></g>
+      <g class="burst" style="--bx:6px;--by:-48px;animation-delay:.34s"><text x="97" y="24" text-anchor="middle" font-size="14">&#8730;</text></g>
+    </svg>
+    <svg class="mo m-star" viewBox="0 0 120 120" aria-hidden="true">
+      <polygon class="fr st-big" points="60,8 74,44 112,44 81,68 94,110 60,84 26,110 39,68 8,44 46,44"/>
+      <polygon class="fy pop d3" points="60,26 68,50 92,50 72,66 80,92 60,76 40,92 48,66 28,50 52,50"/>
+    </svg>
+  </div>
   <div class="w-tag">&#9654; Menu</div>
   <div class="w-word"><span id="wipeWord">Board</span></div>
   <div class="w-flash"></div>
@@ -2317,34 +2511,55 @@
   });
 
   /* ---------- transitions ---------- */
-  var transitioning = false, pendingSwap = null;
+  var transitioning = false, pendingSwap = null, wipeSkip = null;
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function playTransition(swap, label){
+  function playTransition(swap, label, motif){
     var el = $("wipe");
     if (reduceMotion || !el){ swap(); return; }
-    if (transitioning){ pendingSwap = { swap: swap, label: label }; return; }
+    if (transitioning){ pendingSwap = { swap: swap, label: label, motif: motif }; return; }
     transitioning = true;
     var word = $("wipeWord");
     if (word && label != null && String(label).trim()) word.textContent = String(label).trim();
+    el.setAttribute("data-motif", motif || "star");
     el.hidden = false;
     el.classList.remove("in", "out");
     void el.offsetWidth;
     el.classList.add("in");
-    setTimeout(function(){
+    var swapped = false, t1 = null, t2 = null;
+    function doSwap(){
+      if (swapped) return;
+      swapped = true;
       try { swap(); } catch (err) { console.error(err); }
       el.classList.remove("in"); el.classList.add("out");
-      setTimeout(function(){
-        el.classList.remove("out"); el.hidden = true; transitioning = false;
-        if (pendingSwap){ var s = pendingSwap; pendingSwap = null; playTransition(s.swap, s.label); }
-      }, 440);
-    }, 300);
+    }
+    function finish(){
+      el.classList.remove("out"); el.hidden = true; transitioning = false; wipeSkip = null;
+      if (pendingSwap){ var s = pendingSwap; pendingSwap = null; playTransition(s.swap, s.label, s.motif); }
+    }
+    t1 = setTimeout(function(){ doSwap(); t2 = setTimeout(finish, 440); }, 300);
+    wipeSkip = function(){
+      if (!swapped){ clearTimeout(t1); doSwap(); }
+      clearTimeout(t2); t2 = setTimeout(finish, 150);
+    };
+  }
+  (function(){
+    var el = $("wipe");
+    if (el) el.addEventListener("click", function(){ if (transitioning && wipeSkip) wipeSkip(); });
+  })();
+  function catMotif(cat){
+    if (!cat) return "star";
+    if (cat.kind === "respect-thread") return "rt";
+    if (cat.kind === "calc") return "calc";
+    if (cat.name === "Joki Private Debate") return "joki";
+    if (cat.name === "Judgement Battleboarding") return "judge";
+    return "star";
   }
   Array.prototype.forEach.call(document.querySelectorAll(".view-switch button"), function(b){
     b.addEventListener("click", function(){
       var v = b.getAttribute("data-view");
       var clearingFilter = state.filter && v === "board";
       if (v === state.view && !transitioning && !clearingFilter) return;
-      playTransition(function(){ state.view = v; if (v === "board") state.filter = null; renderView(); }, (b.textContent || L("tab." + v)));
+      playTransition(function(){ state.view = v; if (v === "board") state.filter = null; renderView(); }, (b.textContent || L("tab." + v)), v);
     });
   });
 
@@ -2355,11 +2570,14 @@
   });
 
   function selectCategory(id){
-    state.filter = null;
-    if (state.selectedId === id){ renderView(); return; }
-    state.selectedId = id;
-    state.expandedId = null;
-    renderView();
+    if (state.selectedId === id && !state.filter){ return; }
+    var cat = state.categories.filter(function(c){ return c.id === id; })[0] || null;
+    playTransition(function(){
+      state.filter = null;
+      state.selectedId = id;
+      state.expandedId = null;
+      renderView();
+    }, cat ? cat.name : L("tab.board"), catMotif(cat));
   }
   function toggleExpand(id){
     state.expandedId = state.expandedId === id ? null : id;
@@ -2373,7 +2591,7 @@
       state.selectedId = catId;
       state.expandedId = jobId;
       renderAll();
-    }, L("tab.board"));
+    }, L("tab.board"), "board");
     setTimeout(function(){
       var li = $("panel").querySelector(".job.exp");
       if (li && li.scrollIntoView) li.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -2386,7 +2604,7 @@
       state.view = "board";
       state.expandedId = null;
       renderAll();
-    }, L("tab.board"));
+    }, L("tab.board"), "board");
   }
 
   /* ---------- command palette ---------- */

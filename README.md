@@ -30,7 +30,7 @@ battleboarding/
 │  ├─ index.html                 markup + styles + all the logic (one file)
 │  ├─ fonts.css  fonts/*.woff2   bundled Anton / Barlow / IBM Plex Mono (offline)
 │  ├─ vendor/katex/              bundled KaTeX (math rendering for Calculation jobs)
-│  └─ assets/                    joker-bg.webp, loading.gif, wipe-joker.gif, life-will-change.mp3, no-more-what-ifs.mp3
+│  └─ assets/                    joker-bg.webp, loading.gif, life-will-change.mp3, no-more-what-ifs.mp3
 │
 ├─ battleboarding-standalone.html   everything inlined into one ~22 MB file (two music tracks inlined)
 │
@@ -156,12 +156,19 @@ job; customers & tags filter the board.
 **Work On** — a directory of where work comes from: Facebook / WhatsApp /
 Discord / External Web, each with name + link + note.
 
-Every tab change plays a Persona 5 pause-menu transition — a white impact
-flash, diagonal halftone + red panels sweeping in, a barber-pole stripe band,
-the Joker silhouette streaking across, scattered hand-drawn stars, and the
-section name stamped in Anton with a cyan/red chromatic split, then the whole
-thing skews off to reveal the new tab. Honors `prefers-reduced-motion`.
-"Processing to Meta-Listing" launch screen. The corner 🔊 button opens a Persona-5 decision-style menu to pick the
+Every tab change **and category switch** plays a Persona 5 pause-menu
+transition — a white impact flash, diagonal halftone + red panels sweeping in,
+a barber-pole stripe band, scattered hand-drawn stars, and the destination
+name stamped in Anton with a cyan/red chromatic split, then it all skews off
+to reveal the new screen. Each destination gets its **own animated SVG
+motif**: Board → kanban cards, Schedule → a calendar with a ticking hand,
+Stats → growing bars, Work On → chat bubbles, Services → a swinging price tag,
+History → a flipping hourglass; and for the four service lines — Respect Thread
+→ a booting monitor, Joki Private Debate → a marionette worked by a control
+bar, Judgement → the scales of justice tipping level, Calculation → a thinking
+head with math symbols bursting out of a thought bubble. Click/tap during a
+transition to skip it. Honors `prefers-reduced-motion`. "Processing to
+Meta-Listing" launch screen. The corner 🔊 button opens a Persona-5 decision-style menu to pick the
 background theme — **Tema Aksi** (Life Will Change, default), **Tema Tenang**
 (No More What Ifs), or off — remembered per browser/install.
 
