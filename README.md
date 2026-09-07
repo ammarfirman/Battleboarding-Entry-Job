@@ -125,7 +125,11 @@ images, stats as a table).
 list of calculation blocks (title + body), each with a live math preview.
 Write `$…$` for inline and `$$…$$` for display math; rendered with a bundled
 copy of **KaTeX** (`www/vendor/katex/`, works fully offline). `\[ … \]` and
-`\( … \)` are also recognised.
+`\( … \)` are also recognised. Calc jobs drop the *Photos* upload — scans go
+in *Embed & scan eksternal* instead.
+
+Embed captions are editable in place — click the caption line under any embed
+card and type; it saves on blur (all categories).
 
 **Schedule** — deadline buckets (🔴 Overdue · 🟠 Due soon · 🟡 Upcoming ·
 🟢 Completed) plus a month **calendar** with per-day deadline dots.

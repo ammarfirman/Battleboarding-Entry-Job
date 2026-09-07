@@ -402,6 +402,12 @@
   .embed-link span{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--muted);word-break:break-all}
   .embed-link:hover b{color:var(--red)}
   .embed-cap{padding:6px 9px;font-size:.74rem;color:var(--muted);font-family:"IBM Plex Mono",monospace;border-top:1px solid var(--line)}
+  .embed-cap-edit{
+    width:100%;border:0;border-top:1px solid var(--line);background:#0b0b0c;color:var(--muted);
+    font-family:"IBM Plex Mono",monospace;font-size:.74rem;padding:6px 9px;
+  }
+  .embed-cap-edit::placeholder{color:var(--faint)}
+  .embed-cap-edit:focus-visible{outline:2px solid var(--warn);outline-offset:-2px;color:var(--ink)}
   .embed-del{position:absolute;top:3px;right:3px;background:#000;color:#fff;opacity:1;width:26px;height:26px}
   .embed-del:hover{background:var(--red)}
 
@@ -1101,7 +1107,7 @@
   function tbBlock(tag, label, title){ return '<button type="button" data-cmd="formatBlock" data-val="' + esc(tag) + '" title="' + esc(title) + '">' + label + '</button>'; }
 
   function embedCardHtml(job, e){
-    var cap = e.caption ? '<figcaption class="embed-cap">' + esc(e.caption) + '</figcaption>' : "";
+    var cap = '<input class="embed-cap-edit" data-embed-cap data-job="' + esc(job.id) + '" data-id="' + esc(e.id) + '" placeholder="Keterangan…" value="' + esc(e.caption || "") + '" aria-label="Keterangan embed">';
     var del = '<button class="icon-btn embed-del" data-act="del-embed" data-job="' + esc(job.id) + '" data-id="' + esc(e.id) + '" aria-label="Hapus embed">✕</button>';
     var body;
     if (e.kind === "image"){
@@ -1249,6 +1255,7 @@
     var isCalc = !!(cat && cat.kind === "calc");
     var hideReb = catHides(cat, "rebuttals");
     var hideEmb = catHides(cat, "embeds");
+    var hidePho = catHides(cat, "photos");
     var imgs = state.imagesByJob[j.id] || [];
     var grid = imgs.length ? '<div class="img-grid">' + imgs.map(function(im, i){
       return '<div class="img-card" data-act="zoom" data-job="' + esc(j.id) + '" data-idx="' + i + '">' +
@@ -1331,11 +1338,12 @@
                  embHtml +
                '</div>') +
 
-             '<div class="fld"><span>Photos</span>' +
-               '<label class="dropzone" data-drop="' + esc(j.id) + '"><b>Add photos</b><small>Klik untuk pilih, atau jatuhkan berkas gambar</small>' +
-                 '<input type="file" class="file-input" data-file="' + esc(j.id) + '" accept="image/*" multiple hidden></label>' +
-               grid +
-             '</div>' +
+             (hidePho ? "" :
+               '<div class="fld"><span>Photos</span>' +
+                 '<label class="dropzone" data-drop="' + esc(j.id) + '"><b>Add photos</b><small>Klik untuk pilih, atau jatuhkan berkas gambar</small>' +
+                   '<input type="file" class="file-input" data-file="' + esc(j.id) + '" accept="image/*" multiple hidden></label>' +
+                 grid +
+               '</div>') +
            '</div>';
   }
 
@@ -1764,6 +1772,11 @@
       if (!info){ urlI.focus(); return; }
       DATA.addEmbed(catId, jidE, { url: info.url, kind: info.kind, provider: info.provider || "", embedUrl: info.embedUrl || info.url, thumbUrl: info.thumbUrl || "", caption: capI.value.trim() });
       urlI.value = ""; capI.value = "";
+    });
+    Array.prototype.forEach.call(panel.querySelectorAll("[data-embed-cap]"), function(el){
+      el.addEventListener("blur", function(){
+        DATA.updateEmbedCaption(catId, el.getAttribute("data-job"), el.getAttribute("data-id"), el.value);
+      });
     });
 
     // Respect Thread builder
@@ -2219,7 +2232,8 @@
   var CATEGORY_KIND = { "Respect Thread": "respect-thread", "Calculation Battleboarding": "calc" };
   var CATEGORY_HIDE = {
     "Respect Thread": ["rebuttals", "embeds"],
-    "Judgement Battleboarding": ["rebuttals", "embeds"]
+    "Judgement Battleboarding": ["rebuttals", "embeds"],
+    "Calculation Battleboarding": ["photos"]
   };
   function normalizeCat(c){
     if (SERVICE_CATEGORIES.indexOf(c.name) !== -1) c.locked = true;
@@ -2407,6 +2421,13 @@
       var j = jobById(catId, jobId); if (!j) return;
       j.embeds = (j.embeds || []).filter(function(x){ return x.id !== id; });
       renderPanel(); save();
+    },
+    updateEmbedCaption: function(catId, jobId, id, caption){
+      var j = jobById(catId, jobId); if (!j) return;
+      var e = (j.embeds || []).filter(function(x){ return x.id === id; })[0];
+      if (!e) return;
+      e.caption = String(caption || "");
+      save();
     },
     addImage: function(catId, jobId, img){
       (state.imagesByJob[jobId] = state.imagesByJob[jobId] || []).unshift({ id: uid(), dataUrl: img.dataUrl, name: img.name, createdAt: img.createdAt });
