@@ -617,13 +617,13 @@
   /* barber-pole stripe band */
   #wipe .w-stripe{left:-12vw;right:-12vw;top:29%;height:22%;opacity:.96;
     background:repeating-linear-gradient(115deg,var(--red) 0 34px,#fff 34px 68px);transform:scaleX(0) skewX(-11deg)}
-  #wipe.in  .w-stripe{transform:scaleX(1) skewX(-11deg);transition:transform .26s cubic-bezier(.2,.9,.2,1) .04s}
+  #wipe.in  .w-stripe{transform:scaleX(1) skewX(-11deg);transition:transform .26s cubic-bezier(.2,.9,.2,1) .04s;animation:stripeScroll 1.3s linear infinite}
   #wipe.out .w-stripe{transform:translateX(155%) scaleX(1) skewX(-11deg);transition:transform .42s cubic-bezier(.5,0,.3,1)}
 
   /* central motif stage */
   #wipe .w-mo{top:41%;left:50%;width:min(46vmin,340px);height:min(46vmin,340px);transform:translate(-50%,-50%)}
-  #wipe .w-mo .mo{position:absolute;inset:0;width:100%;height:100%;display:none;
-    filter:drop-shadow(7px 8px 0 rgba(0,0,0,.4));opacity:0;transform:scale(.14) rotate(-16deg)}
+  #wipe .w-mo .mo{position:absolute;inset:0;width:100%;height:100%;display:none;opacity:0;transform:scale(.14) rotate(-16deg);
+    filter:drop-shadow(0 -2.5px 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(2.5px 0 0 #fff) drop-shadow(7px 8px 0 rgba(0,0,0,.4))}
   #wipe[data-motif="board"]    .m-board,
   #wipe[data-motif="schedule"] .m-schedule,
   #wipe[data-motif="stats"]    .m-stats,
@@ -637,6 +637,8 @@
   #wipe[data-motif="star"]     .m-star{display:block}
   #wipe.in  .w-mo .mo{opacity:1;transform:scale(1) rotate(-4deg);transition:transform .36s cubic-bezier(.16,1.5,.3,1) .04s,opacity .16s .04s}
   #wipe.out .w-mo .mo{opacity:0;transform:scale(1.7) rotate(9deg);transition:transform .34s cubic-bezier(.5,0,1,1),opacity .26s}
+  #wipe.in  .w-mo{animation:moFloat 3s .3s ease-in-out infinite}
+  #wipe.out .w-mo{transition:transform .18s ease}
 
   #wipe .mo{overflow:visible}
   #wipe .mo *{transform-box:fill-box}
@@ -663,41 +665,45 @@
   #wipe.in .m-rt .rt-line.d2{animation-delay:.12s}
   #wipe.in .m-rt .rt-line.d3{animation-delay:.19s}
   #wipe.in .m-rt .rt-line.d4{animation-delay:.26s}
-  #wipe.in .m-rt .rt-scan{animation:rtscan .42s .04s both}
-  #wipe.in .m-rt .rt-cursor{animation:moblink .46s 3 both}
-  #wipe.in .m-schedule .sch-hand{animation:mospin .55s .12s ease-out both;transform-origin:88px 86px}
+  #wipe.in .m-rt .rt-scan{animation:rtscan 1.9s .04s linear infinite}
+  #wipe.in .m-rt .rt-cursor{animation:moblink .9s infinite}
+  #wipe.in .m-schedule .sch-hand{animation:mospin 2.4s .12s linear infinite;transform-origin:88px 86px}
   #wipe.in .m-stats .st-bar{animation:stgrow .34s both cubic-bezier(.2,1.1,.3,1);transform-origin:50% 100%}
   #wipe.in .m-stats .st-line{animation:modraw .4s .22s both}
-  #wipe.in .m-services .piv-tag{animation:svcswing .52s .1s cubic-bezier(.3,.8,.3,1) both;transform-origin:34px 18px}
-  #wipe.in .m-history .piv-hg{animation:hgflip .6s .1s cubic-bezier(.3,.7,.3,1) both;transform-origin:60px 60px}
+  #wipe.in .m-services .piv-tag{animation:svcswing 2.9s .1s ease-in-out infinite;transform-origin:34px 18px}
+  #wipe.in .m-history .piv-hg{animation:hgflip 3s .1s ease-in-out infinite;transform-origin:60px 60px}
   #wipe.in .m-joki .jk-rig{animation:modrop .34s both cubic-bezier(.2,1.2,.4,1)}
   #wipe.in .m-joki .jk-strings{animation:modraw .28s .14s both}
-  #wipe.in .m-joki .jk-armL{animation:moswingL .6s .18s both;transform-origin:52px 64px}
-  #wipe.in .m-joki .jk-armR{animation:moswingR .6s .18s both;transform-origin:68px 64px}
-  #wipe.in .m-joki .jk-legL{animation:moswingL .55s .22s both;transform-origin:56px 84px}
-  #wipe.in .m-joki .jk-legR{animation:moswingR .55s .24s both;transform-origin:64px 84px}
-  #wipe.in .m-judge .jd-beam{animation:motip .7s .1s ease-out both;transform-origin:60px 33px}
-  #wipe.in .m-star .st-big{animation:stspin .5s both cubic-bezier(.2,1.2,.4,1)}
+  #wipe.in .m-joki .jk-armL{animation:moswingL 2.7s .18s ease-in-out infinite;transform-origin:52px 64px}
+  #wipe.in .m-joki .jk-armR{animation:moswingR 2.7s .18s ease-in-out infinite;transform-origin:68px 64px}
+  #wipe.in .m-joki .jk-legL{animation:moswingL 2.7s .3s ease-in-out infinite;transform-origin:56px 84px}
+  #wipe.in .m-joki .jk-legR{animation:moswingR 2.7s .34s ease-in-out infinite;transform-origin:64px 84px}
+  #wipe.in .m-judge .jd-beam{animation:motip 3s .1s ease-in-out infinite;transform-origin:60px 33px}
+  #wipe.in .m-star .st-big{animation:stspin .55s both cubic-bezier(.2,1.2,.4,1),mospin 3.4s .55s linear infinite}
 
   @keyframes mopop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.14);opacity:1}100%{transform:scale(1);opacity:1}}
   @keyframes morise{0%{transform:translateY(15px);opacity:0}100%{transform:translateY(0);opacity:1}}
   @keyframes moburst{0%{transform:scale(0);opacity:0}55%{opacity:1}100%{transform:translate(var(--bx,0),var(--by,0)) scale(1);opacity:1}}
   @keyframes rttype{0%{transform:scaleX(0);opacity:1}100%{transform:scaleX(1);opacity:1}}
-  @keyframes rtscan{0%{transform:translateY(0);opacity:.85}100%{transform:translateY(50px);opacity:0}}
+  @keyframes rtscan{0%{transform:translateY(0);opacity:0}6%{opacity:.85}34%{transform:translateY(50px);opacity:0}100%{transform:translateY(50px);opacity:0}}
   @keyframes moblink{0%,45%{opacity:1}50%,95%{opacity:0}100%{opacity:1}}
   @keyframes mospin{to{transform:rotate(360deg)}}
   @keyframes stgrow{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}
-  @keyframes svcswing{0%{transform:rotate(-24deg)}45%{transform:rotate(13deg)}72%{transform:rotate(-6deg)}100%{transform:rotate(0)}}
-  @keyframes hgflip{0%{transform:rotate(0)}62%{transform:rotate(192deg)}100%{transform:rotate(180deg)}}
+  @keyframes svcswing{0%,58%,100%{transform:rotate(0)}10%{transform:rotate(-22deg)}26%{transform:rotate(13deg)}42%{transform:rotate(-6deg)}}
+  @keyframes hgflip{0%{transform:rotate(0)}42%{transform:rotate(180deg)}50%{transform:rotate(180deg)}92%{transform:rotate(360deg)}100%{transform:rotate(360deg)}}
   @keyframes modrop{0%{transform:translateY(-34px);opacity:0}62%{transform:translateY(4px);opacity:1}100%{transform:translateY(0);opacity:1}}
   @keyframes modraw{to{stroke-dashoffset:0}}
-  @keyframes moswingL{0%{transform:rotate(0)}25%{transform:rotate(-27deg)}55%{transform:rotate(18deg)}80%{transform:rotate(-8deg)}100%{transform:rotate(0)}}
-  @keyframes moswingR{0%{transform:rotate(0)}25%{transform:rotate(25deg)}55%{transform:rotate(-16deg)}80%{transform:rotate(9deg)}100%{transform:rotate(0)}}
-  @keyframes motip{0%{transform:rotate(0)}20%{transform:rotate(-15deg)}45%{transform:rotate(11deg)}70%{transform:rotate(-6deg)}100%{transform:rotate(0)}}
+  @keyframes moswingL{0%,50%,100%{transform:rotate(0)}11%{transform:rotate(-27deg)}26%{transform:rotate(18deg)}39%{transform:rotate(-8deg)}}
+  @keyframes moswingR{0%,50%,100%{transform:rotate(0)}11%{transform:rotate(25deg)}26%{transform:rotate(-16deg)}39%{transform:rotate(9deg)}}
+  @keyframes motip{0%,56%,100%{transform:rotate(0)}12%{transform:rotate(-15deg)}28%{transform:rotate(11deg)}42%{transform:rotate(-6deg)}}
   @keyframes stspin{0%{transform:rotate(-90deg) scale(0)}100%{transform:rotate(0) scale(1)}}
+  @keyframes moFloat{0%,100%{transform:translate(-50%,-50%) rotate(-1.5deg)}50%{transform:translate(-50%,-53%) rotate(1.5deg)}}
+  @keyframes wordBreathe{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.035)}}
+  @keyframes stripeScroll{to{background-position:136px 0}}
 
   /* section-name stamp (lower band) with chromatic split */
   #wipe .w-word{top:73%;left:50%;transform:translate(-50%,-50%);width:92vw;text-align:center}
+  #wipe.in .w-word{animation:wordBreathe 3s .4s ease-in-out infinite}
   #wipe .w-word span{display:inline-block;font-family:var(--anton);font-weight:400;text-transform:uppercase;
     font-size:clamp(1.5rem,6.6vw,4rem);line-height:.9;letter-spacing:.02em;color:#fff;text-wrap:balance;
     text-shadow:3px 0 0 var(--red),-3px 0 0 #17b6cc,9px 9px 0 rgba(0,0,0,.5);
@@ -2515,31 +2521,39 @@
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function playTransition(swap, label, motif){
     var el = $("wipe");
+    var word = $("wipeWord");
+    if (word && label != null && String(label).trim()) word.textContent = String(label).trim();
+    if (el) el.setAttribute("data-motif", motif || "star");
     if (reduceMotion || !el){ swap(); return; }
     if (transitioning){ pendingSwap = { swap: swap, label: label, motif: motif }; return; }
     transitioning = true;
-    var word = $("wipeWord");
-    if (word && label != null && String(label).trim()) word.textContent = String(label).trim();
-    el.setAttribute("data-motif", motif || "star");
     el.hidden = false;
     el.classList.remove("in", "out");
     void el.offsetWidth;
     el.classList.add("in");
-    var swapped = false, t1 = null, t2 = null;
-    function doSwap(){
-      if (swapped) return;
-      swapped = true;
+    // timing: cover + motif in, long hold so the animation can be watched, then wipe out
+    var SWAP_AT = 560, HOLD_UNTIL = 2680, OUT_DUR = 470;
+    var rendered = false, outStarted = false, t1 = null, t2 = null, t3 = null;
+    function doRender(){
+      if (rendered) return;
+      rendered = true;
       try { swap(); } catch (err) { console.error(err); }
+    }
+    function startOut(){
+      if (outStarted) return;
+      outStarted = true;
       el.classList.remove("in"); el.classList.add("out");
     }
     function finish(){
       el.classList.remove("out"); el.hidden = true; transitioning = false; wipeSkip = null;
       if (pendingSwap){ var s = pendingSwap; pendingSwap = null; playTransition(s.swap, s.label, s.motif); }
     }
-    t1 = setTimeout(function(){ doSwap(); t2 = setTimeout(finish, 440); }, 300);
+    t1 = setTimeout(doRender, SWAP_AT);
+    t2 = setTimeout(function(){ startOut(); t3 = setTimeout(finish, OUT_DUR); }, HOLD_UNTIL);
     wipeSkip = function(){
-      if (!swapped){ clearTimeout(t1); doSwap(); }
-      clearTimeout(t2); t2 = setTimeout(finish, 150);
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+      doRender(); startOut();
+      t3 = setTimeout(finish, 170);
     };
   }
   (function(){

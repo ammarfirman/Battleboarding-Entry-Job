@@ -166,9 +166,11 @@ Stats → growing bars, Work On → chat bubbles, Services → a swinging price 
 History → a flipping hourglass; and for the four service lines — Respect Thread
 → a booting monitor, Joki Private Debate → a marionette worked by a control
 bar, Judgement → the scales of justice tipping level, Calculation → a thinking
-head with math symbols bursting out of a thought bubble. Click/tap during a
-transition to skip it. Honors `prefers-reduced-motion`. "Processing to
-Meta-Listing" launch screen. The corner 🔊 button opens a Persona-5 decision-style menu to pick the
+head with math symbols bursting out of a thought bubble. Each transition
+holds for about 3 seconds — the motif keeps moving (limbs swing, scales tip,
+the clock hand turns, the hourglass flips) — so **click or tap anywhere to
+skip it**. Honors `prefers-reduced-motion` (instant swap, no overlay).
+"Processing to Meta-Listing" launch screen. The corner 🔊 button opens a Persona-5 decision-style menu to pick the
 background theme — **Tema Aksi** (Life Will Change, default), **Tema Tenang**
 (No More What Ifs), or off — remembered per browser/install.
 
