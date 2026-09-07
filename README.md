@@ -7,11 +7,12 @@ One vanilla-JS app (no framework, no build step) shipped three ways from the
 same `www/` source. All data is stored **on the device** — no server, no
 account, works fully offline.
 
-> **Live demo:** enable GitHub Pages (**Settings → Pages → Source: GitHub
-> Actions**); the included workflow deploys `www/` and the URL lands here.
+> **Live demo:** https://ammarfirman.github.io/Battleboarding-Entry-Job/
+> (GitHub Pages, deployed from `www/` by the included workflow).
 
 **Stack:** HTML · CSS · ES5 · IndexedDB · Capacitor 8 (Android) · Electron 44
-(Windows) · bundled web fonts (Anton / Barlow / IBM Plex Mono).
+(Windows) · bundled web fonts (Anton / Barlow / IBM Plex Mono). No framework,
+no build step, no runtime dependencies.
 
 | Target | What | How to get it |
 |---|---|---|
@@ -85,28 +86,44 @@ lives in `%APPDATA%\battleboarding-entry\`.
 
 ## Features
 
-- **Board** — the four service lines are the starting categories (Respect
-  Thread, Joki Private Debate, Judgement Battleboarding, Calculation
-  Battleboarding). Add more with **+ Tambah kategori**. Each job has:
-  - a description and a **tag list** (the fiction / work it's about);
-  - a **price + status** — `Penawaran` (quote), `Terjual` (sold), or
-    `Contoh / estimasi` (worth-if-sold), rolled up in the header as
-    *Terjual* vs *Est. nilai*;
-  - a scheduled date/time; checking it off stamps the completion time;
-  - an **Arguments doc** — a lightweight rich-text editor (bold, headings,
-    lists, quote, links) that autosaves to the device;
-  - **Embeds** — paste an Imgur / Gyazo / direct-image / YouTube / Vimeo /
-    Streamable link and it renders inline (image, or click-to-play video);
-  - a **photo log** (downscaled, stored on-device).
-- **Search** — word-tokenized search across titles, descriptions, tags,
-  argument text, embed links and Work On entries; results jump to the job.
-- **Schedule** — every scheduled job, soonest first, overdue flagged.
-- **History / Services** — company story; service descriptions with price ranges.
-- **Work On** — a directory of where work comes from: **Facebook**,
-  **WhatsApp**, **Discord**, **External Web**, each with name + link + note.
-- Persona 5 screen-wipe (Joker GIF) on every tab change; "Processing to
-  Meta-Listing" launch screen; looping background music with a remembered
-  mute toggle.
+Tabs: **Board · Schedule · Stats · Work On · Services · History**, plus a
+global **Ctrl/⌘ + K** search palette.
+
+**Board** — the four service lines are the starting categories; add more with
+**+ Tambah kategori**. Every job carries:
+
+- **Lifecycle status** — `Not Started → Researching → Writing → Reviewing →
+  Completed → Delivered`. The square button on the row cycles it; the detail
+  has a direct picker. Completing a job stamps its completion date.
+- **Priority** — Low / Medium / High / Urgent (High & Urgent show on the row).
+- **Deadline** + **Customer** + **tags** (the fiction / verse it's about).
+- **Rebuttals** — a structured list, not a text box: each entry is
+  *Claim → Counter → Rebuttal* with a status (`Unanswered`, `In Progress`,
+  `Resolved`, `Rejected`, `Needs Evidence`).
+- **Notes** — a lightweight rich-text doc (bold, headings, lists, quote,
+  links), autosaved.
+- **Embeds** — paste an Imgur / Gyazo / direct-image / YouTube / Vimeo /
+  Streamable link → renders inline (image, or click-to-play video).
+- **Price + status** — `Penawaran` / `Terjual` / `Contoh (estimasi)`.
+- a **photo log** (downscaled, stored on-device).
+
+**Schedule** — deadline buckets (🔴 Overdue · 🟠 Due soon · 🟡 Upcoming ·
+🟢 Completed) plus a month **calendar** with per-day deadline dots.
+
+**Stats** — Total / Active / Completed / Overdue jobs, customer count, total
+revenue, average job value, average completion time; **Upcoming Deadlines**
+list; and charts for jobs-by-status, jobs-by-priority, most-requested
+fiction/verse, jobs completed per month, and revenue per month.
+
+**Ctrl + K** — one search across the whole app: **Jobs**, **Rebuttals**,
+**Arguments** (notes), **Customers**, **Tags**. Jobs/rebuttals jump to the
+job; customers & tags filter the board.
+
+**Work On** — a directory of where work comes from: Facebook / WhatsApp /
+Discord / External Web, each with name + link + note.
+
+Persona 5 screen-wipe on every tab change; "Processing to Meta-Listing" launch
+screen; looping background music with a remembered mute toggle.
 
 > Embeds load on GitHub Pages, the standalone file, and the Android/Windows
 > apps. They do **not** load inside the claude.ai artifact preview (its CSP
@@ -114,11 +131,12 @@ lives in `%APPDATA%\battleboarding-entry\`.
 
 ## Data & storage
 
-Everything is one record in **IndexedDB** (`bbe` database → `kv` store →
-`state` key, schema `v2`): `categories`, `jobsByCat` (jobs carry `tags`,
-`argDoc`, `embeds`, `price`, `priceKind`), `imagesByJob`, `workOn`. Photos are
-downscaled to ~1000 px JPEG and stored as data URLs. A `v1` record migrates
-forward automatically on first load.
+One record in **IndexedDB** (`bbe` → `kv` → `state`, schema **`v3`**):
+`categories`, `jobsByCat` (each job: `status`, `priority`, `deadline`,
+`createdAt`, `completedAt`, `customer`, `tags`, `rebuttals`, `argDoc`,
+`embeds`, `price`, `priceKind`), `imagesByJob`, `workOn`. Photos are
+downscaled to ~1000 px JPEG and stored as data URLs. A `v1` or `v2` record
+migrates forward automatically on first load.
 
 It is **local to each install / browser** — no sync between devices, and
 clearing the app's storage resets it to the four starter categories (each
@@ -129,12 +147,17 @@ seeded with one worked example). There is no export button yet.
 All logic is the single `<script>` at the bottom of `www/index.html` — plain
 ES5, no framework, no build step:
 
+- `STATUSES` / `PRIORITIES` / `REB_STATUSES` — the lifecycle vocab (extend here).
 - `DATA` — every create/update/delete; most end with `renderAll()` then `save()`.
 - `save()` / `idbGet()` / `idbSet()` — the IndexedDB layer (debounced 250 ms).
-- `seedServices()` — first-run categories + one example job each; `migrate()` — v1 → v2.
-- `render*` — `renderPanel` / `renderSchedule` / `renderSearch` / `renderWorkOn` rebuild the DOM from `state`.
-- `classifyEmbed()` — URL → `{kind, embedUrl, thumbUrl}`; `cleanHtml()` — sanitises the Arguments doc.
+- `seedServices()` — first-run categories + one example job each; `migrate()` — v1/v2 → v3.
+- `render*` — `renderPanel` / `renderSchedule` / `renderStatsView` / `renderWorkOn` / `renderPalette` rebuild the DOM from `state`.
+- `hbars()` / `vbars()` — the hand-drawn CSS charts.
+- `classifyEmbed()` — URL → `{kind, embedUrl, thumbUrl}`; `cleanHtml()` — sanitises the Notes doc.
 - `playTransition()` — the P5 wipe.
+
+Regression check: `node` + `jsdom` smoke test lives outside the repo; it
+seeds the app, walks every tab, and exercises status/rebuttal/palette/filter.
 
 After editing `www/`:
 
