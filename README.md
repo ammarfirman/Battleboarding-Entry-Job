@@ -180,6 +180,17 @@ copy. Remembered per browser/install (`localStorage` `bbe-lang`, default `id`).
 Strings live in the `I18N` catalog; `L("key")` at every render site, static
 markup via `data-i18n*` attributes.
 
+**Section shapes** — every kind of section carries its writing in its own
+Persona-5 silhouette instead of a plain box: the panel header is a notched
+red banner, section titles are pointed red pennants, each field label is a
+skewed red notch-tab, the Respect-Thread / Calculation blocks get a torn
+yellow tape-tab, chart titles a yellow keystone, service titles a black
+notch, Work-On columns a double-pointed red arrow, the rail heading a torn
+red banner, and the filter bar a yellow ribbon — with corner "dog-ear" folds
+on the rebuttal / builder / chart / service cards. Shapes are `clip-path`
+polygons in `--sh-*` custom properties; the P5 hard shadow follows the cut
+via `filter: drop-shadow`.
+
 > Embeds load on GitHub Pages, the standalone file, and the Android/Windows
 > apps. They do **not** load inside the claude.ai artifact preview (its CSP
 > blocks third-party images/iframes).
