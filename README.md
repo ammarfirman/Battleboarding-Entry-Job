@@ -156,8 +156,12 @@ job; customers & tags filter the board.
 **Work On** — a directory of where work comes from: Facebook / WhatsApp /
 Discord / External Web, each with name + link + note.
 
-Persona 5 screen-wipe on every tab change; "Processing to Meta-Listing" launch
-screen. The corner 🔊 button opens a Persona-5 decision-style menu to pick the
+Every tab change plays a Persona 5 pause-menu transition — a white impact
+flash, diagonal halftone + red panels sweeping in, a barber-pole stripe band,
+the Joker silhouette streaking across, scattered hand-drawn stars, and the
+section name stamped in Anton with a cyan/red chromatic split, then the whole
+thing skews off to reveal the new tab. Honors `prefers-reduced-motion`.
+"Processing to Meta-Listing" launch screen. The corner 🔊 button opens a Persona-5 decision-style menu to pick the
 background theme — **Tema Aksi** (Life Will Change, default), **Tema Tenang**
 (No More What Ifs), or off — remembered per browser/install.
 

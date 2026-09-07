@@ -593,14 +593,81 @@
   .lightbox .close{position:absolute;top:16px;right:20px;font-size:1.6rem;background:var(--red);border:2px solid #000;color:#fff;cursor:pointer;line-height:1;width:44px;height:44px;transform:skewX(-10deg)}
   .lightbox .close:hover{background:#fff;color:var(--red)}
 
-  /* view transition */
-  #wipe{position:fixed;top:-28vh;bottom:-28vh;left:-45vw;right:-45vw;z-index:65;pointer-events:none;display:flex;align-items:center;justify-content:center;background:var(--red);transform:translateX(-150%) skewX(-14deg);will-change:transform}
-  #wipe::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(114deg,transparent 0 30px,rgba(0,0,0,.18) 30px 36px)}
-  #wipe.in{transition:transform .26s cubic-bezier(.5,0,.12,1);transform:translateX(0) skewX(-14deg)}
-  #wipe.out{transition:transform .38s cubic-bezier(.55,0,.25,1);transform:translateX(150%) skewX(-14deg)}
-  #wipe .logo{position:relative;width:min(74vw,460px);height:auto;image-rendering:auto;filter:drop-shadow(6px 6px 0 rgba(0,0,0,.5));transform:scale(.3) rotate(-16deg) skewX(14deg);opacity:0}
-  #wipe.in .logo{transition:transform .28s .02s cubic-bezier(.18,1.4,.3,1),opacity .16s;transform:scale(1) rotate(-4deg) skewX(14deg);opacity:1}
-  #wipe.out .logo{transition:transform .34s cubic-bezier(.5,0,1,1),opacity .3s;transform:scale(1.9) rotate(12deg) skewX(14deg);opacity:0}
+  /* view transition — Persona 5 pause-menu style */
+  #wipe{position:fixed;inset:0;z-index:70;pointer-events:none;overflow:hidden}
+  #wipe>*{position:absolute;will-change:transform,opacity}
+
+  /* solid cover — guarantees the DOM swap is hidden */
+  #wipe .w-fill{inset:0;background:var(--bg);opacity:0}
+  #wipe.in  .w-fill{opacity:1;transition:opacity .14s linear}
+  #wipe.out .w-fill{opacity:0;transition:opacity .18s linear}
+
+  /* diagonal accent panels sweeping in from the left */
+  #wipe .w-red,#wipe .w-blk{top:-30vh;bottom:-30vh;left:-50vw;width:175vw;transform:translateX(-175%) skewX(-11deg)}
+  #wipe .w-red{background:var(--red)}
+  #wipe .w-red::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(118deg,transparent 0 26px,rgba(0,0,0,.16) 26px 30px)}
+  #wipe .w-blk{background:#0B0B0C;left:-58vw}
+  #wipe .w-blk::after{content:"";position:absolute;inset:0;opacity:.45;background:radial-gradient(circle,rgba(255,255,255,.6) 1px,transparent 1.5px);background-size:8px 8px}
+  #wipe.in  .w-red{transform:translateX(-6%) skewX(-11deg);transition:transform .3s cubic-bezier(.4,0,.1,1)}
+  #wipe.in  .w-blk{transform:translateX(-26%) skewX(-11deg);transition:transform .28s cubic-bezier(.4,0,.1,1) .03s}
+  #wipe.out .w-red{transform:translateX(150%) skewX(-11deg);transition:transform .44s cubic-bezier(.5,0,.3,1)}
+  #wipe.out .w-blk{transform:translateX(150%) skewX(-11deg);transition:transform .42s cubic-bezier(.5,0,.3,1) .04s}
+
+  /* barber-pole stripe band through the middle */
+  #wipe .w-stripe{left:-12vw;right:-12vw;top:37%;height:26%;opacity:.96;
+    background:repeating-linear-gradient(115deg,var(--red) 0 34px,#fff 34px 68px);
+    transform:scaleX(0) skewX(-11deg)}
+  #wipe.in  .w-stripe{transform:scaleX(1) skewX(-11deg);transition:transform .26s cubic-bezier(.2,.9,.2,1) .04s}
+  #wipe.out .w-stripe{transform:translateX(155%) scaleX(1) skewX(-11deg);transition:transform .42s cubic-bezier(.5,0,.3,1)}
+
+  /* Joker silhouette sweeping across */
+  #wipe .w-joker{top:50%;left:50%;width:min(62vw,400px);height:auto;
+    filter:drop-shadow(6px 6px 0 rgba(0,0,0,.55));transform:translate(-250%,-50%) rotate(-8deg);opacity:0}
+  #wipe.in  .w-joker{transform:translate(-104%,-50%) rotate(-4deg);opacity:.9;transition:transform .3s cubic-bezier(.3,.9,.2,1) .02s,opacity .12s}
+  #wipe.out .w-joker{transform:translate(120%,-50%) rotate(6deg);opacity:0;transition:transform .38s cubic-bezier(.5,0,1,1),opacity .3s}
+
+  /* section-name stamp with chromatic split */
+  #wipe .w-word{top:50%;left:50%;transform:translate(-50%,-50%);width:92vw;text-align:center}
+  #wipe .w-word span{display:inline-block;font-family:var(--anton);font-weight:400;text-transform:uppercase;
+    font-size:clamp(1.9rem,9.5vw,7rem);line-height:.9;letter-spacing:.015em;color:#fff;text-wrap:balance;
+    text-shadow:4px 0 0 var(--red),-4px 0 0 #17b6cc,12px 12px 0 rgba(0,0,0,.55);
+    transform:skewX(-8deg) scale(2.3) rotate(-12deg);opacity:0}
+  #wipe.in  .w-word span{transform:skewX(-8deg) scale(1) rotate(-6deg);opacity:1;
+    transition:transform .32s cubic-bezier(.16,1.5,.3,1) .06s,opacity .14s .06s}
+  #wipe.out .w-word span{transform:skewX(-8deg) scale(.35) rotate(9deg);opacity:0;
+    transition:transform .34s cubic-bezier(.5,0,1,1),opacity .26s}
+
+  /* hand-drawn stars scattered around */
+  #wipe .w-star{background:var(--warn);transform:scale(0) rotate(-40deg);opacity:0;
+    clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+  #wipe .w-star1{top:11%;left:7%;width:min(15vw,116px);height:min(15vw,116px)}
+  #wipe .w-star2{bottom:13%;right:9%;width:min(10vw,84px);height:min(10vw,84px)}
+  #wipe .w-star3{top:20%;right:15%;width:min(7vw,58px);height:min(7vw,58px)}
+  #wipe.in .w-star{opacity:1}
+  #wipe.in .w-star1{transform:scale(1) rotate(-12deg);transition:transform .3s cubic-bezier(.18,1.5,.35,1) .05s,opacity .1s .05s}
+  #wipe.in .w-star2{transform:scale(1) rotate(14deg);transition:transform .3s cubic-bezier(.18,1.5,.35,1) .12s,opacity .1s .12s}
+  #wipe.in .w-star3{transform:scale(1) rotate(-8deg);transition:transform .3s cubic-bezier(.18,1.5,.35,1) .17s,opacity .1s .17s}
+  #wipe.out .w-star{transform:scale(0) rotate(30deg);opacity:0;transition:transform .22s ease-in,opacity .22s}
+
+  /* corner tag */
+  #wipe .w-tag{left:5vw;bottom:8vh;font-family:"IBM Plex Mono",monospace;font-weight:700;
+    font-size:.78rem;letter-spacing:.22em;color:#fff;text-transform:uppercase;
+    transform:skewX(-10deg) translateX(-40px);opacity:0}
+  #wipe.in  .w-tag{transform:skewX(-10deg) translateX(0);opacity:.9;transition:transform .24s ease .12s,opacity .2s .12s}
+  #wipe.out .w-tag{opacity:0;transition:opacity .16s}
+
+  /* white impact flash */
+  #wipe .w-flash{inset:0;background:#fff;opacity:0}
+  #wipe.in .w-flash{animation:wflash .36s ease-out}
+  @keyframes wflash{0%{opacity:0}11%{opacity:.85}100%{opacity:0}}
+
+  @media (max-width:520px){
+    #wipe .w-word{width:96vw}
+    #wipe .w-word span{font-size:clamp(1.5rem,7vw,2.3rem);letter-spacing:0;text-shadow:3px 0 0 var(--red),-3px 0 0 #17b6cc,7px 7px 0 rgba(0,0,0,.55)}
+    #wipe .w-joker{width:58vw}
+    #wipe.in .w-joker{opacity:.78}
+    #wipe .w-tag{bottom:6vh;font-size:.68rem;letter-spacing:.16em}
+  }
   @media (prefers-reduced-motion:reduce){#wipe{display:none!important}}
 
   /* loading screen */
@@ -777,7 +844,17 @@
 </div>
 
 <div id="wipe" hidden aria-hidden="true">
-  <img class="logo" src="assets/wipe-joker.gif" alt="">
+  <div class="w-fill"></div>
+  <div class="w-red"></div>
+  <div class="w-blk"></div>
+  <div class="w-stripe"></div>
+  <img class="w-joker" src="assets/wipe-joker.gif" alt="">
+  <div class="w-star w-star1"></div>
+  <div class="w-star w-star2"></div>
+  <div class="w-star w-star3"></div>
+  <div class="w-tag">&#9654; Menu</div>
+  <div class="w-word"><span id="wipeWord">Board</span></div>
+  <div class="w-flash"></div>
 </div>
 
 <script src="vendor/katex/katex.min.js"></script>
@@ -2242,11 +2319,13 @@
   /* ---------- transitions ---------- */
   var transitioning = false, pendingSwap = null;
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function playTransition(swap){
+  function playTransition(swap, label){
     var el = $("wipe");
     if (reduceMotion || !el){ swap(); return; }
-    if (transitioning){ pendingSwap = swap; return; }
+    if (transitioning){ pendingSwap = { swap: swap, label: label }; return; }
     transitioning = true;
+    var word = $("wipeWord");
+    if (word && label != null && String(label).trim()) word.textContent = String(label).trim();
     el.hidden = false;
     el.classList.remove("in", "out");
     void el.offsetWidth;
@@ -2256,16 +2335,16 @@
       el.classList.remove("in"); el.classList.add("out");
       setTimeout(function(){
         el.classList.remove("out"); el.hidden = true; transitioning = false;
-        if (pendingSwap){ var s = pendingSwap; pendingSwap = null; playTransition(s); }
-      }, 400);
-    }, 270);
+        if (pendingSwap){ var s = pendingSwap; pendingSwap = null; playTransition(s.swap, s.label); }
+      }, 440);
+    }, 300);
   }
   Array.prototype.forEach.call(document.querySelectorAll(".view-switch button"), function(b){
     b.addEventListener("click", function(){
       var v = b.getAttribute("data-view");
       var clearingFilter = state.filter && v === "board";
       if (v === state.view && !transitioning && !clearingFilter) return;
-      playTransition(function(){ state.view = v; if (v === "board") state.filter = null; renderView(); });
+      playTransition(function(){ state.view = v; if (v === "board") state.filter = null; renderView(); }, (b.textContent || L("tab." + v)));
     });
   });
 
@@ -2294,7 +2373,7 @@
       state.selectedId = catId;
       state.expandedId = jobId;
       renderAll();
-    });
+    }, L("tab.board"));
     setTimeout(function(){
       var li = $("panel").querySelector(".job.exp");
       if (li && li.scrollIntoView) li.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -2307,7 +2386,7 @@
       state.view = "board";
       state.expandedId = null;
       renderAll();
-    });
+    }, L("tab.board"));
   }
 
   /* ---------- command palette ---------- */
