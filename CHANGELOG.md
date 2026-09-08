@@ -4,6 +4,40 @@ All notable changes to Battleboarding Business Entry. Versions match the
 GitHub release tags. Existing on-device data upgrades automatically on first
 open of a newer version.
 
+## v5.0
+
+Mobile-native pass, richer evidence, and a calculation suite.
+
+- **Phone layout** rebuilt: a bottom navigation bar (Board, Schedule,
+  Channels, Stats, More), bottom-sheet forms for adding jobs / rebuttals /
+  terminology / feats / calculations, a horizontal Persona category strip,
+  flatter cards with a clearer hierarchy, 44-48 dp tap targets, edge-to-edge
+  layout behind the system bars, and an About panel under "More".
+- The top language / music controls and the "+" button slide away while you
+  scroll down and return on scroll-up or near the top. While a job is open, a
+  collapse button sits bottom-left so you can fold it from anywhere.
+- **Per-view background art**: a different Persona 5 key visual behind each
+  tab (an animated one on the Board), showing through a frosted panel while
+  the header and navigation stay dark for legible text.
+- Shorter, tap-skippable section transitions at phone width.
+- **Evidence and embeds**: pasted links render inline as a readable image
+  thread; every scan takes an editable caption; links that cannot be shown
+  fall back to a clear "open" chip. Wide host support - Gyazo, Imgur (single
+  images and albums), ImgChest, Giphy, Tenor, Catbox, Discord and Reddit
+  CDNs, direct image / video links; YouTube, Vimeo, Streamable, Dailymotion,
+  Twitch clips and VODs, Bilibili. Tap any scan for a full-screen viewer that
+  pages through every scan in that feat ("3 / 7", swipe or arrow keys).
+- Respect Thread evidence now carries captions; older evidence upgrades
+  automatically.
+- **Calculation panel** gains a multi-mode calculator with the standard VS
+  Battles methods: Kinetic Energy, Mass from Volume, Destruction Energy
+  (material x method, J/cc table built in), Crater, Gravitational Binding
+  Energy, Falling / Lifting Energy, Free Fall, Speed (distance / time),
+  Energy - TNT - Tier, Volume of 13 solid shapes, and Angular Size (angsize,
+  70 degree FOV: size <-> distance). Each shows the result, its TNT
+  equivalent and the matching Attack Potency or Speed tier, and inserts the
+  full working as a LaTeX block. The scientific calculator is unchanged.
+
 ## Final V (v4.0)
 
 Interface and polish pass.

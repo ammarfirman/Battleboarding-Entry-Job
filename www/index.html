@@ -64,16 +64,23 @@
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
+  /* per-view background art (fixed, behind everything) */
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:url("assets/joker-bg.webp") no-repeat center top;
+    background:url("assets/bg-default.webp") no-repeat center top;
     background-size:cover;opacity:.5;
+    transition:opacity .35s ease;
   }
+  body[data-bg="board"]::before   {background-image:url("assets/bg-board.webp")}
+  body[data-bg="schedule"]::before{background-image:url("assets/bg-schedule.webp")}
+  body[data-bg="stats"]::before   {background-image:url("assets/bg-stats.webp")}
+  body[data-bg="workon"]::before  {background-image:url("assets/bg-workon.webp")}
+  /* readability veil: darker at the top (header) and bottom (nav), art shows through the middle and the margins */
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
     background:
-      radial-gradient(ellipse 135% 95% at 50% 10%,rgba(11,11,12,0) 0%,rgba(11,11,12,.42) 52%,rgba(11,11,12,.84) 100%),
-      radial-gradient(circle at 1px 1px,rgba(255,255,255,.05) 1px,transparent 1.5px);
+      linear-gradient(180deg,rgba(11,11,12,.82) 0%,rgba(11,11,12,.46) 20%,rgba(11,11,12,.4) 55%,rgba(11,11,12,.66) 84%,rgba(11,11,12,.9) 100%),
+      radial-gradient(circle at 1px 1px,rgba(255,255,255,.045) 1px,transparent 1.5px);
     background-size:100% 100%,13px 13px;
   }
   .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
@@ -1094,13 +1101,32 @@
   }
 
   @media (max-width:640px){
-    body::before{opacity:.3}
+    /* Persona-menu feel: the art shows through a frosted panel, while the top
+       (header + search) and bottom (nav) stay firmly dark for legible text */
+    body::before{opacity:.62}
     body::after{
       background:
-        radial-gradient(ellipse 150% 90% at 50% 0%,rgba(11,11,12,.4) 0%,rgba(11,11,12,.82) 58%,rgba(11,11,12,.96) 100%),
+        linear-gradient(180deg,
+          rgba(11,11,12,.92) 0%, rgba(11,11,12,.9) 13%,
+          rgba(11,11,12,.34) 30%, rgba(11,11,12,.3) 64%,
+          rgba(11,11,12,.7) 87%, rgba(11,11,12,.95) 100%),
         radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
       background-size:100% 100%,13px 13px;
     }
+    /* a local scrim so the brand + search always sit on solid ground */
+    header::after{
+      content:"";position:absolute;inset:calc(-1 * env(safe-area-inset-top) - 20px) -20px 0;z-index:-1;pointer-events:none;
+      background:linear-gradient(180deg,rgba(11,11,12,.94),rgba(11,11,12,.86) 50%,rgba(11,11,12,.45) 82%,rgba(11,11,12,0));
+    }
+    /* frosted panel: the background art reads through, text stays crisp */
+    .panel{background:rgba(14,14,16,.9)}
+    @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+      .panel{background:rgba(14,14,16,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+    }
+    .history,.svc-list,.wo-grid{background:transparent}
+    .svc,.wo-col,.sched-item{background:rgba(0,0,0,.32)}
+    .cal-cell:not(.blank){background:rgba(0,0,0,.34)}
+    .job:not(.exp){background:rgba(0,0,0,.34)}
 
     .app{max-width:100%;padding:16px 16px calc(66px + env(safe-area-inset-bottom) + 16px);font-size:15px}
 
@@ -1299,7 +1325,7 @@
   }
 </style>
 </head>
-<body>
+<body data-bg="board">
 
 <div id="loader">
   <img src="assets/loading.gif" alt="">
@@ -1317,7 +1343,7 @@
       <span class="mark">📋</span>
       <h1>Battleboarding Business Entry</h1>
       <span class="ver-wrap">
-        <span class="ver mono">Final V</span>
+        <span class="ver mono">V5</span>
         <span class="byline">Made by Ammar Firman</span>
       </span>
     </div>
@@ -1609,7 +1635,7 @@
       "loader.lbl":"Memuat Meta-Listing",
       "tagline":"Pelacak pekerjaan battleboarding: lifecycle status, deadline & prioritas, rebuttal terstruktur, embed scan, dan statistik. Semua tersimpan di perangkat ini.",
       "tab.board":"Papan","tab.schedule":"Jadwal","tab.stats":"Statistik","tab.workon":"Kanal Kerja","tab.services":"Layanan","tab.history":"Sejarah",
-      "nav.more":"Lainnya","nav.channels":"Kanal","about.version":"Versi 1.0 · Final V","about.by":"Dibuat oleh Ammar Firman",
+      "nav.more":"Lainnya","nav.channels":"Kanal","about.version":"Versi 1.0 · v5.0","about.by":"Dibuat oleh Ammar Firman",
       "search.btn":"Cari semua","search.ph":"Cari job, argumen, rebuttal, customer, tag…","search.mph":"Cari job, customer, feat…",
       "pal.up":"pilih","pal.enter":"buka","pal.esc":"tutup",
       "pal.hint":"Ketik untuk mencari di seluruh app: job, rebuttal, notes, customer, tag.","pal.none":"Tidak ada hasil untuk","pal.recent":"Terakhir dicari",
@@ -1697,7 +1723,7 @@
       "loader.lbl":"Processing to Meta-Listing",
       "tagline":"Battleboarding work tracker: lifecycle status, deadlines & priority, structured rebuttals, scan embeds, and statistics. All stored on this device.",
       "tab.board":"Board","tab.schedule":"Schedule","tab.stats":"Stats","tab.workon":"Work On","tab.services":"Services","tab.history":"History",
-      "nav.more":"More","nav.channels":"Channels","about.version":"Version 1.0 · Final V","about.by":"Made by Ammar Firman",
+      "nav.more":"More","nav.channels":"Channels","about.version":"Version 1.0 · v5.0","about.by":"Made by Ammar Firman",
       "search.btn":"Search all","search.ph":"Search jobs, arguments, rebuttals, customers, tags…","search.mph":"Search jobs, customers, feats…",
       "pal.up":"select","pal.enter":"open","pal.esc":"close",
       "pal.hint":"Type to search the whole app: jobs, rebuttals, notes, customers, tags.","pal.none":"No results for","pal.recent":"Recent",
@@ -2986,6 +3012,7 @@
   }
   function renderView(){
     var v = state.view;
+    document.body.setAttribute("data-bg", v);
     $("boardWrap").hidden    = v !== "board";
     $("scheduleWrap").hidden = v !== "schedule";
     $("statsWrap").hidden    = v !== "stats";

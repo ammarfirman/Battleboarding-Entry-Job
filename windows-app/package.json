@@ -1,6 +1,6 @@
 {
   "name": "battleboarding-entry-desktop",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "productName": "Battleboarding Entry",
   "description": "Electron wrapper for Battleboarding Business Entry. Serves www/ over app://local so on-device storage is stable.",
   "main": "main.js"

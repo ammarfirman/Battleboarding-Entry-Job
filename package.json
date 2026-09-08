@@ -1,6 +1,6 @@
 {
   "name": "battleboarding-entry",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "private": true,
   "description": "Battleboarding Business Entry: a Persona 5 styled, fully offline job and service tracker for an Indonesian battleboarding community. One vanilla-JS app shipped as a standalone HTML file, an Android APK (Capacitor), a Windows desktop app (Electron) and a GitHub Pages demo.",
   "author": "ammarfirman",
