@@ -1034,6 +1034,17 @@
   .fab > span{display:block;transform:skewX(8deg)}
   .fab:active{transform:skewX(-8deg) scale(.92);box-shadow:1px 1px 0 #000}
 
+  /* fold: collapse the open job from anywhere without scrolling back up */
+  .fold-btn{
+    position:fixed;left:18px;z-index:59;display:none;
+    bottom:calc(72px + env(safe-area-inset-bottom) + 18px);
+    width:52px;height:52px;padding:0;cursor:pointer;
+    background:#000;color:var(--warn);border:2px solid var(--warn);
+    box-shadow:3px 3px 0 #000;transform:skewX(-8deg);
+  }
+  .fold-btn > svg{display:block;margin:auto;width:24px;height:24px;stroke:var(--warn);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transform:skewX(8deg)}
+  .fold-btn:active{transform:skewX(-8deg) scale(.92);box-shadow:1px 1px 0 #000}
+
   .sheet-scrim{position:fixed;inset:0;z-index:78;background:rgba(0,0,0,.6);display:none;align-items:flex-end}
   .sheet-scrim:not([hidden]){display:flex}
   .sheet{
@@ -1114,8 +1125,8 @@
     .search-btn .s-mph{display:inline}
 
     .bnav{display:grid}
-    .fab{display:block}
-    .fab[hidden]{display:none}
+    .fab,.fold-btn{display:block}
+    .fab[hidden],.fold-btn[hidden]{display:none}
 
     /* board: rail becomes a sticky horizontal category strip */
     .board{display:block}
@@ -1551,6 +1562,7 @@
 </div>
 
 <button type="button" id="fab" class="fab" hidden aria-label="Add job"><span>+</span></button>
+<button type="button" id="foldBtn" class="fold-btn" hidden aria-label="Collapse job"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14l5-5 5 5"/></svg></button>
 
 <nav id="bottomNav" class="bnav" aria-label="Primary">
   <button type="button" class="bnav-btn" data-view="board">
@@ -2967,6 +2979,11 @@
   }
 
   /* ---------- view switch ---------- */
+  function syncFloatBtns(){
+    var onBoard = state.view === "board" && !state.filter && !!selectedCat();
+    var fab = $("fab"); if (fab) fab.hidden = !onBoard;
+    var fold = $("foldBtn"); if (fold) fold.hidden = !(onBoard && !!state.expandedId);
+  }
   function renderView(){
     var v = state.view;
     $("boardWrap").hidden    = v !== "board";
@@ -2987,8 +3004,7 @@
     else if (v === "stats") renderStatsView();
     else if (v === "workon") renderWorkOn();
     else if (v === "history") renderSaves();
-    var fab = $("fab");
-    if (fab) fab.hidden = !(v === "board" && !state.filter && selectedCat());
+    syncFloatBtns();
   }
   function renderAll(){ renderChips(); renderView(); }
 
@@ -3495,6 +3511,18 @@
   }
 
   (function(){ var f = $("fab"); if (f) f.addEventListener("click", openAddJobSheet); })();
+  (function(){
+    var f = $("foldBtn");
+    if (f) f.addEventListener("click", function(){
+      var id = state.expandedId; if (!id) return;
+      toggleExpand(id);
+      var row = $("panel").querySelector('.job-main[data-id="' + id + '"]');
+      if (row && row.scrollIntoView){
+        try { row.scrollIntoView({ behavior: "smooth", block: "center" }); }
+        catch (_){ row.scrollIntoView(); }
+      }
+    });
+  })();
 
   /* ---------- saves: in-app slots + file / text transfer ---------- */
   var SLOT_MAX = 12;
@@ -3709,6 +3737,7 @@
   function toggleExpand(id){
     state.expandedId = state.expandedId === id ? null : id;
     renderPanel();
+    syncFloatBtns();
   }
   function gotoJob(catId, jobId, focusSel){
     closePalette();
