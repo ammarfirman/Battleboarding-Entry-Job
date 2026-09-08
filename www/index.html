@@ -64,30 +64,28 @@
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
-  /* per-view background art: dark, blurred and desaturated so it reads as
-     Persona-menu atmosphere behind the sharp UI, not a competing picture */
+  /* per-view background: visible but quiet - you can tell there's a photo,
+     you'd never read detail in it */
   body::before{
     content:"";position:fixed;inset:-40px;pointer-events:none;z-index:0;
     background:url("assets/bg-default.webp") no-repeat center top;
     background-size:cover;
-    opacity:.4;
-    filter:blur(5px) saturate(.62) brightness(.78) contrast(1.02);
+    filter:blur(9px) saturate(.35) brightness(.68);
     transition:opacity .35s ease;
   }
   body[data-bg="board"]::before   {background-image:url("assets/bg-board.webp")}
   body[data-bg="schedule"]::before{background-image:url("assets/bg-schedule.webp")}
   body[data-bg="stats"]::before   {background-image:url("assets/bg-stats.webp")}
   body[data-bg="workon"]::before  {background-image:url("assets/bg-workon.webp")}
-  /* grade + veil: a faint red glow up top ties it to the brand, a soft pool
-     keeps the centre calm, edges fall to near-black */
+  body[data-bg="services"]::before{background-image:url("assets/joker-bg.webp")}
+  /* a mostly-flat dark red wash over the photo, a touch heavier behind the
+     header and the foot; plus the P5 dot screen */
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
     background:
-      radial-gradient(ellipse 85% 55% at 50% -6%,rgba(228,0,43,.16),transparent 62%),
-      radial-gradient(ellipse 130% 92% at 50% 42%,rgba(11,11,12,0) 0%,rgba(11,11,12,.42) 52%,rgba(11,11,12,.9) 100%),
-      linear-gradient(180deg,rgba(11,11,12,.62) 0%,rgba(11,11,12,.18) 24%,rgba(11,11,12,.18) 62%,rgba(11,11,12,.66) 90%,rgba(11,11,12,.96) 100%),
+      linear-gradient(180deg,rgba(8,3,5,.8) 0%,rgba(10,3,6,.58) 22%,rgba(10,3,6,.58) 70%,rgba(8,3,5,.84) 100%),
       radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
-    background-size:100% 100%,100% 100%,100% 100%,13px 13px;
+    background-size:100% 100%,13px 13px;
   }
   .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
   .dot{width:10px;height:10px;flex:none;display:inline-block;transform:skewX(-12deg);border:1.5px solid #000}
@@ -168,9 +166,8 @@
   /* rail */
   .rail{
     position:sticky;top:18px;
-    background:rgba(14,14,16,.66);
-    -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
-    border:2px solid var(--ink);
+    background:#0d0508;
+    border:2px solid var(--ink);border-bottom:3px solid var(--red);
     clip-path:var(--k-rail);
     padding:24px 20px 26px;
     filter:drop-shadow(7px 7px 0 var(--red));
@@ -222,13 +219,12 @@
   .cat-count{font-size:.82rem;color:var(--faint);flex:none;font-weight:600}
   .rail-hint{color:var(--faint);font-size:.85rem;margin:18px 2px 2px;text-wrap:pretty}
 
-  /* panel */
+  /* panel: near-black flat body (red is reserved for the slabs) with a
+     closing red rule along the bottom so the edge reads as deliberate */
   .panel{
-    background:rgba(14,14,16,.9);border:2px solid var(--ink);min-width:0;overflow:hidden;
+    background:#0d0508;border:2px solid var(--ink);border-bottom:3px solid var(--red);
+    min-width:0;overflow:hidden;
     clip-path:var(--k-panel);filter:drop-shadow(8px 8px 0 var(--red));min-height:360px;
-  }
-  @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-    .panel{background:rgba(14,14,16,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
   }
   .panel-head{
     display:flex;align-items:center;gap:16px;flex-wrap:wrap;
@@ -1110,33 +1106,15 @@
   }
 
   @media (max-width:640px){
-    /* Persona-menu feel: the art shows through a frosted panel, while the top
-       (header + search) and bottom (nav) stay firmly dark for legible text */
-    body::before{opacity:.5;filter:blur(4px) saturate(.62) brightness(.8)}
+    /* photo quiet behind the header, near-black flat panels over it */
+    body::before{filter:blur(10px) saturate(.35) brightness(.64)}
     body::after{
       background:
-        radial-gradient(ellipse 95% 42% at 50% -4%,rgba(228,0,43,.14),transparent 60%),
-        linear-gradient(180deg,
-          rgba(11,11,12,.92) 0%, rgba(11,11,12,.9) 13%,
-          rgba(11,11,12,.36) 30%, rgba(11,11,12,.32) 64%,
-          rgba(11,11,12,.72) 87%, rgba(11,11,12,.96) 100%),
+        linear-gradient(180deg,rgba(8,3,5,.93) 0%,rgba(9,3,5,.86) 13%,rgba(10,3,6,.55) 28%,rgba(10,3,6,.53) 66%,rgba(8,3,5,.84) 100%),
         radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
-      background-size:100% 100%,100% 100%,13px 13px;
+      background-size:100% 100%,13px 13px;
     }
-    /* a local scrim so the brand + search always sit on solid ground */
-    header::after{
-      content:"";position:absolute;inset:calc(-1 * env(safe-area-inset-top) - 20px) -20px 0;z-index:-1;pointer-events:none;
-      background:linear-gradient(180deg,rgba(11,11,12,.94),rgba(11,11,12,.86) 50%,rgba(11,11,12,.45) 82%,rgba(11,11,12,0));
-    }
-    /* frosted panel: the background art reads through, text stays crisp */
-    .panel{background:rgba(14,14,16,.9)}
-    @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-      .panel{background:rgba(14,14,16,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-    }
-    .history,.svc-list,.wo-grid{background:transparent}
-    .svc,.wo-col,.sched-item{background:rgba(0,0,0,.32)}
-    .cal-cell:not(.blank){background:rgba(0,0,0,.34)}
-    .job:not(.exp){background:rgba(0,0,0,.34)}
+    .panel{background:#0d0508}
 
     .app{max-width:100%;padding:16px 16px calc(66px + env(safe-area-inset-bottom) + 16px);font-size:15px}
 
