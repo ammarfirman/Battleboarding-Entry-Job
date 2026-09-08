@@ -20,8 +20,17 @@ Interface and polish pass.
   parallelograms, banner points and stepped notches, with more spacing
   throughout.
 - Header badge now reads "Final V".
+- Backup and Restore in the History tab: Save to file writes the whole state
+  (categories, jobs, photos, Work On) to a JSON file; Load from file replaces
+  the current data with a saved file. This is the only backup that survives
+  clearing the browser or app storage.
+- The Add category button is gone. The four service lines are the only
+  categories.
+- Fixed: on a phone the Add job button could sit off the right edge and be
+  untappable. The add row now wraps and the panel can shrink to the screen.
 - Repository reorganised: build and test tooling under `scripts/`, guides
   under `docs/`, the standalone build under `dist/`.
+- Copy no longer uses the arrow or the long dash anywhere.
 
 ## v3.0
 

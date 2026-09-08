@@ -89,9 +89,8 @@ Tabs: Board, Schedule, Stats, Work On, Services, History, plus a global
 Ctrl or Cmd plus K search palette.
 
 **Board.** The four service lines (Respect Thread, Joki Private Debate,
-Judgement Battleboarding, Calculation Battleboarding) are the starter
-categories and cannot be deleted. Add your own with "Tambah kategori"; those
-stay deletable. Every job carries:
+Judgement Battleboarding, Calculation Battleboarding) are the categories.
+They are fixed and cannot be deleted. Every job carries:
 
 - Lifecycle status: Not Started, Researching, Writing, Reviewing, Completed,
   Delivered. The square button on the row advances it; completing a job
@@ -171,6 +170,11 @@ record migrates forward automatically on first load.
 Storage is local to each install or browser. There is no sync between
 devices. Clearing the app storage resets it to the four starter categories,
 each seeded with one worked example.
+
+**Backup and Restore** live in the History tab. Save to file writes the whole
+state to a JSON file you can keep or move. Load from file replaces the current
+data with a saved file. This is the only backup that survives clearing the
+storage or moving to another device.
 
 ## License
 

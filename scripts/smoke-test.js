@@ -68,11 +68,7 @@ const settle = () => new Promise((r) => setTimeout(r, 900));
   ok("4 categories seeded", $$("#catList .cat").length === 4);
   ok("Respect Thread shows lock pill", /🔒 inti/.test($("#panel .panel-head").textContent));
   ok("locked cat: no delete button", $('#panel [data-act="del-cat"]') == null);
-
-  click($("#addCatBtn")); await tick(); await tick();
-  ok("custom cat can be deleted", $('#panel [data-act="del-cat"]') != null);
-  click($('#panel [data-act="del-cat"]')); await tick(); await tick();
-  ok("custom cat deleted", $$("#catList .cat").length === 4);
+  ok("no Add category button", $("#addCatBtn") == null && !/Tambah kategori|Add category/i.test($(".rail").textContent));
 
   // Respect Thread job
   click($$("#catList .cat").find((c) => /RESPECT THREAD/i.test(c.textContent)));
@@ -380,6 +376,10 @@ const settle = () => new Promise((r) => setTimeout(r, 900));
     ok("transition: services view shown", $("#servicesWrap").hidden === false);
     goto("history"); await settle();
     ok("transition: history view shown", $("#historyWrap").hidden === false);
+    ok("backup section: save + load controls", $("#dataSave") != null && $("#dataFile") != null);
+    ok("backup section: summary shows counts", /categor|kategori/i.test(($("#dataSummary") || {}).textContent || ""));
+    { let threw = false; try { $("#dataSave").dispatchEvent(new window.MouseEvent("click", { bubbles: true })); } catch (e) { threw = true; } ok("backup: export does not throw", !threw); }
+    await tick();
     goto("board"); await settle();
     ok("transition: back to board", $("#boardWrap").hidden === false);
 
