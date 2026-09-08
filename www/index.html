@@ -942,17 +942,32 @@
   #langBtn:hover{background:var(--warn);border-color:var(--warn);color:#000}
   #langBtn:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
   @media (max-width:520px){#soundBtn{width:38px;height:38px;top:10px;right:10px}#langBtn{height:38px;top:10px;right:56px;font-size:.74rem;padding:0 9px}}
-  /* mobile: global controls read as light, aligned, minimal — not two outlined boxes */
+  /* mobile: global controls read as light, aligned, minimal — not two outlined boxes.
+     They auto-hide on scroll-down and return on scroll-up / at the top. */
   @media (max-width:640px){
     #soundBtn,#langBtn{
       top:calc(env(safe-area-inset-top) + 6px);
       background:rgba(11,11,12,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
-      border:1px solid var(--line);box-shadow:none;transform:none;color:var(--muted);
+      border:1px solid var(--line);box-shadow:none;transform:translateY(0);color:var(--muted);
+      transition:transform .24s ease,opacity .24s ease;
     }
     #soundBtn{width:36px;height:36px;right:10px}
     #langBtn{height:36px;right:52px;font-size:.72rem;padding:0 9px;letter-spacing:.04em}
     #soundBtn:active,#langBtn:active{background:var(--red);border-color:var(--red);color:#fff}
     #soundBtn .ico{transform:none;font-size:.95rem}
+    body.ctl-hide #soundBtn,
+    body.ctl-hide #langBtn{
+      transform:translateY(calc(-100% - env(safe-area-inset-top) - 14px));
+      opacity:0;pointer-events:none;
+    }
+    .fab{transition:transform .24s ease,opacity .24s ease}
+    body.ctl-hide .fab{
+      transform:skewX(-8deg) translateY(calc(100% + env(safe-area-inset-bottom) + 96px));
+      opacity:0;pointer-events:none;
+    }
+  }
+  @media (prefers-reduced-motion:reduce){
+    #soundBtn,#langBtn,.fab{transition:none}
   }
 
   /* Persona 5 decision-style music picker */
@@ -3238,6 +3253,33 @@
   function isMobile(){ return !!(mqMobile && mqMobile.matches); }
   if (mqMobile && mqMobile.addEventListener)
     mqMobile.addEventListener("change", function(){ closeSheet(); if (typeof renderView === "function") renderView(); });
+
+  /* mobile: hide the top language / music controls and the FAB while scrolling
+     down so they don't sit over the content; bring them back on scroll-up or
+     when near the top */
+  (function(){
+    var lastY = 0, ticking = false, HIDE_AFTER = 96;
+    function update(){
+      ticking = false;
+      if (!isMobile()){ document.body.classList.remove("ctl-hide"); return; }
+      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var down = y > lastY + 2, up = y < lastY - 2;
+      if (y <= 24 || up){
+        document.body.classList.remove("ctl-hide");
+      } else if (down && y > HIDE_AFTER){
+        if (!document.body.classList.contains("ctl-hide")){
+          document.body.classList.add("ctl-hide");
+          var mm = $("musicMenu"); if (mm && !mm.hidden) mm.hidden = true;
+        }
+      }
+      lastY = y;
+    }
+    window.addEventListener("scroll", function(){
+      if (!ticking){ ticking = true; (window.requestAnimationFrame || setTimeout)(update, 0); }
+    }, { passive: true });
+    if (mqMobile && mqMobile.addEventListener)
+      mqMobile.addEventListener("change", function(){ if (!isMobile()) document.body.classList.remove("ctl-hide"); });
+  })();
 
   var _sheetTimer = null;
   function openSheet(title, bodyHtml, onMount, opts){
