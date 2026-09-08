@@ -64,38 +64,60 @@
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
-  /* per-view background art: dark, blurred and desaturated so it reads as
-     Persona-menu atmosphere behind the sharp UI, not a competing picture */
+  /* per-view background = the paused scene pushed way back: crushed to a
+     narrow dark band, desaturated, blurred, multiplied into the red palette,
+     with a slow drift + cursor parallax so it feels alive but never competes */
   body::before{
-    content:"";position:fixed;inset:-40px;pointer-events:none;z-index:0;
-    background:url("assets/bg-default.webp") no-repeat center top;
-    background-size:cover;
-    opacity:.4;
-    filter:blur(5px) saturate(.62) brightness(.78) contrast(1.02);
-    transition:opacity .35s ease;
+    content:"";position:fixed;inset:-8%;pointer-events:none;z-index:0;
+    background-image:linear-gradient(160deg,rgba(48,9,17,.72),rgba(17,4,8,.8)),url("assets/bg-default.webp");
+    background-repeat:no-repeat;background-position:50% 48%;background-size:cover;
+    background-blend-mode:multiply,normal;
+    opacity:.6;
+    filter:blur(14px) saturate(.28) brightness(.42) contrast(.72);
+    transform:scale(1.08) translate(var(--bgx,0),var(--bgy,0));
+    transition:transform .6s ease-out;
+    animation:bgDrift 52s ease-in-out infinite alternate;
+    will-change:transform;
   }
-  body[data-bg="board"]::before   {background-image:url("assets/bg-board.webp")}
-  body[data-bg="schedule"]::before{background-image:url("assets/bg-schedule.webp")}
-  body[data-bg="stats"]::before   {background-image:url("assets/bg-stats.webp")}
-  body[data-bg="workon"]::before  {background-image:url("assets/bg-workon.webp")}
-  /* grade + veil: a faint red glow up top ties it to the brand, a soft pool
-     keeps the centre calm, edges fall to near-black */
+  body[data-bg="board"]::before   {background-image:linear-gradient(160deg,rgba(48,9,17,.72),rgba(17,4,8,.8)),url("assets/bg-board.webp")}
+  body[data-bg="schedule"]::before{background-image:linear-gradient(160deg,rgba(48,9,17,.72),rgba(17,4,8,.8)),url("assets/bg-schedule.webp")}
+  body[data-bg="stats"]::before   {background-image:linear-gradient(160deg,rgba(48,9,17,.72),rgba(17,4,8,.8)),url("assets/bg-stats.webp")}
+  body[data-bg="workon"]::before  {background-image:linear-gradient(160deg,rgba(48,9,17,.72),rgba(17,4,8,.8)),url("assets/bg-workon.webp")}
+  @keyframes bgDrift{from{background-position:46% 45%}to{background-position:54% 53%}}
+  /* full-frame scrim: ~70% at the top, ~40% through the middle, ~82% at the
+     foot, a soft centre vignette, and a faint red bloom behind the header */
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
     background:
-      radial-gradient(ellipse 85% 55% at 50% -6%,rgba(228,0,43,.16),transparent 62%),
-      radial-gradient(ellipse 130% 92% at 50% 42%,rgba(11,11,12,0) 0%,rgba(11,11,12,.42) 52%,rgba(11,11,12,.9) 100%),
-      linear-gradient(180deg,rgba(11,11,12,.62) 0%,rgba(11,11,12,.18) 24%,rgba(11,11,12,.18) 62%,rgba(11,11,12,.66) 90%,rgba(11,11,12,.96) 100%),
-      radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
-    background-size:100% 100%,100% 100%,100% 100%,13px 13px;
+      radial-gradient(ellipse 74% 42% at 50% -8%,rgba(228,0,43,.14),transparent 66%),
+      radial-gradient(ellipse 108% 66% at 50% 42%,rgba(11,11,12,0) 0%,rgba(11,11,12,.34) 56%,rgba(11,11,12,.78) 100%),
+      linear-gradient(180deg,rgba(11,11,12,.72) 0%,rgba(11,11,12,.42) 34%,rgba(11,11,12,.42) 62%,rgba(11,11,12,.82) 100%);
+    background-size:100% 100%;
+  }
+  /* one shared surface texture over the entire frame - the P5 dot screen */
+  #grain{
+    position:fixed;inset:0;z-index:9990;pointer-events:none;
+    background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.55) 1px,transparent 1.6px);
+    background-size:13px 13px;
+    mix-blend-mode:overlay;opacity:.055;
+  }
+  @media (prefers-reduced-motion:reduce){
+    body::before{animation:none;transition:none}
   }
   .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
   .dot{width:10px;height:10px;flex:none;display:inline-block;transform:skewX(-12deg);border:1.5px solid #000}
 
   .app{max-width:1180px;margin:0 auto;padding:26px 20px 76px;position:relative;z-index:1}
 
-  header{margin-bottom:24px;position:relative}
-  header::before{content:"";position:absolute;inset:-30px -24px -10px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 80% 100% at 22% 45%,rgba(11,11,12,.9),rgba(11,11,12,.45) 60%,rgba(11,11,12,0) 100%)}
+  header{margin-bottom:18px;position:relative}
+  /* frosted top plate: brand, stats and tabs sit on one surface that runs
+     down into the content panel, so nav and content read as one assembly */
+  header::before{
+    content:"";position:absolute;inset:-26px -30px -30px;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(28,9,15,.72) 0%,rgba(18,6,10,.58) 60%,rgba(18,6,10,.14) 88%,transparent 100%);
+    -webkit-backdrop-filter:blur(14px) saturate(.72);backdrop-filter:blur(14px) saturate(.72);
+    clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,0 100%);
+  }
   .brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
   .mark{
     font-size:19px;width:44px;height:44px;display:grid;place-items:center;flex:none;
@@ -168,12 +190,13 @@
   /* rail */
   .rail{
     position:sticky;top:18px;
-    background:rgba(14,14,16,.66);
-    -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
-    border:2px solid var(--ink);
+    background:linear-gradient(160deg,rgba(30,10,15,.62),rgba(13,4,7,.72));
+    -webkit-backdrop-filter:blur(16px) saturate(.7);backdrop-filter:blur(16px) saturate(.7);
+    border:1px solid rgba(255,70,90,.14);border-top-color:rgba(255,95,115,.26);
     clip-path:var(--k-rail);
     padding:24px 20px 26px;
-    filter:drop-shadow(7px 7px 0 var(--red));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+    filter:drop-shadow(7px 7px 0 var(--red)) drop-shadow(0 20px 36px rgba(0,0,0,.5));
   }
   @media (max-width:860px){.rail{position:static}}
   .rail h2{
@@ -224,11 +247,14 @@
 
   /* panel */
   .panel{
-    background:rgba(14,14,16,.9);border:2px solid var(--ink);min-width:0;overflow:hidden;
-    clip-path:var(--k-panel);filter:drop-shadow(8px 8px 0 var(--red));min-height:360px;
+    background:linear-gradient(160deg,rgba(30,10,15,.9),rgba(13,4,7,.94));
+    border:1px solid rgba(255,70,90,.14);border-top-color:rgba(255,95,115,.28);
+    min-width:0;overflow:hidden;clip-path:var(--k-panel);min-height:360px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+    filter:drop-shadow(7px 7px 0 var(--red)) drop-shadow(0 26px 46px rgba(0,0,0,.55));
   }
   @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-    .panel{background:rgba(14,14,16,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .panel{background:linear-gradient(160deg,rgba(30,10,15,.74),rgba(13,4,7,.82));-webkit-backdrop-filter:blur(20px) saturate(.7);backdrop-filter:blur(20px) saturate(.7)}
   }
   .panel-head{
     display:flex;align-items:center;gap:16px;flex-wrap:wrap;
@@ -1123,15 +1149,11 @@
         radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
       background-size:100% 100%,100% 100%,13px 13px;
     }
-    /* a local scrim so the brand + search always sit on solid ground */
-    header::after{
-      content:"";position:absolute;inset:calc(-1 * env(safe-area-inset-top) - 20px) -20px 0;z-index:-1;pointer-events:none;
-      background:linear-gradient(180deg,rgba(11,11,12,.94),rgba(11,11,12,.86) 50%,rgba(11,11,12,.45) 82%,rgba(11,11,12,0));
-    }
-    /* frosted panel: the background art reads through, text stays crisp */
-    .panel{background:rgba(14,14,16,.9)}
-    @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-      .panel{background:rgba(14,14,16,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+    /* frosted top plate reaching down to the panel so the whole top is one plane */
+    header::before{
+      display:block;inset:calc(-1 * env(safe-area-inset-top) - 18px) -16px -22px;
+      background:linear-gradient(180deg,rgba(20,7,11,.9) 0%,rgba(18,6,10,.7) 62%,rgba(18,6,10,.15) 90%,transparent);
+      clip-path:none;
     }
     .history,.svc-list,.wo-grid{background:transparent}
     .svc,.wo-col,.sched-item{background:rgba(0,0,0,.32)}
@@ -1141,8 +1163,7 @@
     .app{max-width:100%;padding:16px 16px calc(66px + env(safe-area-inset-bottom) + 16px);font-size:15px}
 
     /* header: strip to identity + one line */
-    header{margin-bottom:16px}
-    header::before{display:none}
+    header{margin-bottom:14px}
     .brand{gap:9px}
     h1{font-size:1.15rem;text-shadow:2px 2px 0 var(--red);letter-spacing:.01em;overflow-wrap:anywhere}
     .mark{width:34px;height:34px;font-size:14px}
@@ -1183,7 +1204,7 @@
     .cat-name{font-size:.8rem;overflow:visible}
 
     /* panel + containers: flatten, keep a small red identity shadow on the shell */
-    .panel{clip-path:none;filter:drop-shadow(3px 3px 0 var(--red));min-height:0}
+    .panel{clip-path:none;filter:drop-shadow(3px 3px 0 var(--red)) drop-shadow(0 14px 28px rgba(0,0,0,.5));min-height:0;border-radius:0}
     .panel-head{padding:16px 16px 20px;gap:8px 10px;clip-path:polygon(10px 0,100% 0,calc(100% - 8px) 100%,4px 100%)}
     .panel-head h2{flex:1 1 100%;font-size:1.2rem;text-shadow:2px 2px 0 #000}
     .panel-head .pill,.panel-head .link-danger{font-size:.68rem}
@@ -3334,6 +3355,25 @@
       mqMobile.addEventListener("change", function(){ if (!isMobile()) document.body.classList.remove("ctl-hide"); });
   })();
 
+  /* desktop: a few px of cursor parallax on the background so the paused
+     scene feels like it has depth behind the menu */
+  (function(){
+    var fine = window.matchMedia && window.matchMedia("(pointer: fine)").matches;
+    var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!fine || still) return;
+    var qx = 0, qy = 0, pend = false;
+    function apply(){
+      pend = false;
+      document.body.style.setProperty("--bgx", qx.toFixed(1) + "px");
+      document.body.style.setProperty("--bgy", qy.toFixed(1) + "px");
+    }
+    window.addEventListener("mousemove", function(e){
+      qx = (e.clientX / window.innerWidth - 0.5) * -18;
+      qy = (e.clientY / window.innerHeight - 0.5) * -12;
+      if (!pend){ pend = true; requestAnimationFrame(apply); }
+    }, { passive: true });
+  })();
+
   var _sheetTimer = null;
   function openSheet(title, bodyHtml, onMount, opts){
     var sc = $("sheet"); if (!sc) return;
@@ -5407,6 +5447,8 @@
   })();
 })();
 </script>
+
+<div id="grain" aria-hidden="true"></div>
 
 </body>
 </html>
