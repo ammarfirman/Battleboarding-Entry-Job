@@ -184,16 +184,23 @@ copy. Remembered per browser/install (`localStorage` `bbe-lang`, default `id`).
 Strings live in the `I18N` catalog; `L("key")` at every render site, static
 markup via `data-i18n*` attributes.
 
-**Section shapes** — every kind of section carries its writing in its own
-Persona-5 silhouette instead of a plain box: the panel header is a notched
-red banner, section titles are pointed red pennants, each field label is a
-skewed red notch-tab, the Respect-Thread / Calculation blocks get a torn
-yellow tape-tab, chart titles a yellow keystone, service titles a black
-notch, Work-On columns a double-pointed red arrow, the rail heading a torn
-red banner, and the filter bar a yellow ribbon — with corner "dog-ear" folds
-on the rebuttal / builder / chart / service cards. Shapes are `clip-path`
-polygons in `--sh-*` custom properties; the P5 hard shadow follows the cut
-via `filter: drop-shadow`.
+**Section & box shapes** — nothing is a plain rectangle. Every container has
+its own Persona-5 silhouette (`clip-path` polygons, `--sh-*` / `--k-*`
+custom properties; the hard offset shadow follows the cut via
+`filter: drop-shadow`):
+
+- **Labels** carry their text in a shape — panel header = notched red banner,
+  section titles = pointed red pennants, field labels = skewed red notch-tabs,
+  RT/Calc block labels = torn yellow tape-tabs, chart titles = yellow
+  keystones, service titles = black notches, Work-On columns = double-pointed
+  red arrows, rail heading = torn red banner, filter bar = yellow ribbon.
+- **Boxes** each get a distinct cut — the panel is a big bevel-and-notch, the
+  rail a nicked octagon (frosted, translucent), the four category pills are
+  four different shapes (flag / TL-cut / TR-bevel / BL-cut), job rows and
+  schedule rows alternate cuts, inputs get a clipped corner, textareas a
+  bottom-left cut (resize grip kept), buttons a top-right bevel, and the
+  rebuttal / RT / calc / service / Work-On / chart / stat cards each take a
+  different corner — with generous padding and gaps throughout.
 
 > Embeds load on GitHub Pages, the standalone file, and the Android/Windows
 > apps. They do **not** load inside the claude.ai artifact preview (its CSP
