@@ -64,24 +64,30 @@
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
-  /* per-view background art (fixed, behind everything) */
+  /* per-view background art: dark, blurred and desaturated so it reads as
+     Persona-menu atmosphere behind the sharp UI, not a competing picture */
   body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    content:"";position:fixed;inset:-40px;pointer-events:none;z-index:0;
     background:url("assets/bg-default.webp") no-repeat center top;
-    background-size:cover;opacity:.5;
+    background-size:cover;
+    opacity:.4;
+    filter:blur(5px) saturate(.62) brightness(.78) contrast(1.02);
     transition:opacity .35s ease;
   }
   body[data-bg="board"]::before   {background-image:url("assets/bg-board.webp")}
   body[data-bg="schedule"]::before{background-image:url("assets/bg-schedule.webp")}
   body[data-bg="stats"]::before   {background-image:url("assets/bg-stats.webp")}
   body[data-bg="workon"]::before  {background-image:url("assets/bg-workon.webp")}
-  /* readability veil: darker at the top (header) and bottom (nav), art shows through the middle and the margins */
+  /* grade + veil: a faint red glow up top ties it to the brand, a soft pool
+     keeps the centre calm, edges fall to near-black */
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
     background:
-      linear-gradient(180deg,rgba(11,11,12,.82) 0%,rgba(11,11,12,.46) 20%,rgba(11,11,12,.4) 55%,rgba(11,11,12,.66) 84%,rgba(11,11,12,.9) 100%),
-      radial-gradient(circle at 1px 1px,rgba(255,255,255,.045) 1px,transparent 1.5px);
-    background-size:100% 100%,13px 13px;
+      radial-gradient(ellipse 85% 55% at 50% -6%,rgba(228,0,43,.16),transparent 62%),
+      radial-gradient(ellipse 130% 92% at 50% 42%,rgba(11,11,12,0) 0%,rgba(11,11,12,.42) 52%,rgba(11,11,12,.9) 100%),
+      linear-gradient(180deg,rgba(11,11,12,.62) 0%,rgba(11,11,12,.18) 24%,rgba(11,11,12,.18) 62%,rgba(11,11,12,.66) 90%,rgba(11,11,12,.96) 100%),
+      radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
+    background-size:100% 100%,100% 100%,100% 100%,13px 13px;
   }
   .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
   .dot{width:10px;height:10px;flex:none;display:inline-block;transform:skewX(-12deg);border:1.5px solid #000}
@@ -218,8 +224,11 @@
 
   /* panel */
   .panel{
-    background:var(--panel);border:2px solid var(--ink);min-width:0;overflow:hidden;
+    background:rgba(14,14,16,.9);border:2px solid var(--ink);min-width:0;overflow:hidden;
     clip-path:var(--k-panel);filter:drop-shadow(8px 8px 0 var(--red));min-height:360px;
+  }
+  @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+    .panel{background:rgba(14,14,16,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
   }
   .panel-head{
     display:flex;align-items:center;gap:16px;flex-wrap:wrap;
@@ -1103,15 +1112,16 @@
   @media (max-width:640px){
     /* Persona-menu feel: the art shows through a frosted panel, while the top
        (header + search) and bottom (nav) stay firmly dark for legible text */
-    body::before{opacity:.62}
+    body::before{opacity:.5;filter:blur(4px) saturate(.62) brightness(.8)}
     body::after{
       background:
+        radial-gradient(ellipse 95% 42% at 50% -4%,rgba(228,0,43,.14),transparent 60%),
         linear-gradient(180deg,
           rgba(11,11,12,.92) 0%, rgba(11,11,12,.9) 13%,
-          rgba(11,11,12,.34) 30%, rgba(11,11,12,.3) 64%,
-          rgba(11,11,12,.7) 87%, rgba(11,11,12,.95) 100%),
+          rgba(11,11,12,.36) 30%, rgba(11,11,12,.32) 64%,
+          rgba(11,11,12,.72) 87%, rgba(11,11,12,.96) 100%),
         radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
-      background-size:100% 100%,13px 13px;
+      background-size:100% 100%,100% 100%,13px 13px;
     }
     /* a local scrim so the brand + search always sit on solid ground */
     header::after{
