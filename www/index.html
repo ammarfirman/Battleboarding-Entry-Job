@@ -50,6 +50,8 @@
     --c-medium:#3457A6;
     --c-high:#B5641E;
     --c-urgent:#E4002B;
+    /* spacing scale (dp): screen/card 16, section gap 24, element gap 8 */
+    --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;
   }
   *{box-sizing:border-box}
   html{background:var(--bg)}
@@ -144,6 +146,7 @@
     font-family:inherit;font-size:.7rem;background:#1b1b1e;border:1px solid var(--line);
     padding:1px 5px;color:var(--ink);
   }
+  .search-btn .s-mph{display:none}
 
   .board{display:grid;grid-template-columns:290px 1fr;gap:24px;align-items:start}
   .board > *{min-width:0}
@@ -420,13 +423,22 @@
   .rt-entry{border:2px solid var(--line);background:#000;padding:16px 17px;display:flex;flex-direction:column;gap:11px;position:relative;border-left:4px solid var(--warn);clip-path:var(--k-bl);filter:drop-shadow(5px 5px 0 rgba(255,212,0,.5))}
   .rt-del{position:absolute;top:6px;right:6px;opacity:1;width:24px;height:24px}
   .rt-ev-add{margin-top:2px}
-  .rt-ev-grid{margin-top:8px;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
-  .rt-ev{position:relative;margin:0;border:2px solid #fff;background:#000}
-  .rt-ev a{display:block}
-  .rt-ev img{width:100%;height:96px;object-fit:cover;display:block}
-  .rt-ev-link{display:block;padding:10px 8px;font-family:"IBM Plex Mono",monospace;font-size:.68rem;color:var(--muted);word-break:break-all}
-  .rt-ev-del{position:absolute;top:2px;right:2px;opacity:1;width:22px;height:22px;background:#000;color:#fff}
+  /* evidence renders as a readable vertical thread of full scans, vsbattles style */
+  .rt-ev-grid{margin-top:10px;display:flex;flex-direction:column;gap:12px}
+  .rt-ev{position:relative;margin:0;border:2px solid #fff;background:#0b0b0c;max-width:640px}
+  .rt-ev > a,.rt-ev > .embed-facade,.rt-ev > video{display:block;width:100%}
+  .rt-ev img{width:100%;height:auto;object-fit:contain;display:block;background:#0b0b0c;cursor:zoom-in}
+  .rt-ev video{width:100%;display:block;background:#000}
+  .rt-ev .embed-link{display:flex;flex-direction:column;gap:3px;padding:12px 14px;text-decoration:none}
+  .rt-ev .embed-link b{font-family:var(--anton);font-weight:400;text-transform:uppercase;letter-spacing:.03em;color:#fff}
+  .rt-ev .embed-link span{font-family:"IBM Plex Mono",monospace;font-size:.68rem;color:var(--muted);word-break:break-all}
+  .rt-ev .embed-cap-edit{width:100%;border:0;border-top:1px solid var(--line);background:#0b0b0c;color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:.74rem;padding:7px 10px}
+  .rt-ev .embed-cap-edit::placeholder{color:var(--faint)}
+  .rt-ev .embed-cap-edit:focus-visible{outline:2px solid var(--warn);outline-offset:-2px;color:var(--ink)}
+  .rt-ev-del{position:absolute;top:4px;right:4px;opacity:1;width:24px;height:24px;background:#000;color:#fff}
   .rt-ev-del:hover{background:var(--red)}
+  .embed-fail{display:inline-flex;align-items:center;gap:6px;padding:11px 13px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--warn);background:#000;border:1px dashed var(--warn);text-decoration:none;word-break:break-all}
+  .embed-fail:hover{background:var(--red-wash)}
   .rt-actions{display:flex;flex-wrap:wrap;gap:8px}
   .rt-export-btn{border-color:var(--warn);color:var(--warn)}
   .rt-export-btn:hover{background:var(--warn);color:#000}
@@ -477,11 +489,12 @@
     background:var(--red);border:2px solid #000;color:#fff;padding:6px 15px;transform:skewX(-10deg);box-shadow:var(--hard-sm);
   }
   .embed-add button:hover{background:#fff;color:var(--red)}
-  .embed-grid{margin-top:12px;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
-  .embed-card{margin:0;position:relative;border:3px solid #fff;background:#000;filter:drop-shadow(5px 5px 0 #000);display:flex;flex-direction:column;clip-path:var(--k-br)}
+  /* embeds render as a vertical thread of full-size scans */
+  .embed-grid{margin-top:12px;display:flex;flex-direction:column;gap:14px;max-width:680px}
+  .embed-card{margin:0;position:relative;width:100%;border:3px solid #fff;background:#0b0b0c;filter:drop-shadow(5px 5px 0 #000);display:flex;flex-direction:column;clip-path:var(--k-br)}
   .embed-grid > .embed-card:nth-child(even){clip-path:var(--k-tl)}
   .embed-card img,.embed-card video,.embed-frame{width:100%;display:block;border:0}
-  .embed-card img{max-height:300px;object-fit:contain;background:#000}
+  .embed-card img{height:auto;object-fit:contain;background:#0b0b0c;cursor:zoom-in}
   .embed-frame{aspect-ratio:16/9}
   .embed-facade{aspect-ratio:16/9;width:100%;cursor:pointer;border:0;background:#111 center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff}
   .embed-facade .embed-play{width:52px;height:52px;display:grid;place-items:center;font-size:1.15rem;background:var(--red);border:2px solid #fff;transform:skewX(-10deg)}
@@ -499,6 +512,17 @@
   .embed-cap-edit:focus-visible{outline:2px solid var(--warn);outline-offset:-2px;color:var(--ink)}
   .embed-del{position:absolute;top:3px;right:3px;background:#000;color:#fff;opacity:1;width:26px;height:26px}
   .embed-del:hover{background:var(--red)}
+  /* multi-image album: host's own numbered slider */
+  .embed-album{display:flex;flex-direction:column}
+  .embed-album iframe{width:100%;height:min(70vh,540px);border:0;background:#0b0b0c;display:block}
+  .embed-album-imgur iframe{background:#fff}
+  .embed-album-imgchest iframe{height:min(80vh,660px)}
+  .embed-album-open{
+    padding:7px 10px;font-family:"IBM Plex Mono",monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--warn);background:#000;border-top:1px solid var(--line);text-decoration:none;text-align:center;
+  }
+  .embed-album-open:hover{background:var(--red-wash);color:#fff}
+  .rt-ev .embed-album iframe,.embed-card .embed-album iframe{height:min(66vh,520px)}
 
   .dropzone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:22px;border:2px dashed var(--red);cursor:pointer;color:var(--muted);text-align:center;background:#000;transition:background .12s}
   .dropzone:hover,.dropzone.drag{background:var(--red-wash)}
@@ -648,7 +672,7 @@
   .pill.calc-open{cursor:pointer;background:var(--warn);color:#000;border:0;font-family:var(--anton);font-weight:400;letter-spacing:.04em;text-transform:uppercase;font-size:.8rem}
   .pill.calc-open:hover{background:#fff}
   #calc{position:fixed;inset:0;z-index:72;background:rgba(0,0,0,.72);display:flex;justify-content:center;align-items:flex-start;padding:6vh 14px 14px;overflow:auto}
-  .calc-box{width:min(390px,100%);background:var(--panel);border:2px solid var(--ink);clip-path:var(--k-bl);filter:drop-shadow(8px 8px 0 var(--red));display:flex;flex-direction:column}
+  .calc-box{width:min(430px,100%);background:var(--panel);border:2px solid var(--ink);clip-path:var(--k-bl);filter:drop-shadow(8px 8px 0 var(--red));display:flex;flex-direction:column}
   .calc-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:2px solid var(--red)}
   .calc-head b{font-family:var(--anton);font-weight:400;text-transform:uppercase;letter-spacing:.06em;flex:1}
   .calc-deg{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;background:#000;border:1.5px solid var(--warn);color:var(--warn);padding:3px 9px;transform:skewX(-10deg)}
@@ -687,12 +711,62 @@
   .calc-hrow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .calc-hrow b{color:var(--ink);flex:none}
 
+  /* multi-calculator: mode strip + preset forms */
+  .calc-modes{display:flex;gap:6px;overflow-x:auto;padding:10px 14px 2px;scrollbar-width:none}
+  .calc-modes::-webkit-scrollbar{display:none}
+  .calc-mode{
+    flex:0 0 auto;cursor:pointer;white-space:nowrap;
+    font-family:"IBM Plex Mono",monospace;font-size:.71rem;letter-spacing:.01em;
+    background:#000;border:1.5px solid var(--line);color:var(--muted);padding:6px 10px;
+  }
+  .calc-mode:hover{border-color:var(--ink);color:#fff}
+  .calc-mode.on{background:var(--red);border-color:var(--red);color:#fff}
+  .calc-form{display:flex;flex-direction:column;gap:11px;padding:14px}
+  .calc-fld{display:flex;flex-direction:column;gap:5px}
+  .calc-fld > span{font-family:"IBM Plex Mono",monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--faint)}
+  .calc-fld .cf-row{display:flex;gap:6px}
+  .calc-fld input,.calc-fld select{
+    font-family:"IBM Plex Mono",monospace;font-size:.9rem;color:var(--ink);
+    background:#000;border:2px solid var(--line);padding:9px 10px;min-width:0;
+  }
+  .calc-fld .cf-row input{flex:1}
+  .calc-fld select{color-scheme:dark;width:100%}
+  .calc-fld .cf-unit{flex:0 0 auto;width:auto;max-width:46%}
+  .calc-fld input:focus-visible,.calc-fld select:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  label.calc-fld.cf-check{flex-direction:row;align-items:center;gap:9px;cursor:pointer}
+  label.calc-fld.cf-check span{font-size:.8rem;color:var(--muted);text-transform:none;letter-spacing:0}
+  label.calc-fld.cf-check input{flex:0 0 auto;width:18px;height:18px}
+  .calc-result{
+    margin:0 14px;background:#0f0f12;border:1.5px solid var(--line);border-left:4px solid var(--warn);
+    padding:12px 14px;display:flex;flex-direction:column;gap:6px;
+  }
+  .calc-result .cr-main{font-family:"IBM Plex Mono",monospace;font-size:1.1rem;color:var(--warn);word-break:break-all}
+  .calc-result .cr-sub{font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--muted);word-break:break-word}
+  .calc-result .cr-tier{
+    align-self:flex-start;font-family:var(--anton);font-weight:400;font-size:.82rem;letter-spacing:.03em;text-transform:uppercase;
+    background:var(--red);color:#fff;padding:3px 12px;transform:skewX(-8deg);
+  }
+  .calc-result .cr-tier > span{display:inline-block;transform:skewX(8deg)}
+  .calc-result .cr-err{color:var(--red);font-size:.82rem;font-family:"IBM Plex Mono",monospace}
+  .calc-note{margin:6px 14px 0;font-size:.7rem;color:var(--faint);text-wrap:pretty;line-height:1.45}
+
   /* lightbox */
   .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.93);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:28px;z-index:75}
-  .lightbox img{max-width:100%;max-height:76vh;border:4px solid #fff;box-shadow:12px 12px 0 var(--red)}
-  .lightbox .cap{color:#fff;font-size:.82rem;font-family:"IBM Plex Mono",monospace;text-transform:uppercase}
-  .lightbox .close{position:absolute;top:16px;right:20px;font-size:1.6rem;background:var(--red);border:2px solid #000;color:#fff;cursor:pointer;line-height:1;width:44px;height:44px;transform:skewX(-10deg)}
+  .lightbox img{max-width:100%;max-height:80vh;border:4px solid #fff;box-shadow:12px 12px 0 var(--red);object-fit:contain}
+  .lightbox .cap{color:#fff;font-size:.82rem;font-family:"IBM Plex Mono",monospace;text-transform:uppercase;text-align:center;text-wrap:balance}
+  .lightbox .close{position:absolute;top:16px;right:20px;font-size:1.6rem;background:var(--red);border:2px solid #000;color:#fff;cursor:pointer;line-height:1;width:44px;height:44px;transform:skewX(-10deg);z-index:2}
   .lightbox .close:hover{background:#fff;color:var(--red)}
+  .lb-nav{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+    width:48px;height:64px;display:grid;place-items:center;cursor:pointer;
+    font-family:var(--anton);font-size:2rem;line-height:1;
+    background:rgba(0,0,0,.55);border:2px solid #fff;color:#fff;
+  }
+  .lb-nav:hover{background:var(--red);border-color:var(--red)}
+  .lb-nav:active{transform:translateY(-50%) scale(.92)}
+  .lb-prev{left:10px}
+  .lb-next{right:10px}
+  @media (max-width:640px){.lb-nav{width:40px;height:54px;font-size:1.6rem}.lightbox{padding:16px}.lightbox img{max-height:74vh}}
 
   /* view transition: Persona 5 pause-menu style, per-destination motif */
   #wipe{position:fixed;inset:0;z-index:70;overflow:hidden;pointer-events:none}
@@ -868,13 +942,25 @@
   #langBtn:hover{background:var(--warn);border-color:var(--warn);color:#000}
   #langBtn:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
   @media (max-width:520px){#soundBtn{width:38px;height:38px;top:10px;right:10px}#langBtn{height:38px;top:10px;right:56px;font-size:.74rem;padding:0 9px}}
+  /* mobile: global controls read as light, aligned, minimal — not two outlined boxes */
+  @media (max-width:640px){
+    #soundBtn,#langBtn{
+      top:calc(env(safe-area-inset-top) + 6px);
+      background:rgba(11,11,12,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+      border:1px solid var(--line);box-shadow:none;transform:none;color:var(--muted);
+    }
+    #soundBtn{width:36px;height:36px;right:10px}
+    #langBtn{height:36px;right:52px;font-size:.72rem;padding:0 9px;letter-spacing:.04em}
+    #soundBtn:active,#langBtn:active{background:var(--red);border-color:var(--red);color:#fff}
+    #soundBtn .ico{transform:none;font-size:.95rem}
+  }
 
   /* Persona 5 decision-style music picker */
   #musicMenu{
     position:fixed;top:64px;right:14px;z-index:81;
     display:flex;flex-direction:column;gap:7px;width:210px;
   }
-  @media (max-width:520px){#musicMenu{top:54px;right:10px}}
+  @media (max-width:640px){#musicMenu{top:calc(env(safe-area-inset-top) + 48px);right:10px;width:190px}}
   .mm-opt{
     display:flex;align-items:center;gap:10px;cursor:pointer;
     font-family:var(--anton);font-weight:400;font-size:.92rem;letter-spacing:.06em;text-transform:uppercase;
@@ -898,6 +984,293 @@
   @media (prefers-reduced-motion:reduce){.mm-opt{animation:none}}
 
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  /* ===================== MOBILE LAYER (<=640px) ===================== */
+  /* bottom nav, bottom sheet and FAB scaffolding are declared here so
+     they stay display:none on desktop and only light up on phone width */
+  .bnav{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;
+    grid-template-columns:repeat(5,1fr);
+    background:rgba(11,11,12,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    border-top:2px solid var(--red);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .bnav-btn{
+    position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:9px 4px 7px;background:none;border:0;cursor:pointer;color:var(--faint);
+    font-family:var(--anton);font-weight:400;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;
+  }
+  .bnav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .bnav-btn span{width:100%;min-width:0;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bnav-btn.on{color:#fff}
+  .bnav-btn.on svg{color:var(--red)}
+  .bnav-btn.on::before{content:"";position:absolute;top:0;left:50%;width:26px;height:3px;background:var(--red);transform:translateX(-50%)}
+  .bnav-btn:active{background:var(--red-wash)}
+  .bnav-btn:focus-visible{outline:2px solid var(--warn);outline-offset:-2px}
+
+  .fab{
+    position:fixed;right:18px;z-index:59;display:none;
+    bottom:calc(72px + env(safe-area-inset-bottom) + 18px);
+    width:52px;height:52px;padding:0;cursor:pointer;
+    font-family:var(--anton);font-size:1.6rem;line-height:1;
+    background:var(--red);color:#fff;border:2px solid #000;
+    box-shadow:3px 3px 0 #000;transform:skewX(-8deg);
+  }
+  .fab > span{display:block;transform:skewX(8deg)}
+  .fab:active{transform:skewX(-8deg) scale(.92);box-shadow:1px 1px 0 #000}
+
+  .sheet-scrim{position:fixed;inset:0;z-index:78;background:rgba(0,0,0,.6);display:none;align-items:flex-end}
+  .sheet-scrim:not([hidden]){display:flex}
+  .sheet{
+    width:100%;max-height:88vh;display:flex;flex-direction:column;
+    background:var(--panel);border-top:3px solid var(--red);
+    transform:translateY(100%);transition:transform .24s cubic-bezier(.2,.8,.2,1);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .sheet-scrim.open .sheet{transform:translateY(0)}
+  .sheet-scrim.full .sheet{height:88vh}
+  .sheet-grip{width:38px;height:4px;border-radius:2px;background:var(--line);margin:9px auto 3px;flex:none}
+  .sheet-head{display:flex;align-items:center;gap:12px;padding:6px 16px 12px;border-bottom:2px solid var(--line)}
+  .sheet-head b{flex:1;font-family:var(--anton);font-weight:400;font-size:1.15rem;letter-spacing:.03em;text-transform:uppercase}
+  .sheet-x{flex:none;width:36px;height:36px;cursor:pointer;background:#000;border:2px solid var(--line);color:#fff;font-size:1rem;transform:skewX(-10deg)}
+  .sheet-x:active{background:var(--red);border-color:var(--red)}
+  .sheet-body{overflow:auto;padding:16px;display:flex;flex-direction:column;gap:16px}
+  .sheet-body .fld{gap:8px}
+  .sheet-save{
+    font-family:var(--anton);font-weight:400;font-size:1rem;letter-spacing:.06em;text-transform:uppercase;
+    cursor:pointer;background:var(--red);color:#fff;border:2px solid #000;
+    padding:14px 20px;min-height:52px;transform:skewX(-8deg);
+  }
+  .sheet-save > span{display:block;transform:skewX(8deg)}
+  .sheet-save:active{transform:skewX(-8deg) translate(2px,2px)}
+  .sheet-more-btn{
+    display:flex;align-items:center;gap:12px;width:100%;cursor:pointer;text-align:left;
+    font-family:var(--anton);font-weight:400;font-size:1.05rem;letter-spacing:.04em;text-transform:uppercase;
+    color:#fff;background:#000;border:2px solid var(--line);padding:16px;min-height:56px;
+  }
+  .sheet-more-btn:active{background:var(--red);border-color:var(--red)}
+  .sheet-more-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;flex:none}
+  .sheet-about{border-top:1px solid var(--line);margin-top:4px;padding-top:16px;display:flex;flex-direction:column;gap:4px;text-align:center}
+  .sheet-about b{font-family:var(--anton);font-weight:400;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;color:#fff}
+  .sheet-about span{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--faint)}
+  .sheet-about .sig{
+    margin-top:8px;font-family:var(--anton);font-size:.92rem;letter-spacing:.1em;text-transform:uppercase;
+    color:#0B0B0C;background:var(--warn);align-self:center;padding:4px 14px;transform:skewX(-9deg);
+  }
+
+  .pal-top{display:none}
+
+  @media (min-width:641px){
+    /* defensive: if a sheet is ever opened on desktop, center it as a modal */
+    .sheet-scrim{align-items:center;justify-content:center}
+    .sheet{max-width:520px;max-height:82vh;border:2px solid var(--ink);border-top:3px solid var(--red);transform:translateY(16px);opacity:0;transition:transform .18s,opacity .18s}
+    .sheet-scrim.open .sheet{transform:none;opacity:1}
+  }
+
+  @media (max-width:640px){
+    body::before{opacity:.3}
+    body::after{
+      background:
+        radial-gradient(ellipse 150% 90% at 50% 0%,rgba(11,11,12,.4) 0%,rgba(11,11,12,.82) 58%,rgba(11,11,12,.96) 100%),
+        radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
+      background-size:100% 100%,13px 13px;
+    }
+
+    .app{max-width:100%;padding:16px 16px calc(66px + env(safe-area-inset-bottom) + 16px);font-size:15px}
+
+    /* header: strip to identity + one line */
+    header{margin-bottom:16px}
+    header::before{display:none}
+    .brand{gap:9px}
+    h1{font-size:1.15rem;text-shadow:2px 2px 0 var(--red);letter-spacing:.01em;overflow-wrap:anywhere}
+    .mark{width:34px;height:34px;font-size:14px}
+    .ver-wrap{flex-basis:100%;flex-direction:row;align-items:center;gap:8px}
+    .byline{display:none}
+    .tagline{display:none}
+    #stats{display:none}
+    .toolbar{flex-direction:column;align-items:stretch;gap:10px;margin-top:14px}
+    .view-switch{display:none}
+    .search-btn{
+      width:100%;justify-content:flex-start;transform:none;min-height:48px;
+      border:2px solid var(--line);border-left:4px solid var(--warn);padding:12px 14px;font-size:.9rem;
+    }
+    .search-btn kbd{display:none}
+    .search-btn .s-short{display:none}
+    .search-btn .s-mph{display:inline}
+
+    .bnav{display:grid}
+    .fab{display:block}
+    .fab[hidden]{display:none}
+
+    /* board: rail becomes a sticky horizontal category strip */
+    .board{display:block}
+    .rail{
+      position:sticky;top:0;z-index:30;margin:0 -16px 14px;padding:10px 12px;
+      background:rgba(11,11,12,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+      border:0;border-bottom:2px solid var(--line);clip-path:none;filter:none;
+    }
+    .rail h2,.rail-hint{display:none}
+    .cat-list{flex-direction:row;overflow-x:auto;gap:8px;margin:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    .cat-list::-webkit-scrollbar{display:none}
+    .cat{
+      flex:0 0 auto;white-space:nowrap;padding:8px 14px;gap:8px;
+      clip-path:none!important;transform:none!important;border-radius:0;
+    }
+    .cat::after{display:none}
+    .cat.sel{filter:none}
+    .cat-name{font-size:.8rem;overflow:visible}
+
+    /* panel + containers: flatten, keep a small red identity shadow on the shell */
+    .panel{clip-path:none;filter:drop-shadow(3px 3px 0 var(--red));min-height:0}
+    .panel-head{padding:16px 16px 20px;gap:8px 10px;clip-path:polygon(10px 0,100% 0,calc(100% - 8px) 100%,4px 100%)}
+    .panel-head h2{flex:1 1 100%;font-size:1.2rem;text-shadow:2px 2px 0 #000}
+    .panel-head .pill,.panel-head .link-danger{font-size:.68rem}
+    .section{padding:20px 16px}
+    .section h3{font-size:.82rem}
+    .job-detail{padding:16px 14px 28px;gap:24px}
+    .fld{gap:8px}
+
+    .job,.reb-card,.rt-entry,.calc-block,.embed-card,.chart,.svc,.wo-col,.sched-item,.save-row{
+      clip-path:none!important;filter:none!important;transform:none!important;
+    }
+    .job{border:0;border-left:3px solid transparent;background:rgba(0,0,0,.5)}
+    .job.exp{border-left-color:var(--red);background:rgba(228,0,43,.07)}
+    .svc,.wo-col{border:1px solid var(--line)}
+
+    /* job cards: title on its own line, chips collapse to a plain meta line */
+    .job-row{padding:14px;gap:12px}
+    .job-title-row{column-gap:8px;row-gap:4px}
+    .job-title{flex:1 1 100%;white-space:normal;font-size:1rem;font-weight:700;line-height:1.25}
+    .job-title-row .badge,.job-title-row .dl-chip,.job-title-row .price-chip{
+      border:0;background:none;padding:0;transform:none;font-size:.72rem;
+    }
+    .job-row .icon-btn{opacity:.55}
+    .status-btn{width:34px;height:34px}
+    .status-btn:active{transform:skewX(-8deg) scale(.9)}
+
+    /* controls: 48dp targets */
+    textarea,input.txt,select,.dt-input,.price-input,.add-row input,
+    .chip-form input,.embed-add input,.save-new input,.wo-add input{min-height:48px}
+    .add-row button,.mini-btn,.chip-form button,.embed-add button,.wo-add button{min-height:44px}
+    .add-row{display:none} /* replaced by the FAB + Add-job sheet */
+
+    /* button roles */
+    .mini-btn{background:transparent;border:2px solid var(--line);color:var(--muted)}
+    .mini-btn:active{background:var(--red);border-color:var(--red);color:#fff}
+    .link-danger{background:transparent;border:2px solid var(--warn);color:var(--warn);transform:none}
+
+    /* rebuttal / rt / calc entries */
+    .reb-card,.rt-entry,.calc-block{padding:14px}
+    .grid2{grid-template-columns:1fr}
+
+    /* schedule / stats / services breathing room */
+    .sched-item{grid-template-columns:1fr auto;border-left-width:4px;padding:14px}
+    .sched-when{grid-column:1/-1}
+    .chart-grid{grid-template-columns:1fr;gap:20px}
+    .chart{padding:16px}
+    .stat-table td:last-child{font-size:1rem}
+    .svc-list,.wo-grid,.history{padding:20px 16px}
+    .wo-grid{grid-template-columns:1fr;gap:16px}
+
+    /* command palette: full screen with a back bar */
+    #palette{padding:0}
+    .pal-box{width:100%;max-width:none;height:100%;max-height:none;clip-path:none;filter:none;border:0}
+    .pal-top{
+      display:flex;align-items:center;gap:8px;background:#000;border-bottom:2px solid var(--red);
+      padding:calc(8px + env(safe-area-inset-top)) 10px 8px;
+    }
+    .pal-back{
+      width:40px;height:40px;flex:none;cursor:pointer;font-size:1.1rem;
+      background:#000;border:2px solid var(--line);color:#fff;transform:skewX(-10deg);
+    }
+    .pal-back:active{background:var(--red);border-color:var(--red)}
+    #palInput{border-bottom:0;min-height:52px;font-size:1rem}
+    .pal-foot{display:none}
+    .pal-recent .pi-label{color:var(--muted)}
+
+    /* micro-interactions */
+    .job-detail{animation:jobDetailIn .2s ease}
+    .bnav-btn,.fab,.cat,.status-btn{-webkit-tap-highlight-color:transparent}
+    .cat:active{transform:none!important;opacity:.7}
+
+    /* ---- v2: reduce spatial competition ---- */
+    /* edge-to-edge: content clears the status bar; character art shows behind it */
+    .app{padding-top:calc(14px + env(safe-area-inset-top))}
+    .rail{top:env(safe-area-inset-top)}
+    /* reserve the top-right gutter so the title never collides with EN / theme */
+    .brand{padding-right:86px;min-height:38px}
+
+    /* Level 3 = information, not a box: form controls sit on the surface */
+    .job-detail textarea,
+    .job-detail input.txt,
+    .job-detail .price-input,
+    .job-detail .dt-input,
+    .job-detail select,
+    .reb-line textarea,
+    .rt-entry input.txt,
+    .rt-entry textarea,
+    .calc-block textarea,
+    .chip-form input,
+    .embed-add input{
+      background:transparent;border:0;border-bottom:1px solid var(--line);
+      border-radius:0;clip-path:none;padding:8px 2px;
+    }
+    .job-detail textarea,.reb-line textarea,.rt-entry textarea,.calc-block textarea{min-height:56px}
+    .job-detail,.job-detail .fld,.job-detail .grid2{min-width:0}
+    .job-detail textarea,.job-detail input.txt{max-width:100%;overflow-wrap:anywhere}
+    .job-detail textarea:focus-visible,
+    .job-detail input.txt:focus-visible,
+    .job-detail select:focus-visible,
+    .job-detail .dt-input:focus-visible,
+    .job-detail .price-input:focus-visible,
+    .reb-line textarea:focus-visible,
+    .rt-entry input.txt:focus-visible,
+    .rt-entry textarea:focus-visible,
+    .calc-block textarea:focus-visible,
+    .chip-form input:focus-visible,
+    .embed-add input:focus-visible{outline:0;border-bottom-color:var(--red);background:transparent}
+    .calc-block textarea{font-size:.85rem}
+
+    /* Level 2 = subtle surface, one accent edge — no full outline */
+    .rt-section,.calc-section{border:0;background:transparent;padding:0}
+    .reb-card,.rt-entry,.calc-block{
+      border:0;border-left:3px solid var(--line);
+      background:rgba(255,255,255,.035);padding:12px 14px;
+    }
+    .reb-card.s-resolved{border-left-color:var(--c-completed)}
+    .reb-card.s-in-progress{border-left-color:var(--warn)}
+    .rt-entry,.calc-block{border-left-color:var(--warn)}
+    .embed-card{border:2px solid #fff}
+    .embed-grid,.rt-ev-grid,.rt-ev,.embed-card{max-width:100%}
+    .reb-del,.rt-del,.calc-del{top:8px;right:8px}
+
+    /* Full Feats / notes: drop the inner frame, keep the label */
+    .argdoc{border:0;background:rgba(255,255,255,.035)}
+    .argdoc-toolbar{border-bottom:1px solid var(--line)}
+
+    /* stats summary: 2-col tile grid, not a spreadsheet */
+    .stat-table{display:grid;grid-template-columns:1fr 1fr;gap:8px;border:0;clip-path:none}
+    .stat-table tbody{display:contents}
+    .stat-table tr{display:flex;flex-direction:column;gap:3px;min-width:0;overflow:hidden;background:rgba(255,255,255,.04);padding:11px 12px}
+    .stat-table td{display:block;border:0;padding:0;min-width:0;max-width:100%}
+    .stat-table td:first-child{font-size:.58rem;letter-spacing:0;line-height:1.3;white-space:normal;word-break:break-word}
+    .stat-table td:last-child{text-align:left;font-size:1.3rem}
+
+    /* charts breathe: surface, not frame */
+    .chart{border:0;background:rgba(255,255,255,.03);padding:16px}
+
+    /* category strip: show a peek of the next chip so it reads as scrollable */
+    .cat-list{padding-right:36px}
+    .rail::after{
+      content:"";position:absolute;top:0;right:0;bottom:0;width:34px;pointer-events:none;z-index:1;
+      background:linear-gradient(90deg,transparent,rgba(11,11,12,.92));
+    }
+  }
+  @keyframes jobDetailIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){
+    .sheet{transition:none}
+    .job-detail{animation:none}
+  }
 </style>
 </head>
 <body>
@@ -933,7 +1306,7 @@
         <button type="button" data-view="services" data-i18n="tab.services">Services</button>
         <button type="button" data-view="history" data-i18n="tab.history">History</button>
       </div>
-      <button type="button" id="searchBtn" class="search-btn">🔎 <span data-i18n="search.btn">Search all</span> <kbd>Ctrl</kbd><kbd>K</kbd></button>
+      <button type="button" id="searchBtn" class="search-btn">🔎 <span class="s-short"><span data-i18n="search.btn">Search all</span> <kbd>Ctrl</kbd><kbd>K</kbd></span><span class="s-mph" data-i18n="search.mph">Search jobs, customers, feats…</span></button>
     </div>
   </header>
 
@@ -1002,12 +1375,15 @@
 
 <div class="lightbox" id="lightbox" hidden>
   <button class="close" id="lbClose" aria-label="Close">✕</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous" hidden>&#8249;</button>
   <img id="lbImg" alt="">
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Next" hidden>&#8250;</button>
   <div class="cap mono" id="lbCap"></div>
 </div>
 
 <div id="palette" hidden>
   <div class="pal-box" role="dialog" aria-modal="true" data-i18n-aria="search.btn" aria-label="Search all">
+    <div class="pal-top"><button type="button" class="pal-back" id="palBack" aria-label="Close">&larr;</button></div>
     <input id="palInput" type="text" data-i18n-ph="search.ph" placeholder="Search…" autocomplete="off" spellcheck="false">
     <div class="pal-results" id="palResults"></div>
     <div class="pal-foot"><span>&uarr;&darr; <span data-i18n="pal.up">select</span></span><span>&crarr; <span data-i18n="pal.enter">open</span></span><span>esc <span data-i18n="pal.esc">close</span></span></div>
@@ -1159,6 +1535,39 @@
   <div class="w-flash"></div>
 </div>
 
+<button type="button" id="fab" class="fab" hidden aria-label="Add job"><span>+</span></button>
+
+<nav id="bottomNav" class="bnav" aria-label="Primary">
+  <button type="button" class="bnav-btn" data-view="board">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="5" height="16"/><rect x="9.5" y="4" width="5" height="11"/><rect x="16" y="4" width="5" height="16"/></svg>
+    <span data-i18n="tab.board">Board</span>
+  </button>
+  <button type="button" class="bnav-btn" data-view="schedule">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+    <span data-i18n="tab.schedule">Schedule</span>
+  </button>
+  <button type="button" class="bnav-btn" data-view="workon">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
+    <span data-i18n="nav.channels">Channels</span>
+  </button>
+  <button type="button" class="bnav-btn" data-view="stats">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4"/><path d="M4 20h16"/><rect x="8" y="12" width="3" height="6"/><rect x="14" y="8" width="3" height="10"/></svg>
+    <span data-i18n="tab.stats">Stats</span>
+  </button>
+  <button type="button" class="bnav-btn" data-nav="more">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+    <span data-i18n="nav.more">More</span>
+  </button>
+</nav>
+
+<div id="sheet" class="sheet-scrim" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-grip"></div>
+    <div class="sheet-head"><b id="sheetTitle"></b><button type="button" class="sheet-x" id="sheetX" aria-label="Close">&#10005;</button></div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+</div>
+
 <script src="vendor/katex/katex.min.js"></script>
 <script>
 (function(){
@@ -1173,9 +1582,10 @@
       "loader.lbl":"Memuat Meta-Listing",
       "tagline":"Pelacak pekerjaan battleboarding: lifecycle status, deadline & prioritas, rebuttal terstruktur, embed scan, dan statistik. Semua tersimpan di perangkat ini.",
       "tab.board":"Papan","tab.schedule":"Jadwal","tab.stats":"Statistik","tab.workon":"Kanal Kerja","tab.services":"Layanan","tab.history":"Sejarah",
-      "search.btn":"Cari semua","search.ph":"Cari job, argumen, rebuttal, customer, tag…",
+      "nav.more":"Lainnya","nav.channels":"Kanal","about.version":"Versi 1.0 · Final V","about.by":"Dibuat oleh Ammar Firman",
+      "search.btn":"Cari semua","search.ph":"Cari job, argumen, rebuttal, customer, tag…","search.mph":"Cari job, customer, feat…",
       "pal.up":"pilih","pal.enter":"buka","pal.esc":"tutup",
-      "pal.hint":"Ketik untuk mencari di seluruh app: job, rebuttal, notes, customer, tag.","pal.none":"Tidak ada hasil untuk",
+      "pal.hint":"Ketik untuk mencari di seluruh app: job, rebuttal, notes, customer, tag.","pal.none":"Tidak ada hasil untuk","pal.recent":"Terakhir dicari",
       "pal.g.jobs":"Job","pal.g.rebuttals":"Rebuttal","pal.g.arguments":"Argumen","pal.g.customers":"Customer","pal.g.tags":"Tag","pal.rebuttal":"(rebuttal)",
       "rail.categories":"Kategori","rail.empty":"Belum ada kategori.","rail.addcat":"+ Tambah kategori",
       "sound.title":"Musik","sound.off":"Musik: mati","sound.on":"Musik:",
@@ -1260,9 +1670,10 @@
       "loader.lbl":"Processing to Meta-Listing",
       "tagline":"Battleboarding work tracker: lifecycle status, deadlines & priority, structured rebuttals, scan embeds, and statistics. All stored on this device.",
       "tab.board":"Board","tab.schedule":"Schedule","tab.stats":"Stats","tab.workon":"Work On","tab.services":"Services","tab.history":"History",
-      "search.btn":"Search all","search.ph":"Search jobs, arguments, rebuttals, customers, tags…",
+      "nav.more":"More","nav.channels":"Channels","about.version":"Version 1.0 · Final V","about.by":"Made by Ammar Firman",
+      "search.btn":"Search all","search.ph":"Search jobs, arguments, rebuttals, customers, tags…","search.mph":"Search jobs, customers, feats…",
       "pal.up":"select","pal.enter":"open","pal.esc":"close",
-      "pal.hint":"Type to search the whole app: jobs, rebuttals, notes, customers, tags.","pal.none":"No results for",
+      "pal.hint":"Type to search the whole app: jobs, rebuttals, notes, customers, tags.","pal.none":"No results for","pal.recent":"Recent",
       "pal.g.jobs":"Jobs","pal.g.rebuttals":"Rebuttals","pal.g.arguments":"Arguments","pal.g.customers":"Customers","pal.g.tags":"Tags","pal.rebuttal":"(rebuttal)",
       "rail.categories":"Categories","rail.empty":"No categories yet.","rail.addcat":"+ Add category",
       "sound.title":"Music","sound.off":"Music: off","sound.on":"Music:",
@@ -1530,11 +1941,13 @@
     }).join("\n");
   }
   function rtDocEvidence(list){
-    return (list || []).map(function(u){
-      var info = classifyEmbed(u) || { kind: "link", url: u };
+    return (list || []).map(function(raw){
+      var e = evNorm(raw);
+      var info = classifyEmbed(e.url) || { kind: "link", url: e.url };
+      var cap = e.caption ? '<figcaption class="evcap">' + esc(e.caption) + '</figcaption>' : "";
       return info.kind === "image"
-        ? '<img src="' + esc(info.embedUrl || u) + '" alt="bukti">'
-        : '<a class="evlink" href="' + esc(safeHref(u)) + '">' + esc(u) + '</a>';
+        ? '<figure class="scan"><img src="' + esc(info.embedUrl || e.url) + '" alt="scan">' + cap + '</figure>'
+        : '<a class="evlink" href="' + esc(safeHref(e.url)) + '">' + esc(e.url) + '</a>' + (e.caption ? '<p class="evcap">' + esc(e.caption) + '</p>' : "");
     }).join("\n");
   }
   function buildRespectThreadDoc(j){
@@ -1574,7 +1987,9 @@
       'h3{font-size:13pt;margin:22px 0 2px;color:#111}\n' +
       '.tier{color:#666;font-size:9.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px}\n' +
       'p{margin:0 0 12px}\n.ev{font-weight:700;margin:14px 0 6px}\n.block{margin:0 0 22px}\n' +
-      'img{max-width:100%;height:auto;border:1px solid #ccc;display:block;margin:0 0 10px}\n' +
+      'figure.scan{margin:0 0 16px}\n' +
+      'img{max-width:100%;height:auto;border:1px solid #ccc;display:block;margin:0}\n' +
+      '.evcap{font-size:9.5pt;color:#555;font-style:italic;margin:6px 0 0;padding-left:2px}\n' +
       '.evlink{display:block;font-size:9pt;color:#1155cc;word-break:break-all;margin:0 0 8px}\n' +
       'table.stats{border-collapse:collapse;width:100%;margin:0 0 14px}\n' +
       'table.stats th,table.stats td{border:1px solid #bbb;padding:7px 10px;text-align:left;vertical-align:top;font-size:10.5pt}\n' +
@@ -1640,6 +2055,15 @@
   }
 
   /* ---------- embed URL classification ---------- */
+  // Resolve a pasted link from a wide range of image / video / album hosts into
+  // something the app can show inline. No API keys, no network at classify time:
+  // only URL rewrites that a browser can follow, or an iframe embed the host allows.
+  function frameParents(){
+    var h = "";
+    try { h = (window.location && window.location.hostname) || ""; } catch (e){}
+    var list = [h, "localhost", "127.0.0.1"].filter(function(x, i, a){ return x && a.indexOf(x) === i; });
+    return list.map(function(p){ return "parent=" + encodeURIComponent(p); }).join("&");
+  }
   function classifyEmbed(raw){
     var url = String(raw || "").trim();
     if (!url) return null;
@@ -1648,42 +2072,98 @@
     try { u = new URL(url); } catch (e){ return { url: url, kind: "link" }; }
     var host = u.hostname.replace(/^www\./, "").toLowerCase();
     var path = u.pathname;
+    var seg = path.split("/").filter(Boolean);
+    var last = seg[seg.length - 1] || "";
 
+    /* ---- video: iframe players ---- */
     var yt = null;
     if (host === "youtu.be") yt = path.slice(1).split(/[/?#]/)[0];
-    else if (/(^|\.)youtube\.com$/.test(host)){
+    else if (/(^|\.)youtube(-nocookie)?\.com$/.test(host)){
       if (u.searchParams.get("v")) yt = u.searchParams.get("v");
       else { var m = path.match(/\/(embed|shorts|live|v)\/([^/?#]+)/); if (m) yt = m[2]; }
     }
     if (yt) return { url: url, kind: "video", provider: "youtube",
-      embedUrl: "https://www.youtube.com/embed/" + yt, thumbUrl: "https://i.ytimg.com/vi/" + yt + "/hqdefault.jpg" };
+      embedUrl: "https://www.youtube-nocookie.com/embed/" + yt, thumbUrl: "https://i.ytimg.com/vi/" + yt + "/hqdefault.jpg" };
 
     if (/(^|\.)vimeo\.com$/.test(host)){
       var vm = path.match(/\/(\d+)/);
       if (vm) return { url: url, kind: "video", provider: "vimeo", embedUrl: "https://player.vimeo.com/video/" + vm[1] };
     }
     if (host === "streamable.com"){
-      var sm = path.match(/\/([a-z0-9]+)/i);
+      var sm = path.match(/\/(?:e\/)?([a-z0-9]+)/i);
       if (sm) return { url: url, kind: "video", provider: "streamable", embedUrl: "https://streamable.com/e/" + sm[1] };
     }
     if (host === "dailymotion.com" || host === "dai.ly"){
       var dm = (host === "dai.ly") ? path.slice(1).split(/[/?#]/)[0] : (path.match(/\/video\/([a-z0-9]+)/i) || [])[1];
       if (dm) return { url: url, kind: "video", provider: "dailymotion", embedUrl: "https://www.dailymotion.com/embed/video/" + dm };
     }
+    if (/(^|\.)twitch\.tv$/.test(host) || host === "clips.twitch.tv"){
+      var tvod = path.match(/\/videos\/(\d+)/);
+      if (tvod) return { url: url, kind: "video", provider: "twitch", embedUrl: "https://player.twitch.tv/?video=" + tvod[1] + "&autoplay=false&" + frameParents() };
+      var tclip = (host === "clips.twitch.tv" && seg[0] && seg[0] !== "embed") ? seg[0] : (path.match(/\/clip\/([A-Za-z0-9_-]+)/) || [])[1] || (u.searchParams.get("clip"));
+      if (tclip) return { url: url, kind: "video", provider: "twitch", embedUrl: "https://clips.twitch.tv/embed?clip=" + encodeURIComponent(tclip) + "&autoplay=false&" + frameParents() };
+    }
+    if (/(^|\.)bilibili\.com$/.test(host) || host === "b23.tv"){
+      var bv = (path.match(/\/(BV[0-9A-Za-z]+)/) || [])[1] || u.searchParams.get("bvid");
+      if (bv) return { url: url, kind: "video", provider: "bilibili", embedUrl: "https://player.bilibili.com/player.html?bvid=" + bv + "&autoplay=0&high_quality=1" };
+    }
+
+    /* ---- albums / galleries: host's own multi-image viewer ---- */
+    if ((host === "imgur.com" || host === "m.imgur.com" || host === "imgur.io") && /^\/(a|gallery|t)\//.test(path)){
+      var aid = last.split(/[?#]/)[0];
+      if (aid) return { url: url, kind: "album", provider: "imgur", albumId: "a/" + aid,
+        embedUrl: "https://imgur.com/a/" + aid + "/embed?pub=true" };
+    }
+    if (host === "imgchest.com"){
+      var icp = path.match(/\/p\/([a-z0-9]+)/i);
+      if (icp) return { url: url, kind: "album", provider: "imgchest",
+        embedUrl: "https://imgchest.com/p/" + icp[1] };
+    }
+
+    /* ---- single image: derivable direct URLs ---- */
     if (host === "gyazo.com"){
-      var gm = path.match(/\/([a-f0-9]{16,})/i);
-      if (gm) return { url: url, kind: "image", provider: "gyazo", embedUrl: "https://i.gyazo.com/" + gm[1] + ".png" };
+      var gm = path.match(/\/([0-9a-f]{8,})/i);
+      if (gm) return { url: url, kind: "image", provider: "gyazo",
+        embedUrl: "https://gyazo.com/" + gm[1] + "/raw",
+        alts: ["https://i.gyazo.com/" + gm[1] + ".jpg", "https://i.gyazo.com/" + gm[1] + ".png", "https://i.gyazo.com/" + gm[1] + ".gif", "https://i.gyazo.com/" + gm[1] + ".webp"] };
     }
     if (host === "i.gyazo.com") return { url: url, kind: "image", provider: "gyazo", embedUrl: url };
-    if (host === "i.imgur.com") return { url: url, kind: "image", provider: "imgur", embedUrl: url };
-    if (host === "imgur.com" || host === "m.imgur.com"){
-      if (/^\/(a|gallery|t)\//.test(path)) return { url: url, kind: "link", provider: "imgur" };
-      var im = path.match(/^\/([a-z0-9]+)$/i);
-      if (im) return { url: url, kind: "image", provider: "imgur", embedUrl: "https://i.imgur.com/" + im[1] + ".jpeg" };
+    if (host === "i.imgur.com"){
+      if (/\.(gifv|mp4)(\?|#|$)/i.test(path))
+        return { url: url, kind: "file-video", provider: "imgur", embedUrl: url.replace(/\.(gifv|mp4)(\?[^#]*)?(#.*)?$/i, ".mp4") };
+      var ibase = url.replace(/\.[a-z0-9]+(\?[^#]*)?(#.*)?$/i, "");
+      return { url: url, kind: "image", provider: "imgur", embedUrl: url,
+        alts: [ibase + ".png", ibase + ".jpg", ibase + ".jpeg", ibase + ".gif", ibase + ".webp"] };
     }
-    if (host === "prnt.sc" || host === "prntscr.com") return { url: url, kind: "link", provider: "lightshot" };
-    if (/\.(png|jpe?g|gif|webp|bmp|svg|avif)(\?|#|$)/i.test(path)) return { url: url, kind: "image", embedUrl: url };
-    if (/\.(mp4|webm|ogg|ogv|mov)(\?|#|$)/i.test(path)) return { url: url, kind: "file-video", embedUrl: url };
+    if (host === "imgur.com" || host === "m.imgur.com" || host === "imgur.io"){
+      var im = (path.match(/^\/([a-z0-9]{5,})$/i) || [])[1] || (last.split(".")[0]);
+      if (im && /^[a-z0-9]{5,}$/i.test(im)) return { url: url, kind: "image", provider: "imgur",
+        embedUrl: "https://i.imgur.com/" + im + ".png",
+        alts: ["https://i.imgur.com/" + im + ".jpeg", "https://i.imgur.com/" + im + ".jpg", "https://i.imgur.com/" + im + ".gif", "https://i.imgur.com/" + im + ".webp"] };
+    }
+    if (/(^|\.)giphy\.com$/.test(host) || host === "gph.is"){
+      var gid = null;
+      if (/\/(gifs|clips|stickers)\//.test(path)) gid = (last.match(/-([A-Za-z0-9]{6,})$/) || [])[1] || last;
+      else if (/\/(media|embed)\//.test(path)) gid = seg[1];
+      else if (host === "media.giphy.com" || host === "i.giphy.com") gid = seg[seg.indexOf("media") + 1] || seg[0];
+      if (gid) return { url: url, kind: "image", provider: "giphy", embedUrl: "https://media.giphy.com/media/" + gid + "/giphy.gif" };
+    }
+    if (host === "tenor.com" && /\/view\//.test(path)){
+      var ten = (last.match(/-(\d{6,})$/) || [])[1];
+      if (ten) return { url: url, kind: "image", provider: "tenor", embedUrl: "https://media.tenor.com/" + ten + "/tenor.gif", alts: [] };
+    }
+
+    /* ---- pages that need scraping / an API: leave as a link ---- */
+    if (/^(prnt\.sc|prntscr\.com|gyazo\.com|snipboard\.io|snag\.gy)$/.test(host)) return { url: url, kind: "link", provider: host.split(".")[0] };
+    if (/(^|\.)(ibb\.co|postimg\.cc|postimages\.org|imgbox\.com|imgpile\.com|vgy\.me|imgpin\.com)$/.test(host) && !/\.(png|jpe?g|gif|webp)/i.test(path)) return { url: url, kind: "link" };
+    if (/(^|\.)(reddit\.com|redd\.it|twitter\.com|x\.com|nitter\.)/.test(host)) return { url: url, kind: "link" };
+
+    /* ---- anything ending in a known media extension ---- */
+    if (/\.(png|jpe?g|jfif|gif|apng|webp|avif|bmp|svg|tiff?)(\?|#|$)/i.test(path) || /[?&]format=(jpg|jpeg|png|webp|gif)/i.test(u.search))
+      return { url: url, kind: "image", embedUrl: url };
+    if (/\.(mp4|webm|ogg|ogv|mov|m4v|mkv)(\?|#|$)/i.test(path))
+      return { url: url, kind: "file-video", embedUrl: url };
+
     return { url: url, kind: "link" };
   }
 
@@ -1811,16 +2291,59 @@
   function tbBtn(cmd, label, title){ return '<button type="button" data-cmd="' + esc(cmd) + '" title="' + esc(title) + '">' + label + '</button>'; }
   function tbBlock(tag, label, title){ return '<button type="button" data-cmd="formatBlock" data-val="' + esc(tag) + '" title="' + esc(title) + '">' + label + '</button>'; }
 
+  function evNorm(e){
+    if (typeof e === "string") return { url: e, caption: "" };
+    return (e && e.url) ? { url: e.url, caption: e.caption || "" } : { url: "", caption: "" };
+  }
+  // <img> that walks a list of fallback URLs on load error, then degrades to a link
+  function scanImg(src, alts, alt){
+    var fb = (alts && alts.length) ? ' data-fallback="' + esc(alts.join("|")) + '"' : "";
+    return '<img data-scan loading="lazy" referrerpolicy="no-referrer" src="' + esc(src) + '" alt="' + esc(alt || "") + '"' + fb + '>';
+  }
+  function bindScanFallbacks(root){
+    Array.prototype.forEach.call((root || document).querySelectorAll("img[data-scan]"), function(img){
+      if (img._scanBound) return;
+      img._scanBound = true;
+      img.addEventListener("error", function onErr(){
+        var list = (img.getAttribute("data-fallback") || "").split("|").filter(Boolean);
+        if (list.length){
+          img.setAttribute("data-fallback", list.slice(1).join("|"));
+          img.src = list[0];
+          return;
+        }
+        img.removeEventListener("error", onErr);
+        var a = img.closest("a");
+        var href = (a && a.href) || img.src;
+        var chip = document.createElement("a");
+        chip.className = "embed-fail";
+        chip.href = href; chip.target = "_blank"; chip.rel = "noopener noreferrer";
+        chip.textContent = "⚠ " + hostOf(href);
+        if (img.parentNode) img.parentNode.replaceChild(chip, img);
+      });
+    });
+  }
+
   function embedBodyHtml(e){
-    if (e.kind === "image")
-      return '<a href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="' + esc(e.embedUrl || e.url) + '" alt="' + esc(e.caption || L("embed.scan.alt")) + '"></a>';
-    if (e.kind === "video"){
-      var thumb = e.thumbUrl ? ' style="background-image:url(' + cssUrl(e.thumbUrl) + ')"' : "";
-      return '<button type="button" class="embed-facade" data-act="embed-play" data-src="' + esc(e.embedUrl) + '"' + thumb + '><span class="embed-play">▶</span><span class="embed-prov">' + esc(e.provider || "video") + '</span></button>';
+    // re-derive from the original URL so old records with stale embed URLs self-heal
+    var m = (e.url ? classifyEmbed(e.url) : null) || {};
+    var kind = m.kind || e.kind;
+    var embedUrl = m.embedUrl || e.embedUrl || e.url;
+    var alts = m.alts;
+    var thumbUrl = m.thumbUrl || e.thumbUrl;
+    var provider = m.provider || e.provider;
+    var href = safeHref(e.url || "");
+    if (kind === "image")
+      return '<a href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">' + scanImg(embedUrl, alts, e.caption || L("embed.scan.alt")) + '</a>';
+    if (kind === "video"){
+      var thumb = thumbUrl ? ' style="background-image:url(' + cssUrl(thumbUrl) + ')"' : "";
+      return '<button type="button" class="embed-facade" data-act="embed-play" data-src="' + esc(embedUrl) + '"' + thumb + '><span class="embed-play">▶</span><span class="embed-prov">' + esc(provider || "video") + '</span></button>';
     }
-    if (e.kind === "file-video")
-      return '<video controls preload="none" src="' + esc(e.embedUrl || e.url) + '"></video>';
-    return '<a class="embed-link" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer"><b>' + esc(hostOf(e.url)) + '</b><span>' + esc(e.url) + '</span></a>';
+    if (kind === "file-video")
+      return '<video controls preload="none" src="' + esc(embedUrl) + '"></video>';
+    if (kind === "album")
+      return '<div class="embed-album embed-album-' + esc(provider || "x") + '"><iframe class="embed-frame" src="' + esc(embedUrl) + '" loading="lazy" allowfullscreen referrerpolicy="no-referrer" title="' + esc((provider || "") + " album") + '"></iframe>' +
+             '<a class="embed-album-open" href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">' + esc(hostOf(href)) + ' ↗</a></div>';
+    return '<a class="embed-link" href="' + esc(href) + '" target="_blank" rel="noopener noreferrer"><b>' + esc(hostOf(href)) + '</b><span>' + esc(e.url) + '</span></a>';
   }
   function capInput(attr, e){
     return '<input class="embed-cap-edit" ' + attr + ' placeholder="' + esc(L("embed.cap.edit.ph")) + '" value="' + esc(e.caption || "") + '" aria-label="' + esc(L("embed.cap.edit.aria")) + '">';
@@ -1879,13 +2402,11 @@
   function rtEvidenceHtml(j, listKey, item){
     var ev = item.evidence || [];
     if (!ev.length) return "";
-    return '<div class="rt-ev-grid">' + ev.map(function(u, i){
-      var info = classifyEmbed(u) || { kind: "link", url: u };
-      var inner = info.kind === "image"
-        ? '<img loading="lazy" src="' + esc(info.embedUrl || u) + '" alt="bukti">'
-        : '<span class="rt-ev-link">' + esc(hostOf(u)) + '</span>';
+    return '<div class="rt-ev-grid">' + ev.map(function(raw, i){
+      var e = evNorm(raw);
       return '<figure class="rt-ev">' +
-               '<a href="' + esc(safeHref(u)) + '" target="_blank" rel="noopener noreferrer">' + inner + '</a>' +
+               embedBodyHtml({ url: e.url, caption: e.caption }) +
+               '<input class="embed-cap-edit" data-rt-ev-cap data-job="' + esc(j.id) + '" data-list="' + listKey + '" data-entry="' + esc(item.id) + '" data-idx="' + i + '" placeholder="' + esc(L("ev.cap.aria")) + '" value="' + esc(e.caption || "") + '" aria-label="' + esc(L("ev.cap.aria")) + '">' +
                '<button class="icon-btn rt-ev-del" data-act="del-rt-ev" data-job="' + esc(j.id) + '" data-list="' + listKey + '" data-entry="' + esc(item.id) + '" data-idx="' + i + '" aria-label="' + esc(L("ev.del")) + '">✕</button>' +
              '</figure>';
     }).join("") + '</div>';
@@ -2084,13 +2605,48 @@
   }
 
   /* ---------- board panel ---------- */
+  var FIELD_ATTRS = ["data-jf", "data-rt-field", "data-rt-text", "data-calc-field", "data-reb-field"];
+  var SCOPE_ATTRS = ["data-rt", "data-calc", "data-reb"];
+  function panelSnapshot(){
+    var snap = { y: window.pageYOffset || document.documentElement.scrollTop || 0, f: null };
+    var a = document.activeElement;
+    var panel = $("panel");
+    if (!a || !panel.contains(a)) return snap;
+    if (a.tagName !== "INPUT" && a.tagName !== "TEXTAREA" && a.tagName !== "SELECT") return snap;
+    var parts = [];
+    for (var i = 0; i < FIELD_ATTRS.length; i++){
+      if (a.hasAttribute(FIELD_ATTRS[i])) parts.push("[" + FIELD_ATTRS[i] + '="' + a.getAttribute(FIELD_ATTRS[i]) + '"]');
+    }
+    if (!parts.length) return snap;
+    var scope = "";
+    var wrap = a.closest("[data-rt],[data-calc],[data-reb]");
+    if (wrap){
+      for (var k = 0; k < SCOPE_ATTRS.length; k++){
+        if (wrap.hasAttribute(SCOPE_ATTRS[k])){ scope = "[" + SCOPE_ATTRS[k] + '="' + wrap.getAttribute(SCOPE_ATTRS[k]) + '"] '; break; }
+      }
+    }
+    var s = null, e = null;
+    try { s = a.selectionStart; e = a.selectionEnd; } catch (_){}
+    snap.f = { sel: scope + a.tagName.toLowerCase() + parts.join(""), s: s, e: e };
+    return snap;
+  }
+  function panelRestore(snap){
+    if (!snap) return;
+    if (snap.f){
+      var el = $("panel").querySelector(snap.f.sel);
+      if (el){
+        try { el.focus({ preventScroll: true }); } catch (_){ el.focus(); }
+        if (snap.f.s != null){ try { el.setSelectionRange(snap.f.s, snap.f.e); } catch (_){} }
+      }
+    }
+    if (snap.y != null) window.scrollTo(0, snap.y);
+  }
+
   function renderPanel(){
     var panel = $("panel");
     var cat = selectedCat();
 
-    var active = document.activeElement;
-    var keep = active && active.getAttribute && active.getAttribute("data-jf")
-      ? { jf: active.getAttribute("data-jf"), s: active.selectionStart, e: active.selectionEnd } : null;
+    var keep = panelSnapshot();
 
     if (!cat){
       panel.innerHTML = '<div class="empty"><p>' + esc(state.categories.length ? L("panel.pickcat") : L("rail.empty")) + '</p></div>';
@@ -2119,11 +2675,7 @@
       '</div>';
 
     bindPanel(cat.id);
-
-    if (keep){
-      var nt = panel.querySelector('[data-jf="' + keep.jf + '"]');
-      if (nt){ nt.focus(); try { nt.setSelectionRange(keep.s, keep.e); } catch (e) {} }
-    }
+    panelRestore(keep);
   }
 
   function renderFiltered(){
@@ -2411,17 +2963,24 @@
     Array.prototype.forEach.call(document.querySelectorAll(".view-switch button"), function(b){
       b.classList.toggle("on", b.getAttribute("data-view") === v);
     });
+    Array.prototype.forEach.call(document.querySelectorAll("#bottomNav .bnav-btn"), function(b){
+      var bv = b.getAttribute("data-view");
+      b.classList.toggle("on", bv ? bv === v : (v === "history" || v === "services"));
+    });
     if (v === "board"){ renderRail(); if (state.filter) renderFiltered(); else renderPanel(); }
     else if (v === "schedule") renderSchedule();
     else if (v === "stats") renderStatsView();
     else if (v === "workon") renderWorkOn();
     else if (v === "history") renderSaves();
+    var fab = $("fab");
+    if (fab) fab.hidden = !(v === "board" && !state.filter && selectedCat());
   }
   function renderAll(){ renderChips(); renderView(); }
 
   /* ---------- panel binding ---------- */
   function bindPanel(catId){
     var panel = $("panel");
+    bindScanFallbacks(panel);
 
     var jf = $("jobForm");
     if (jf) jf.addEventListener("submit", function(e){
@@ -2449,7 +3008,7 @@
           val = el.value;
           if (typeof val === "string") val = val.trim();
         }
-        var render = (field === "status" || field === "priority" || field === "deadline" || field === "price" || field === "priceKind" || field === "customer");
+        var render = (field === "status" || field === "priority" || field === "deadline" || field === "price" || field === "priceKind");
         DATA.updateJob(catId, state.expandedId, field, val, render);
       });
     });
@@ -2553,6 +3112,11 @@
         inp.value = "";
       });
     });
+    Array.prototype.forEach.call(panel.querySelectorAll("[data-rt-ev-cap]"), function(el){
+      el.addEventListener("blur", function(){
+        DATA.updateRtEvidenceCaption(catId, el.getAttribute("data-job"), el.getAttribute("data-list"), el.getAttribute("data-entry"), parseInt(el.getAttribute("data-idx"), 10), el.value);
+      });
+    });
 
     // Calculation / LaTeX blocks
     Array.prototype.forEach.call(panel.querySelectorAll(".calc-block"), function(card){
@@ -2599,6 +3163,22 @@
 
   /* ---------- delegated events ---------- */
   document.addEventListener("click", function(e){
+    // scan image -> open the fullscreen slider instead of leaving the app
+    var sa = e.target.closest && e.target.closest("a");
+    if (sa && sa.querySelector && sa.querySelector("img[data-scan]")){
+      e.preventDefault();
+      var grid = sa.closest(".rt-ev-grid, .embed-grid") || sa.closest(".job-detail") || document;
+      var imgs = Array.prototype.slice.call(grid.querySelectorAll("a > img[data-scan]"));
+      var here = sa.querySelector("img[data-scan]");
+      var items = imgs.map(function(g){
+        var fig = g.closest("figure, .embed-card");
+        var ci = fig && fig.querySelector(".embed-cap-edit");
+        return { src: g.currentSrc || g.src, cap: (ci && ci.value) || "" };
+      });
+      openScanLightbox(items, Math.max(0, imgs.indexOf(here)));
+      return;
+    }
+
     var t = e.target.closest("[data-act]");
     if (!t) return;
     var act = t.getAttribute("data-act");
@@ -2613,14 +3193,14 @@
     else if (act === "deadline-clear" && cat){ DATA.updateJob(cat.id, id, "deadline", null, true); }
     else if (act === "del-tag" && cat){ DATA.removeTag(cat.id, t.getAttribute("data-job"), t.getAttribute("data-tag")); }
     else if (act === "del-full-feat" && cat){ DATA.deleteFullFeat(cat.id, t.getAttribute("data-job"), id); }
-    else if (act === "add-reb" && cat){ DATA.addRebuttal(cat.id, id); }
+    else if (act === "add-reb" && cat){ if (isMobile()) openAddRebuttalSheet(cat.id, id); else DATA.addRebuttal(cat.id, id); }
     else if (act === "del-reb" && cat){ DATA.deleteRebuttal(cat.id, t.getAttribute("data-job"), id); }
-    else if (act === "add-rt" && cat){ DATA.addRtItem(cat.id, id, t.getAttribute("data-list")); }
+    else if (act === "add-rt" && cat){ if (isMobile()) openAddRtSheet(cat.id, id, t.getAttribute("data-list")); else DATA.addRtItem(cat.id, id, t.getAttribute("data-list")); }
     else if (act === "del-rt" && cat){ DATA.deleteRtItem(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), id); }
     else if (act === "del-rt-ev" && cat){ DATA.deleteRtEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), t.getAttribute("data-entry"), parseInt(t.getAttribute("data-idx"), 10)); }
     else if (act === "rt-export" && cat){ exportRespectThread(cat.id, id); }
     else if (act === "calc-open"){ openCalc(); }
-    else if (act === "add-calc" && cat){ DATA.addCalcBlock(cat.id, id); }
+    else if (act === "add-calc" && cat){ if (isMobile()) openAddCalcSheet(cat.id, id); else DATA.addCalcBlock(cat.id, id); }
     else if (act === "del-calc" && cat){ DATA.deleteCalcBlock(cat.id, t.getAttribute("data-job"), id); }
     else if (act === "del-calc-ev" && cat){ DATA.deleteCalcEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-block"), parseInt(t.getAttribute("data-idx"), 10)); }
     else if (act === "del-embed" && cat){ DATA.deleteEmbed(cat.id, t.getAttribute("data-job"), id); }
@@ -2638,6 +3218,7 @@
   document.addEventListener("keydown", function(e){
     if ((e.ctrlKey || e.metaKey) && String(e.key).toLowerCase() === "k"){ e.preventDefault(); openPalette(); return; }
     if (e.key === "Escape"){
+      if (!$("sheet").hidden){ closeSheet(); return; }
       if (!$("calc").hidden){ closeCalc(); return; }
       if (!$("palette").hidden){ closePalette(); return; }
       if (!$("lightbox").hidden){ closeLightbox(); return; }
@@ -2651,6 +3232,61 @@
       if (sc && sc.getAttribute("role") === "button"){ e.preventDefault(); var c = selectedCat(); if (c) DATA.cycleStatus(c.id, sc.getAttribute("data-id")); return; }
     }
   });
+
+  /* ---------- mobile layer: detection + bottom sheet ---------- */
+  var mqMobile = window.matchMedia && window.matchMedia("(max-width: 640px)");
+  function isMobile(){ return !!(mqMobile && mqMobile.matches); }
+  if (mqMobile && mqMobile.addEventListener)
+    mqMobile.addEventListener("change", function(){ closeSheet(); if (typeof renderView === "function") renderView(); });
+
+  var _sheetTimer = null;
+  function openSheet(title, bodyHtml, onMount, opts){
+    var sc = $("sheet"); if (!sc) return;
+    if (_sheetTimer){ clearTimeout(_sheetTimer); _sheetTimer = null; }
+    $("sheetTitle").textContent = title || "";
+    $("sheetBody").innerHTML = bodyHtml || "";
+    sc.classList.toggle("full", !!(opts && opts.full));
+    sc.hidden = false;
+    void sc.offsetWidth;
+    sc.classList.add("open");
+    if (typeof onMount === "function"){ try { onMount($("sheetBody")); } catch (err) { console.error(err); } }
+    var f = $("sheetBody").querySelector("input,textarea,select");
+    if (f) setTimeout(function(){ try { f.focus(); } catch (_){} }, 70);
+  }
+  function closeSheet(){
+    var sc = $("sheet"); if (!sc || sc.hidden) return;
+    sc.classList.remove("open");
+    function done(){ sc.hidden = true; sc.classList.remove("full"); $("sheetBody").innerHTML = ""; _sheetTimer = null; }
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches){ done(); return; }
+    _sheetTimer = setTimeout(done, 240);
+  }
+  (function(){
+    var sc = $("sheet"); if (!sc) return;
+    sc.addEventListener("click", function(e){ if (e.target === sc) closeSheet(); });
+    var x = $("sheetX"); if (x) x.addEventListener("click", closeSheet);
+    // drag-to-dismiss on the grip / head
+    var head = sc.querySelector(".sheet-head"), grip = sc.querySelector(".sheet-grip");
+    var sheet = sc.querySelector(".sheet"), startY = null;
+    function down(e){ startY = (e.touches ? e.touches[0].clientY : e.clientY); sheet.style.transition = "none"; }
+    function move(e){
+      if (startY == null) return;
+      var dy = (e.touches ? e.touches[0].clientY : e.clientY) - startY;
+      if (dy > 0) sheet.style.transform = "translateY(" + dy + "px)";
+    }
+    function up(e){
+      if (startY == null) return;
+      var dy = (e.changedTouches ? e.changedTouches[0].clientY : e.clientY) - startY;
+      startY = null; sheet.style.transition = ""; sheet.style.transform = "";
+      if (dy > 90) closeSheet();
+    }
+    [head, grip].forEach(function(h){
+      if (!h) return;
+      h.addEventListener("touchstart", down, { passive: true });
+      h.addEventListener("touchmove", move, { passive: true });
+      h.addEventListener("touchend", up);
+      h.addEventListener("mousedown", function(e){ down(e); document.addEventListener("mousemove", move); document.addEventListener("mouseup", function u(ev){ up(ev); document.removeEventListener("mousemove", move); document.removeEventListener("mouseup", u); }); });
+    });
+  })();
 
   /* ---------- transitions ---------- */
   var transitioning = false, pendingSwap = null, wipeSkip = null;
@@ -2667,8 +3303,10 @@
     el.classList.remove("in", "out");
     void el.offsetWidth;
     el.classList.add("in");
-    // timing: cover + motif in, long hold so the animation can be watched, then wipe out
-    var SWAP_AT = 440, HOLD_UNTIL = 1600, OUT_DUR = 400;
+    // timing: cover + motif in, hold so the animation can be watched, then wipe out.
+    // mobile keeps the full sequence but roughly halves the hold.
+    var onMob = isMobile();
+    var SWAP_AT = onMob ? 300 : 440, HOLD_UNTIL = onMob ? 800 : 1600, OUT_DUR = onMob ? 300 : 400;
     var rendered = false, outStarted = false, t1 = null, t2 = null, t3 = null;
     function doRender(){
       if (rendered) return;
@@ -2694,7 +3332,10 @@
   }
   (function(){
     var el = $("wipe");
-    if (el) el.addEventListener("click", function(){ if (transitioning && wipeSkip) wipeSkip(); });
+    if (!el) return;
+    function skip(){ if (transitioning && wipeSkip) wipeSkip(); }
+    el.addEventListener("click", skip);
+    el.addEventListener("pointerdown", skip);
   })();
   function catMotif(cat){
     if (!cat) return "star";
@@ -2704,14 +3345,114 @@
     if (cat.name === "Judgement Battleboarding") return "judge";
     return "star";
   }
+  function navigateView(v, label){
+    var clearingFilter = state.filter && v === "board";
+    if (v === state.view && !transitioning && !clearingFilter) return;
+    playTransition(function(){ state.view = v; if (v === "board") state.filter = null; renderView(); }, label || L("tab." + v), v);
+  }
   Array.prototype.forEach.call(document.querySelectorAll(".view-switch button"), function(b){
+    b.addEventListener("click", function(){ navigateView(b.getAttribute("data-view"), (b.textContent || "").trim()); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("#bottomNav .bnav-btn"), function(b){
     b.addEventListener("click", function(){
       var v = b.getAttribute("data-view");
-      var clearingFilter = state.filter && v === "board";
-      if (v === state.view && !transitioning && !clearingFilter) return;
-      playTransition(function(){ state.view = v; if (v === "board") state.filter = null; renderView(); }, (b.textContent || L("tab." + v)), v);
+      if (v) navigateView(v);
+      else if (b.getAttribute("data-nav") === "more") openMoreSheet();
     });
   });
+  function openMoreSheet(){
+    var items = [
+      { v: "history", i: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="8"/></svg>' },
+      { v: "services", i: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8-4 8 4-8 4z"/><path d="M4 8v8l8 4 8-4V8"/></svg>' }
+    ];
+    var html = items.map(function(it){
+      return '<button type="button" class="sheet-more-btn" data-more-view="' + it.v + '">' + it.i + '<span>' + esc(L("tab." + it.v)) + '</span></button>';
+    }).join("");
+    html += '<div class="sheet-about">' +
+      '<b>Battleboarding Business Entry</b>' +
+      '<span>' + esc(L("about.version")) + '</span>' +
+      '<span class="sig">' + esc(L("about.by")) + '</span>' +
+      '</div>';
+    openSheet(L("nav.more"), html, function(body){
+      Array.prototype.forEach.call(body.querySelectorAll("[data-more-view]"), function(b){
+        b.addEventListener("click", function(){ var v = b.getAttribute("data-more-view"); closeSheet(); navigateView(v); });
+      });
+    });
+  }
+
+  /* ---------- mobile create flows (bottom sheets) ---------- */
+  function sfInput(key, label, ph){ return '<div class="fld"><span>' + esc(label) + '</span><input class="txt" data-sf="' + esc(key) + '" placeholder="' + esc(ph || "") + '"></div>'; }
+  function sfTextarea(key, label, ph, tall){ return '<div class="fld"><span>' + esc(label) + '</span><textarea data-sf="' + esc(key) + '"' + (tall ? ' class="mono" style="min-height:150px"' : "") + ' placeholder="' + esc(ph || "") + '"></textarea></div>'; }
+  function sfSave(label){ return '<button type="button" class="sheet-save" data-sf-save><span>' + esc(label || L("common.add")) + '</span></button>'; }
+  function sfVal(body, key){ var el = body.querySelector('[data-sf="' + key + '"]'); return el ? el.value.trim() : ""; }
+
+  function openAddJobSheet(){
+    var cat = selectedCat(); if (!cat) return;
+    openSheet(L("panel.addjob"),
+      sfInput("name", L("panel.jobs"), L("panel.addjob.ph")) + sfSave(L("panel.addjob")),
+      function(body){
+        function go(){ var v = sfVal(body, "name"); if (v){ DATA.addJob(cat.id, v); closeSheet(); } }
+        body.querySelector("[data-sf-save]").addEventListener("click", go);
+        body.querySelector('[data-sf="name"]').addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); go(); } });
+      });
+  }
+
+  function openAddRebuttalSheet(catId, jobId){
+    openSheet(L("detail.addreb"),
+      sfTextarea("claim", L("reb.claim"), L("reb.claim.ph")) +
+      sfTextarea("counter", L("reb.counter"), L("reb.counter.ph")) +
+      sfTextarea("rebuttal", L("reb.rebut"), L("reb.rebut.ph")) +
+      '<div class="fld"><span>' + esc(L("reb.status.aria")) + '</span><select data-sf="status">' +
+        REB_STATUSES.map(function(s){ return '<option value="' + esc(s.key) + '">' + esc(s.label) + '</option>'; }).join("") +
+      '</select></div>' + sfSave(),
+      function(body){
+        body.querySelector("[data-sf-save]").addEventListener("click", function(){
+          DATA.addRebuttal(catId, jobId, {
+            claim: sfVal(body, "claim"), counter: sfVal(body, "counter"),
+            rebuttal: sfVal(body, "rebuttal"), status: sfVal(body, "status")
+          });
+          closeSheet();
+        });
+      });
+  }
+
+  function openAddRtSheet(catId, jobId, listKey){
+    var cfg = rtCfg(listKey); if (!cfg) return;
+    var fields = cfg.fields.map(function(fd){
+      return fd.type === "textarea" ? sfTextarea(fd.f, fd.ph, fd.ph) : sfInput(fd.f, fd.ph, fd.ph);
+    }).join("");
+    if (cfg.evidence) fields += sfInput("__ev", L("ev.label"), L("ev.ph"));
+    openSheet(L("rt.add." + listKey), fields + sfSave(), function(body){
+      body.querySelector("[data-sf-save]").addEventListener("click", function(){
+        var seed = {};
+        cfg.fields.forEach(function(fd){ seed[fd.f] = sfVal(body, fd.f); });
+        DATA.addRtItem(catId, jobId, listKey, seed);
+        if (cfg.evidence){
+          var ev = sfVal(body, "__ev");
+          if (ev){
+            var j = jobById(catId, jobId), arr = j && j.rt && j.rt[listKey];
+            if (arr && arr.length) DATA.addRtEvidence(catId, jobId, listKey, arr[arr.length - 1].id, ev);
+          }
+        }
+        closeSheet();
+      });
+    });
+  }
+
+  function openAddCalcSheet(catId, jobId){
+    openSheet(L("calc.add"),
+      sfInput("label", L("calc.block.label"), L("calc.block.label.ph")) +
+      sfTextarea("body", L("calc.block.body"), L("calc.block.body.ph"), true) + sfSave(),
+      function(body){
+        body.querySelector("[data-sf-save]").addEventListener("click", function(){
+          var el = body.querySelector('[data-sf="body"]');
+          DATA.addCalcBlock(catId, jobId, el ? el.value : "", sfVal(body, "label"));
+          closeSheet();
+        });
+      }, { full: true });
+  }
+
+  (function(){ var f = $("fab"); if (f) f.addEventListener("click", openAddJobSheet); })();
 
   /* ---------- saves: in-app slots + file / text transfer ---------- */
   var SLOT_MAX = 12;
@@ -3021,6 +3762,15 @@
     var start = Math.max(0, at - 30);
     return (start > 0 ? "…" : "") + text.slice(start, start + 100) + (text.length > start + 100 ? "…" : "");
   }
+  var RECENT_KEY = "bbe-recent-search";
+  function recentGet(){ try { return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"); } catch (e){ return []; } }
+  function recentPush(q){
+    q = String(q || "").trim(); if (!q) return;
+    try {
+      var list = recentGet().filter(function(x){ return x.toLowerCase() !== q.toLowerCase(); });
+      list.unshift(q); localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, 6)));
+    } catch (e){}
+  }
   function renderPalette(q){
     var box = $("palResults");
     var groups = paletteResults(q);
@@ -3037,10 +3787,24 @@
         html += '<div class="pal-item" data-pal="' + idx + '"><span class="pi-label">' + palHi(it.label, it.toks) + '</span><span class="pi-sub">' + palHi(it.sub, it.toks) + '</span></div>';
       });
     });
-    if (!q.trim()){ box.innerHTML = '<div class="pal-empty">' + esc(L("pal.hint")) + '</div>'; return; }
+    if (!q.trim()){
+      var rec = recentGet();
+      var recHtml = rec.length
+        ? '<div class="pal-group">' + esc(L("pal.recent")) + '</div>' + rec.map(function(r){
+            return '<div class="pal-item pal-recent" data-recent="' + esc(r) + '"><span class="pi-label">' + esc(r) + '</span></div>';
+          }).join("")
+        : "";
+      box.innerHTML = recHtml + '<div class="pal-empty">' + esc(L("pal.hint")) + '</div>';
+      return;
+    }
     box.innerHTML = html || '<div class="pal-empty">' + esc(L("pal.none")) + ' &ldquo;' + esc(q) + '&rdquo;.</div>';
     palIndex = Math.min(palIndex, Math.max(0, palFlat.length - 1));
     syncPalSel();
+  }
+  function palRun(idx){
+    var r = palFlat[idx]; if (!r) return;
+    recentPush($("palInput").value);
+    r.run();
   }
   function syncPalSel(){
     Array.prototype.forEach.call($("palResults").querySelectorAll(".pal-item"), function(el){
@@ -3053,15 +3817,16 @@
   $("palInput").addEventListener("keydown", function(e){
     if (e.key === "ArrowDown"){ e.preventDefault(); if (palFlat.length){ palIndex = (palIndex + 1) % palFlat.length; syncPalSel(); } }
     else if (e.key === "ArrowUp"){ e.preventDefault(); if (palFlat.length){ palIndex = (palIndex - 1 + palFlat.length) % palFlat.length; syncPalSel(); } }
-    else if (e.key === "Enter"){ e.preventDefault(); if (palFlat[palIndex]) palFlat[palIndex].run(); }
+    else if (e.key === "Enter"){ e.preventDefault(); palRun(palIndex); }
   });
   $("palResults").addEventListener("click", function(e){
+    var rec = e.target.closest("[data-recent]");
+    if (rec){ var inp = $("palInput"); inp.value = rec.getAttribute("data-recent"); renderPalette(inp.value); inp.focus(); return; }
     var it = e.target.closest("[data-pal]");
-    if (!it) return;
-    var r = palFlat[parseInt(it.getAttribute("data-pal"), 10)];
-    if (r) r.run();
+    if (it) palRun(parseInt(it.getAttribute("data-pal"), 10));
   });
   $("palette").addEventListener("click", function(e){ if (e.target === $("palette")) closePalette(); });
+  (function(){ var b = $("palBack"); if (b) b.addEventListener("click", closePalette); })();
   $("searchBtn").addEventListener("click", openPalette);
 
   /* ---------- scientific calculator ---------- */
@@ -3175,9 +3940,10 @@
     return s;
   }
 
-  var calcState = { expr: "", ans: 0, deg: true, history: [] };
+  var calcState = { expr: "", ans: 0, deg: true, history: [], mode: "sci", lastOut: null };
   try { var hh = JSON.parse(localStorage.getItem("bbe-calc-history") || "[]"); if (hh && hh.length) calcState.history = hh; } catch (e) {}
   try { calcState.deg = localStorage.getItem("bbe-calc-deg") !== "rad"; } catch (e) {}
+  try { var cm0 = localStorage.getItem("bbe-calc-mode"); if (cm0) calcState.mode = cm0; } catch (e) {}
 
   var CALC_ROWS = [
     [["DEG/RAD", "@deg", "k-op"], ["C", "@clr", "k-op"], ["⌫", "@back", "k-op"], ["(", "("], [")", ")"]],
@@ -3194,6 +3960,7 @@
     return state.view === "board" && c && c.kind === "calc" && !!state.expandedId;
   }
   function openCalc(){
+    if (!calcState.mode) calcState.mode = "sci";
     $("calc").hidden = false;
     renderCalc();
     setTimeout(function(){ var x = $("calcExpr"); if (x) x.focus(); }, 20);
@@ -3203,40 +3970,68 @@
 
   function renderCalc(){
     var box = $("calc").querySelector(".calc-box");
-    var grid = '<div class="calc-grid">' + CALC_ROWS.map(function(row){
-      return '<div class="calc-row">' + row.map(function(k){
-        var label = k[0] === "DEG/RAD" ? (calcState.deg ? "DEG" : "RAD") : k[0];
-        return '<button type="button" class="calc-key ' + (k[2] || "") + '" data-ck="' + esc(k[1]) + '">' + esc(label) + '</button>';
+    var mode = calcState.mode || "sci";
+    var modeStrip = '<div class="calc-modes">' +
+      '<button type="button" class="calc-mode' + (mode === "sci" ? " on" : "") + '" data-cm="sci">Scientific</button>' +
+      VCALCS.map(function(c){ return '<button type="button" class="calc-mode' + (mode === c.id ? " on" : "") + '" data-cm="' + c.id + '">' + esc(c.name) + '</button>'; }).join("") +
+      '</div>';
+    var vc = vcalc(mode);
+    var head = '<div class="calc-head"><b>' + esc(mode === "sci" ? L("calc.head") : (vc ? vc.name : "Calc")) + '</b>' +
+      (mode === "sci" ? '<span class="calc-deg" data-ck="@deg" role="button" tabindex="0">' + (calcState.deg ? "DEG" : "RAD") + '</span>' : "") +
+      '<button type="button" class="calc-x" data-ck="@close" aria-label="' + esc(L("calc.close")) + '">✕</button></div>';
+    var bodyHtml;
+    if (mode === "sci"){
+      var grid = '<div class="calc-grid">' + CALC_ROWS.map(function(row){
+        return '<div class="calc-row">' + row.map(function(k){
+          var label = k[0] === "DEG/RAD" ? (calcState.deg ? "DEG" : "RAD") : k[0];
+          return '<button type="button" class="calc-key ' + (k[2] || "") + '" data-ck="' + esc(k[1]) + '">' + esc(label) + '</button>';
+        }).join("") + '</div>';
       }).join("") + '</div>';
-    }).join("") + '</div>';
-    var hist = calcState.history.length
-      ? '<div class="calc-hist">' + calcState.history.slice(0, 14).map(function(h, idx){
-          return '<button type="button" class="calc-hrow" data-ch="' + idx + '"><span>' + esc(h.expr) + '</span><b>' + esc(h.result) + '</b></button>';
-        }).join("") + '</div>'
-      : "";
-    box.innerHTML =
-      '<div class="calc-head"><b>' + esc(L("calc.head")) + '</b>' +
-        '<span class="calc-deg" data-ck="@deg" role="button" tabindex="0">' + (calcState.deg ? "DEG" : "RAD") + '</span>' +
-        '<button type="button" class="calc-x" data-ck="@close" aria-label="' + esc(L("calc.close")) + '">✕</button></div>' +
-      '<input id="calcExpr" type="text" value="' + esc(calcState.expr) + '" placeholder="' + esc(L("calc.expr.ph")) + '" autocomplete="off" spellcheck="false" aria-label="' + esc(L("calc.expr.aria")) + '">' +
-      '<div id="calcOut" class="calc-out"></div>' +
-      grid +
-      (calcCanInsert() ? '<button type="button" class="calc-ins" data-ck="@ins">' + esc(L("calc.insert")) + '</button>' : "") +
-      hist;
+      var hist = calcState.history.length
+        ? '<div class="calc-hist">' + calcState.history.slice(0, 14).map(function(h, idx){
+            return '<button type="button" class="calc-hrow" data-ch="' + idx + '"><span>' + esc(h.expr) + '</span><b>' + esc(h.result) + '</b></button>';
+          }).join("") + '</div>'
+        : "";
+      bodyHtml =
+        '<input id="calcExpr" type="text" value="' + esc(calcState.expr) + '" placeholder="' + esc(L("calc.expr.ph")) + '" autocomplete="off" spellcheck="false" aria-label="' + esc(L("calc.expr.aria")) + '">' +
+        '<div id="calcOut" class="calc-out"></div>' +
+        grid +
+        (calcCanInsert() ? '<button type="button" class="calc-ins" data-ck="@ins">' + esc(L("calc.insert")) + '</button>' : "") +
+        hist;
+    } else {
+      bodyHtml = renderCalcForm(vc);
+    }
+    box.innerHTML = head + modeStrip + bodyHtml;
 
     if (!renderCalc._bound){
       renderCalc._bound = true;
       box.addEventListener("click", function(e){
+        var mb = e.target.closest("[data-cm]");
+        if (mb){ calcState.mode = mb.getAttribute("data-cm"); try { localStorage.setItem("bbe-calc-mode", calcState.mode); } catch (_){} renderCalc(); return; }
         var kb = e.target.closest("[data-ck]");
         if (kb){ calcKey(kb.getAttribute("data-ck")); return; }
         var hb = e.target.closest("[data-ch]");
         if (hb){ calcState.expr = calcState.history[parseInt(hb.getAttribute("data-ch"), 10)].expr; renderCalc(); $("calcExpr").focus(); }
       });
+      box.addEventListener("input", function(e){ if (e.target.closest && e.target.closest(".calc-form")) computeCalcForm(); });
+      box.addEventListener("change", function(e){
+        if (e.target.matches && e.target.matches("[data-dshape]")){
+          calcState.dynIdx = calcState.dynIdx || {};
+          calcState.dynIdx[calcState.mode] = parseInt(e.target.value, 10) || 0;
+          renderCalc(); return;
+        }
+        if (e.target.closest && e.target.closest(".calc-form")) computeCalcForm();
+      });
     }
-    var inp = $("calcExpr");
-    inp.addEventListener("input", function(){ calcState.expr = inp.value; updateCalcOut(); });
-    inp.addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); calcEquals(); } });
-    updateCalcOut();
+    if (mode === "sci"){
+      var inp = $("calcExpr");
+      inp.addEventListener("input", function(){ calcState.expr = inp.value; updateCalcOut(); });
+      inp.addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); calcEquals(); } });
+      updateCalcOut();
+    } else {
+      calcState.lastOut = null;
+      computeCalcForm();
+    }
   }
   function updateCalcOut(){
     var out = $("calcOut"); if (!out) return;
@@ -3256,6 +4051,7 @@
     if (k === "@back"){ calcState.expr = calcState.expr.slice(0, -1); inp.value = calcState.expr; updateCalcOut(); inp.focus(); return; }
     if (k === "@eq"){ calcEquals(); return; }
     if (k === "@ins"){ calcInsert(); return; }
+    if (k === "@insv"){ calcModeInsert(); return; }
     var a = inp.selectionStart, b = inp.selectionEnd;
     if (a == null){ a = b = calcState.expr.length; }
     calcState.expr = calcState.expr.slice(0, a) + k + calcState.expr.slice(b);
@@ -3293,18 +4089,414 @@
     closeCalc();
   }
 
-  /* ---------- lightbox ---------- */
+  /* ======== VS Battles calculators (values from vsbattles.fandom.com) ======== */
+  var C_LIGHT = 299792458, G_GRAV = 6.67408e-11, G_ACC = 9.80665, SOUND = 340.29, TNT_G = 4184;
+
+  var CU = {
+    mass:   { "kg":1, "g":0.001, "tonne":1000, "lb":0.45359237 },
+    speed:  { "m/s":1, "km/h":1/3.6, "mph":0.44704, "Mach":SOUND, "% c":C_LIGHT/100, "c":C_LIGHT },
+    length: { "m":1, "cm":0.01, "km":1000, "mi":1609.344, "ft":0.3048 },
+    volume: { "cm3":0.000001, "m3":1, "km3":1e9, "L":0.001 },
+    energy: { "J":1, "kJ":1000, "g TNT":4184, "kg TNT":4.184e6, "ton TNT":4.184e9, "kiloton TNT":4.184e12, "megaton TNT":4.184e15, "gigaton TNT":4.184e18, "teraton TNT":4.184e21, "foe":1e44 },
+    time:   { "s":1, "ms":0.001, "min":60, "h":3600 }
+  };
+
+  // [minJoules, label] — VS Battles Attack Potency chart
+  var AP_TIERS = [
+    [0,"10-C: Below Average Human"],[60,"10-B: Human"],[106,"10-A: Athlete"],[300,"9-C: Street"],
+    [15000,"9-B: Wall"],[2.092e7,"9-A: Small Building"],[1.046e9,"8-C: Building"],[8.368e9,"High 8-C: Large Building"],
+    [4.6024e10,"8-B: City Block"],[4.184e11,"8-A: Multi-City Block"],[4.184e12,"Low 7-C: Small Town"],[2.42672e13,"7-C: Town"],
+    [4.184e14,"High 7-C: Large Town"],[4.184e15,"Low 7-B: Small City"],[2.63592e16,"7-B: City"],[4.184e17,"7-A: Mountain"],
+    [4.184e18,"High 7-A: Large Mountain"],[1.79912e19,"6-C: Island"],[4.184e20,"High 6-C: Large Island"],[4.184e21,"Low 6-B: Small Country"],
+    [2.9288e22,"6-B: Country"],[4.184e23,"High 6-B: Large Country"],[3.17984e24,"6-A: Continent"],[1.855604e25,"High 6-A: Multi-Continent"],
+    [1.24e29,"5-C: Moon"],[1.81e30,"Low 5-B: Small Planet"],[2.487e32,"5-B: Planet"],[1.59e34,"5-A: Large Planet"],
+    [6.906e37,"High 5-A: Brown Dwarf"],[3.139e40,"Low 4-C: Small Star"],[5.693e41,"4-C: Star"],[3.182e42,"High 4-C: Large Star"],
+    [2.923e45,"4-B: Solar System"],[2.008e57,"4-A: Multi-Solar System"],[1.053e66,"3-C: Galaxy"],[8.593e68,"3-B: Multi-Galaxy"],
+    [2.825e92,"3-A: Universe"]
+  ];
+  // [min m/s, label] — VS Battles Speed chart
+  var SPD_TIERS = [
+    [0,"Immobile"],[1e-9,"Below Average Human"],[5,"Average Human"],[7.7,"Athletic Human"],[10.03,"Peak Human"],
+    [12.43,"Superhuman"],[34.3,"Subsonic"],[171.5,"Subsonic+"],[308.7,"Transonic"],[377.3,"Supersonic"],
+    [857.5,"Supersonic+"],[1715,"Hypersonic"],[3430,"Hypersonic+"],[8575,"High Hypersonic"],[17150,"High Hypersonic+"],
+    [34300,"Massively Hypersonic"],[343000,"Massively Hypersonic+"],[2997924.58,"Sub-Relativistic"],[14989622.9,"Sub-Relativistic+"],
+    [29979245.8,"Relativistic"],[149896229,"Relativistic+"],[299792458,"Speed of Light"],[299792459,"FTL"],
+    [2997924580,"FTL+"],[2.99792458e10,"Massively FTL"],[2.99792458e11,"Massively FTL+"]
+  ];
+  // destruction values in J/cc + density kg/m3 (VS Battles material table; ranges use the high end)
+  var MAT = {
+    "Rock (general)":       { frag:8, vfrag:69, pulv:214, melt:6174.5, vapor:25700, atomize:30852.2, subatomic:5.403e13, rho:2700 },
+    "Concrete":             { frag:6, vfrag:20, pulv:40, melt:4814.5, vapor:5304, subatomic:4.168e12, rho:2400 },
+    "Reinforced Concrete":  { frag:13.8, vfrag:41.4, pulv:99, rho:2500 },
+    "Granite":              { frag:14, vfrag:175, pulv:203.25, melt:3319.92, vapor:27050, rho:2700 },
+    "Limestone":            { frag:10, vfrag:140, pulv:250, rho:2600 },
+    "Sandstone":            { frag:8, vfrag:95, pulv:144.7, rho:2300 },
+    "Basalt":               { frag:20, vfrag:200, pulv:224, melt:3716.12, rho:3000 },
+    "Marble":               { frag:26, vfrag:103.42, pulv:154.95, rho:2700 },
+    "Red/Mud/Clay Brick":   { frag:0.51, vfrag:5.65, pulv:24.37, melt:3022.9, rho:1900 },
+    "Soil":                 { frag:0.15, vfrag:0.2, pulv:1, rho:1350 },
+    "Iron":                 { frag:20, vfrag:42.43, pulv:90, melt:7312.54, vapor:60915.7, atomize:58401, subatomic:6.6965e12, rho:7870 },
+    "Steel":                { frag:208, vfrag:568.5, pulv:1000, melt:7778.62, vapor:59944.88, atomize:59526.65, subatomic:6.7034e12, rho:8050 },
+    "Stainless Steel":      { frag:358, vfrag:597, pulv:1631, melt:7703.06, vapor:58574.59, rho:8000 },
+    "Wrought Iron":         { frag:194.22, vfrag:308.76, pulv:699, rho:7750 },
+    "Titanium":             { frag:550, vfrag:760, pulv:970, melt:5623.05, vapor:49097.7, rho:4506 },
+    "Aluminium":            { frag:48.75, vfrag:234, pulv:280, melt:2633.63, vapor:35190.2, atomize:32241.5, rho:2700 },
+    "Copper":               { frag:172.37, vfrag:217.1, pulv:330, melt:5514.58, vapor:52455.62, rho:8960 },
+    "Gold":                 { frag:50, vfrag:132, pulv:205, melt:3826.54, vapor:39486.35, rho:19300 },
+    "Silver":               { frag:65, vfrag:204, pulv:300, melt:3420.53, vapor:31177.58, rho:10490 },
+    "Tungsten":             { frag:400, vfrag:1412.5, pulv:2425, melt:12309.35, rho:19250 },
+    "Diamond":              { pulv:110000, vapor:215767.74, atomize:210081, rho:3510 },
+    "Glass":                { pulv:1000, melt:2919.84, rho:2500 },
+    "Ice (0 C)":            { frag:0.5271, vfrag:0.825, pulv:4.3919, melt:306.0529, atomize:51384.16, subatomic:8.9363e12, rho:917 },
+    "Water":                { vapor:2575, atomize:51384.16, subatomic:8.9363e12, rho:1000 },
+    "Wood (white oak)":     { frag:7.3774, vfrag:13.7895, pulv:51.297, kindle:107.1031, vapor:9871.6, rho:750 },
+    "Bone":                 { frag:51.6, vfrag:67.5, pulv:170, melt:5145.83, rho:1900 },
+    "Human Body":           { frag:4.4, vfrag:7.533, pulv:12.9, vapor:4638.75, atomize:72416.33, subatomic:1.09729e10, rho:1010 }
+  };
+  var METHODS = [["frag","Fragmentation"],["vfrag","Violent Fragmentation"],["pulv","Pulverization"],["melt","Melting"],["vapor","Vaporization"],["atomize","Atomization"],["subatomic","Subatomic Destruction"]];
+  // GBE presets [mass kg, radius m]
+  var GBE_PRE = {
+    "Moon (Luna)":[7.342e22,1.7374e6], "Mercury":[3.3011e23,2.4397e6], "Mars":[6.4171e23,3.3895e6],
+    "Venus":[4.8675e24,6.0518e6], "Earth":[5.9722e24,6.371e6], "Neptune":[1.02413e26,2.4622e7],
+    "Uranus":[8.681e25,2.5362e7], "Saturn":[5.6834e26,5.8232e7], "Jupiter":[1.8982e27,6.9911e7], "Sun":[1.98892e30,6.957e8]
+  };
+
+  function apTier(J){ if (!(J > 0)) return null; var t = null; for (var i = 0; i < AP_TIERS.length; i++) if (J >= AP_TIERS[i][0]) t = AP_TIERS[i][1]; return t; }
+  function spdTier(v){ if (!(v > 0)) return "Immobile"; var t = null; for (var i = 0; i < SPD_TIERS.length; i++) if (v >= SPD_TIERS[i][0]) t = SPD_TIERS[i][1]; return t; }
+  function rnd(n){ return Math.round(n * 1000) / 1000; }
+  function sciParts(n){ var e = Math.floor(Math.log10(Math.abs(n))); return { m: rnd(n / Math.pow(10, e)), e: e }; }
+  function fmtV(n){
+    if (!isFinite(n)) return String(n);
+    if (n === 0) return "0";
+    var a = Math.abs(n);
+    if (a < 1e-3 || a >= 1e6){ var s = sciParts(n); return s.m + "e" + s.e; }
+    return String(rnd(n));
+  }
+  function texV(n){
+    if (!isFinite(n)) return String(n);
+    if (n === 0) return "0";
+    var a = Math.abs(n);
+    if (a < 1e-3 || a >= 1e5){ var s = sciParts(n); return s.m + "\\times10^{" + s.e + "}"; }
+    return String(rnd(n));
+  }
+  function tntStr(J){
+    var g = J / TNT_G;
+    var u = [["teratons",1e18],["gigatons",1e15],["megatons",1e12],["kilotons",1e9],["tons",1e6],["kg",1e3]];
+    for (var i = 0; i < u.length; i++) if (g >= u[i][1]) return fmtV(g / u[i][1]) + " " + u[i][0] + " of TNT";
+    return fmtV(g) + " g of TNT";
+  }
+  function matNames(){ return Object.keys(MAT); }
+
+  var VCALCS = [
+    { id:"ke", name:"Kinetic Energy", ins:"Kinetic energy",
+      fields:[ {k:"m",label:"Mass",u:"mass"}, {k:"v",label:"Velocity",u:"speed"}, {k:"rel",label:"Relativistic (v \u2273 0.1c)",type:"check"} ],
+      run:function(g){
+        if (!(g.m > 0) || !(g.v > 0)) return null;
+        var E, tex;
+        if (g.rel && g.v < C_LIGHT){
+          var y = 1 / Math.sqrt(1 - (g.v / C_LIGHT) * (g.v / C_LIGHT));
+          E = g.m * C_LIGHT * C_LIGHT * (y - 1);
+          tex = "E_k=(\\gamma-1)mc^2=" + texV(E) + "\\ \\text{J}";
+        } else {
+          E = 0.5 * g.m * g.v * g.v;
+          tex = "E_k=\\tfrac12 mv^2=\\tfrac12(" + texV(g.m) + ")(" + texV(g.v) + ")^2=" + texV(E) + "\\ \\text{J}";
+        }
+        return { J:E, main:fmtV(E) + " J", sub:tntStr(E), tier:apTier(E), tex:tex,
+          steps:["Mass $m = " + texV(g.m) + "\\ \\text{kg}$", "Velocity $v = " + texV(g.v) + "\\ \\text{m/s}$"] };
+      } },
+    { id:"mv", name:"Mass \u2190 Volume\u00d7Density", ins:"Mass",
+      fields:[ {k:"vol",label:"Volume",u:"volume"}, {k:"mat",label:"Material (uses its density)",type:"select",opts:matNames}, {k:"rho",label:"Custom density kg/m\u00b3 (optional)",type:"num"} ],
+      run:function(g){
+        var rho = (g.rho > 0) ? g.rho : (MAT[g.mat] || {}).rho;
+        if (!(g.vol > 0) || !(rho > 0)) return null;
+        var m = g.vol * rho;
+        return { J:null, main:fmtV(m) + " kg", sub:fmtV(g.vol) + " m\u00b3 \u00d7 " + fmtV(rho) + " kg/m\u00b3", tier:null,
+          tex:"m=V\\rho=" + texV(g.vol) + "\\times" + texV(rho) + "=" + texV(m) + "\\ \\text{kg}",
+          steps:["Volume $V = " + texV(g.vol) + "\\ \\text{m}^3$", "Density $\\rho = " + texV(rho) + "\\ \\text{kg/m}^3$ (" + g.mat + ")"] };
+      } },
+    { id:"destr", name:"Destruction Energy", ins:"Destruction",
+      fields:[ {k:"vol",label:"Volume destroyed",u:"volume"}, {k:"mat",label:"Material",type:"select",opts:matNames}, {k:"method",label:"Method",type:"select",opts:function(){ return METHODS.map(function(x){ return x[1]; }); }} ],
+      run:function(g){
+        var mk = null; for (var i = 0; i < METHODS.length; i++) if (METHODS[i][1] === g.method) mk = METHODS[i][0];
+        var jcc = (MAT[g.mat] || {})[mk];
+        if (!jcc) return { err: "No " + g.method + " value listed for " + g.mat };
+        if (!(g.vol > 0)) return null;
+        var cc = g.vol / 1e-6, E = cc * jcc;
+        return { J:E, main:fmtV(E) + " J", sub:tntStr(E), tier:apTier(E),
+          tex:"E=" + texV(cc) + "\\ \\text{cm}^3\\times" + texV(jcc) + "\\ \\text{J/cm}^3=" + texV(E) + "\\ \\text{J}",
+          steps:["Volume $= " + texV(cc) + "\\ \\text{cm}^3$", g.mat + " \u2014 " + g.method + " $= " + texV(jcc) + "\\ \\text{J/cm}^3$"] };
+      } },
+    { id:"crater", name:"Crater \u2192 Destruction", ins:"Crater",
+      fields:[ {k:"d",label:"Crater width / diameter",u:"length"}, {k:"h",label:"Crater depth",u:"length"},
+               {k:"shape",label:"Shape",type:"select",opts:["Bowl (half-ellipsoid)","Hemisphere","Cone"]},
+               {k:"mat",label:"Material",type:"select",opts:matNames}, {k:"method",label:"Method",type:"select",opts:function(){ return METHODS.map(function(x){ return x[1]; }); }} ],
+      run:function(g){
+        if (!(g.d > 0) || !(g.h > 0)) return null;
+        var r = g.d / 2, V;
+        if (g.shape === "Hemisphere") V = (2/3) * Math.PI * r * r * r;
+        else if (g.shape === "Cone") V = (1/3) * Math.PI * r * r * g.h;
+        else V = (2/3) * Math.PI * r * r * g.h;
+        var mk = null; for (var i = 0; i < METHODS.length; i++) if (METHODS[i][1] === g.method) mk = METHODS[i][0];
+        var jcc = (MAT[g.mat] || {})[mk];
+        if (!jcc) return { err: "No " + g.method + " value listed for " + g.mat };
+        var cc = V / 1e-6, E = cc * jcc;
+        return { J:E, main:fmtV(E) + " J", sub:"Volume " + fmtV(V) + " m\u00b3  \u00b7  " + tntStr(E), tier:apTier(E),
+          tex:"V=" + texV(V) + "\\ \\text{m}^3,\\quad E=V\\times" + texV(jcc) + "\\ \\text{J/cm}^3=" + texV(E) + "\\ \\text{J}",
+          steps:["Crater r $= " + texV(r) + "\\ \\text{m}$, depth $= " + texV(g.h) + "\\ \\text{m}$ (" + g.shape + ")", g.mat + " \u2014 " + g.method + " $= " + texV(jcc) + "\\ \\text{J/cm}^3$"] };
+      } },
+    { id:"gbe", name:"GBE (planet / star)", ins:"Gravitational Binding Energy",
+      note:"U = (3/5)\u00b7G\u00b7M\u00b2/R. Pick a preset or enter mass & radius. Star-busting normally uses a polytropic model \u2014 this is the simplified form.",
+      fields:[ {k:"preset",label:"Preset body",type:"select",opts:function(){ return ["(custom)"].concat(Object.keys(GBE_PRE)); }}, {k:"M",label:"Mass",u:"mass"}, {k:"R",label:"Radius",u:"length"} ],
+      run:function(g){
+        var M = g.M, R = g.R;
+        if (g.preset && GBE_PRE[g.preset]){ M = GBE_PRE[g.preset][0]; R = GBE_PRE[g.preset][1]; }
+        if (!(M > 0) || !(R > 0)) return null;
+        var U = 0.6 * G_GRAV * M * M / R;
+        return { J:U, main:fmtV(U) + " J", sub:tntStr(U) + (g.preset && GBE_PRE[g.preset] ? "  \u00b7  " + g.preset : ""), tier:apTier(U),
+          tex:"U=\\tfrac{3}{5}\\cdot\\frac{GM^2}{R}=\\tfrac{3}{5}\\cdot\\frac{(6.674\\times10^{-11})(" + texV(M) + ")^2}{" + texV(R) + "}=" + texV(U) + "\\ \\text{J}",
+          steps:["$M = " + texV(M) + "\\ \\text{kg}$", "$R = " + texV(R) + "\\ \\text{m}$"] };
+      } },
+    { id:"pe", name:"Falling / Lifting Energy", ins:"Gravitational potential energy",
+      fields:[ {k:"m",label:"Mass",u:"mass"}, {k:"h",label:"Height",u:"length"}, {k:"g",label:"Gravity m/s\u00b2",type:"num",d:G_ACC} ],
+      run:function(g){
+        var gg = (g.g > 0) ? g.g : G_ACC;
+        if (!(g.m > 0) || !(g.h > 0)) return null;
+        var E = g.m * gg * g.h, vi = Math.sqrt(2 * gg * g.h);
+        return { J:E, main:fmtV(E) + " J", sub:tntStr(E) + "  \u00b7  impact speed " + fmtV(vi) + " m/s", tier:apTier(E),
+          tex:"E_p=mgh=(" + texV(g.m) + ")(" + texV(gg) + ")(" + texV(g.h) + ")=" + texV(E) + "\\ \\text{J}",
+          steps:["Mass $= " + texV(g.m) + "\\ \\text{kg}$, height $= " + texV(g.h) + "\\ \\text{m}$", "Impact speed $v=\\sqrt{2gh}=" + texV(vi) + "\\ \\text{m/s}$"] };
+      } },
+    { id:"freefall", name:"Free Fall", ins:"Free-fall impact",
+      fields:[ {k:"h",label:"Fall height",u:"length"}, {k:"m",label:"Mass (optional \u2192 KE)",u:"mass"}, {k:"g",label:"Gravity m/s\u00b2",type:"num",d:G_ACC} ],
+      run:function(g){
+        var gg = (g.g > 0) ? g.g : G_ACC;
+        if (!(g.h > 0)) return null;
+        var t = Math.sqrt(2 * g.h / gg), v = Math.sqrt(2 * gg * g.h);
+        var ke = (g.m > 0) ? 0.5 * g.m * v * v : null;
+        return { J:ke, main:"v = " + fmtV(v) + " m/s   ·   t = " + fmtV(t) + " s", sub:ke != null ? "KE " + fmtV(ke) + " J  \u00b7  " + tntStr(ke) : "Mach " + fmtV(v / SOUND), tier:ke != null ? apTier(ke) : spdTier(v),
+          tex:"v=\\sqrt{2gh}=" + texV(v) + "\\ \\text{m/s}" + (ke != null ? ",\\quad E_k=\\tfrac12 mv^2=" + texV(ke) + "\\ \\text{J}" : ""),
+          steps:["Height $h = " + texV(g.h) + "\\ \\text{m}$, $g = " + texV(gg) + "$", "Fall time $t=\\sqrt{2h/g}=" + texV(t) + "\\ \\text{s}$"] };
+      } },
+    { id:"speed", name:"Speed (distance \u00f7 time)", ins:"Speed",
+      fields:[ {k:"d",label:"Distance",u:"length"}, {k:"t",label:"Time",u:"time"} ],
+      run:function(g){
+        if (!(g.d > 0) || !(g.t > 0)) return null;
+        var v = g.d / g.t, mach = v / SOUND, xc = v / C_LIGHT;
+        return { J:null, main:fmtV(v) + " m/s", tier:spdTier(v),
+          sub:"Mach " + fmtV(mach) + "   ·   " + fmtV(v * 3.6) + " km/h   ·   " + (xc >= 1 ? fmtV(xc) + "\u00d7 c" : fmtV(xc * 100) + "% c"),
+          tex:"v=\\frac{d}{t}=\\frac{" + texV(g.d) + "}{" + texV(g.t) + "}=" + texV(v) + "\\ \\text{m/s}",
+          steps:["Distance $d = " + texV(g.d) + "\\ \\text{m}$, time $t = " + texV(g.t) + "\\ \\text{s}$", "$= \\text{Mach }" + texV(mach) + (xc >= 1 ? ",\\ " + texV(xc) + "\\times c" : ",\\ " + texV(xc * 100) + "\\%\\,c") + "$"] };
+      } },
+    { id:"tnt", name:"Energy \u21c4 TNT / Tier", ins:"Energy",
+      fields:[ {k:"E",label:"Energy",u:"energy"} ],
+      run:function(g){
+        if (!(g.E > 0)) return null;
+        return { J:g.E, main:fmtV(g.E) + " J", sub:tntStr(g.E) + "   ·   " + fmtV(g.E / 1e44) + " foe", tier:apTier(g.E),
+          tex:"E=" + texV(g.E) + "\\ \\text{J}=" + texV(g.E / TNT_G) + "\\ \\text{g TNT}",
+          steps:["$" + texV(g.E) + "\\ \\text{J} \\div 4184 = " + texV(g.E / TNT_G) + "\\ \\text{g TNT}$"] };
+      } },
+    { id:"vol3d", name:"Volume (3D shapes)", ins:"Volume", dyn:true,
+      note:"Volume of a solid — use the result as the input for Mass, Destruction or Crater.",
+      shapes:[
+        { n:"Sphere", f:[["r","Radius"]], v:function(x){ return 4/3*Math.PI*x.r*x.r*x.r; },
+          tex:function(x,V){ return "V=\\tfrac{4}{3}\\pi r^3=\\tfrac{4}{3}\\pi(" + texV(x.r) + ")^3=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Hemisphere", f:[["r","Radius"]], v:function(x){ return 2/3*Math.PI*x.r*x.r*x.r; },
+          tex:function(x,V){ return "V=\\tfrac{2}{3}\\pi r^3=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Cube", f:[["a","Edge length"]], v:function(x){ return x.a*x.a*x.a; },
+          tex:function(x,V){ return "V=a^3=(" + texV(x.a) + ")^3=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Box (l×w×h)", f:[["l","Length"],["w","Width"],["h","Height"]], v:function(x){ return x.l*x.w*x.h; },
+          tex:function(x,V){ return "V=lwh=" + texV(x.l) + "\\times" + texV(x.w) + "\\times" + texV(x.h) + "=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Cylinder", f:[["r","Radius"],["h","Height"]], v:function(x){ return Math.PI*x.r*x.r*x.h; },
+          tex:function(x,V){ return "V=\\pi r^2 h=\\pi(" + texV(x.r) + ")^2(" + texV(x.h) + ")=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Cone", f:[["r","Base radius"],["h","Height"]], v:function(x){ return 1/3*Math.PI*x.r*x.r*x.h; },
+          tex:function(x,V){ return "V=\\tfrac{1}{3}\\pi r^2 h=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Pyramid (rect. base)", f:[["l","Base length"],["w","Base width"],["h","Height"]], v:function(x){ return 1/3*x.l*x.w*x.h; },
+          tex:function(x,V){ return "V=\\tfrac{1}{3}lwh=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Ellipsoid", f:[["a","Semi-axis a"],["b","Semi-axis b"],["c","Semi-axis c"]], v:function(x){ return 4/3*Math.PI*x.a*x.b*x.c; },
+          tex:function(x,V){ return "V=\\tfrac{4}{3}\\pi abc=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Spherical cap", f:[["r","Sphere radius R"],["h","Cap height h"]], v:function(x){ return Math.PI*x.h*x.h/3*(3*x.r - x.h); },
+          tex:function(x,V){ return "V=\\tfrac{\\pi h^2}{3}(3R-h)=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Cone frustum", f:[["a","Bottom radius"],["b","Top radius"],["h","Height"]], v:function(x){ return Math.PI*x.h/3*(x.a*x.a + x.a*x.b + x.b*x.b); },
+          tex:function(x,V){ return "V=\\tfrac{\\pi h}{3}(R^2+Rr+r^2)=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Torus", f:[["a","Ring radius R"],["b","Tube radius r"]], v:function(x){ return 2*Math.PI*Math.PI*x.a*x.b*x.b; },
+          tex:function(x,V){ return "V=2\\pi^2 R r^2=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Capsule", f:[["r","Radius"],["h","Cylinder length"]], v:function(x){ return Math.PI*x.r*x.r*x.h + 4/3*Math.PI*x.r*x.r*x.r; },
+          tex:function(x,V){ return "V=\\pi r^2 h+\\tfrac{4}{3}\\pi r^3=" + texV(V) + "\\ \\text{m}^3"; } },
+        { n:"Regular tetrahedron", f:[["a","Edge length"]], v:function(x){ return x.a*x.a*x.a/(6*Math.SQRT2); },
+          tex:function(x,V){ return "V=\\tfrac{a^3}{6\\sqrt{2}}=" + texV(V) + "\\ \\text{m}^3"; } }
+      ] },
+    { id:"angsize", name:"Angular Size", ins:"Angsize",
+      note:"VS Battles method (70° FOV): θ = 2·atan( tan(FOV/2)·objectPx / imageHeightPx ). Then size = 2D·tan(θ/2), or distance = size / (2·tan(θ/2)).",
+      fields:[
+        {k:"opx",label:"Object size (pixels)",type:"num"},
+        {k:"ipx",label:"Image height (pixels)",type:"num"},
+        {k:"fov",label:"FOV (degrees)",type:"num",d:70},
+        {k:"solve",label:"Solve for",type:"select",opts:["Object size (I know the distance)","Distance (I know the object size)"]},
+        {k:"known",label:"Known value (distance or object size)",u:"length"}
+      ],
+      run:function(g){
+        if (!(g.opx > 0) || !(g.ipx > 0) || !(g.known > 0)) return null;
+        var fov = (g.fov > 0) ? g.fov : 70;
+        var theta = 2 * Math.atan(Math.tan(fov / 2 * Math.PI / 180) * (g.opx / g.ipx));
+        var deg = theta * 180 / Math.PI, half = theta / 2, val, label, tex;
+        if (/^Distance/.test(g.solve)){
+          val = g.known / (2 * Math.tan(half)); label = "Distance";
+          tex = "D=\\frac{s}{2\\tan(\\theta/2)}=\\frac{" + texV(g.known) + "}{2\\tan(" + rnd(deg / 2) + "^\\circ)}=" + texV(val) + "\\ \\text{m}";
+        } else {
+          val = 2 * g.known * Math.tan(half); label = "Object size";
+          tex = "s=2D\\tan(\\theta/2)=2(" + texV(g.known) + ")\\tan(" + rnd(deg / 2) + "^\\circ)=" + texV(val) + "\\ \\text{m}";
+        }
+        return { J:null, main:label + " = " + fmtV(val) + " m", sub:"Angular size θ = " + rnd(deg) + "°", tier:null,
+          tex:tex,
+          steps:[
+            "Object $" + texV(g.opx) + "$ px in a $" + texV(g.ipx) + "$ px tall image, FOV $" + texV(fov) + "^\\circ$",
+            "$\\theta = 2\\arctan\\!\\big(\\tan(" + (fov / 2) + "^\\circ)\\cdot " + texV(g.opx) + "/" + texV(g.ipx) + "\\big) = " + rnd(deg) + "^\\circ$"
+          ] };
+      } }
+  ];
+  function vcalc(id){ for (var i = 0; i < VCALCS.length; i++) if (VCALCS[i].id === id) return VCALCS[i]; return null; }
+
+  function dynShapeIdx(c){ calcState.dynIdx = calcState.dynIdx || {}; return Math.min(calcState.dynIdx[c.id] || 0, c.shapes.length - 1); }
+  function renderCalcTail(c){
+    return '<div class="calc-result" id="calcRes"><span class="cr-main">—</span></div>' +
+      (c.note ? '<div class="calc-note">' + esc(c.note) + '</div>' : "") +
+      (calcCanInsert() ? '<button type="button" class="calc-ins" data-ck="@insv">' + esc(L("calc.insert")) + '</button>' : "");
+  }
+  function renderCalcForm(c){
+    if (!c) return "";
+    if (c.dyn){
+      var si = dynShapeIdx(c), sh = c.shapes[si];
+      var sel = '<label class="calc-fld"><span>Shape</span><select data-dshape>' +
+        c.shapes.map(function(s, i){ return '<option value="' + i + '"' + (i === si ? " selected" : "") + '>' + esc(s.n) + '</option>'; }).join("") + '</select></label>';
+      var dims = sh.f.map(function(fd){
+        return '<label class="calc-fld"><span>' + esc(fd[1]) + '</span><span class="cf-row">' +
+          '<input type="number" step="any" inputmode="decimal" data-cf="' + fd[0] + '">' +
+          '<select class="cf-unit" data-cu="' + fd[0] + '">' + Object.keys(CU.length).map(function(u){ return '<option>' + esc(u) + '</option>'; }).join("") + '</select></span></label>';
+      }).join("");
+      return '<div class="calc-form">' + sel + dims + '</div>' + renderCalcTail(c);
+    }
+    var fields = c.fields.map(function(f){
+      if (f.type === "check")
+        return '<label class="calc-fld cf-check"><input type="checkbox" data-cf="' + f.k + '"><span>' + esc(f.label) + '</span></label>';
+      if (f.type === "select"){
+        var list = typeof f.opts === "function" ? f.opts() : f.opts;
+        return '<label class="calc-fld"><span>' + esc(f.label) + '</span><select data-cf="' + f.k + '">' +
+          list.map(function(o){ return '<option>' + esc(o) + '</option>'; }).join("") + '</select></label>';
+      }
+      var unit = f.u
+        ? '<select class="cf-unit" data-cu="' + f.k + '">' + Object.keys(CU[f.u]).map(function(u){ return '<option>' + esc(u) + '</option>'; }).join("") + '</select>'
+        : "";
+      var dv = (f.d != null ? ' value="' + f.d + '"' : "");
+      return '<label class="calc-fld"><span>' + esc(f.label) + '</span><span class="cf-row"><input type="number" step="any" inputmode="decimal" data-cf="' + f.k + '"' + dv + '>' + unit + '</span></label>';
+    }).join("");
+    return '<div class="calc-form">' + fields + '</div>' + renderCalcTail(c);
+  }
+  function computeCalcForm(){
+    var c = vcalc(calcState.mode); if (!c) return;
+    var form = $("calc").querySelector(".calc-form"); if (!form) return;
+    var res = $("calcRes");
+    if (c.dyn){
+      var sh = c.shapes[dynShapeIdx(c)], x = {}, bad = false;
+      sh.f.forEach(function(fd){
+        var el = form.querySelector('[data-cf="' + fd[0] + '"]'), us = form.querySelector('[data-cu="' + fd[0] + '"]');
+        var raw = el ? parseFloat(el.value) : NaN;
+        if (isNaN(raw) || raw <= 0){ bad = true; x[fd[0]] = NaN; }
+        else x[fd[0]] = raw * (CU.length[us ? us.value : "m"] || 1);
+      });
+      if (bad){ if (res) res.innerHTML = '<span class="cr-main">\u2014</span>'; calcState.lastOut = null; return; }
+      var V = sh.v(x);
+      var out = { J:null, tier:null, main:fmtV(V) + " m\u00b3",
+        sub:fmtV(V / 1e-6) + " cm\u00b3   \u00b7   " + fmtV(V * 1e-9) + " km\u00b3",
+        tex:sh.tex ? sh.tex(x, V) : "V=" + texV(V) + "\\ \\text{m}^3",
+        steps:["Shape: " + sh.n].concat(sh.f.map(function(fd){ return fd[1] + " $= " + texV(x[fd[0]]) + "\\ \\text{m}$"; })) };
+      calcState.lastOut = { c:c, out:out };
+      if (res) res.innerHTML = '<span class="cr-main">' + esc(out.main) + '</span><span class="cr-sub">' + esc(out.sub) + '</span>';
+      return;
+    }
+    var g = {};
+    c.fields.forEach(function(f){
+      var el = form.querySelector('[data-cf="' + f.k + '"]');
+      if (!el) return;
+      if (f.type === "check"){ g[f.k] = el.checked; return; }
+      if (f.type === "select"){ g[f.k] = el.value; return; }
+      var raw = parseFloat(el.value);
+      if (isNaN(raw)){ g[f.k] = (f.d != null ? f.d : NaN); return; }
+      g[f.k] = raw;
+      if (f.u){
+        var us = form.querySelector('[data-cu="' + f.k + '"]');
+        var key = us ? us.value : Object.keys(CU[f.u])[0];
+        g[f.k] = raw * (CU[f.u][key] || 1);
+      }
+    });
+    var out;
+    try { out = c.run(g); } catch (err){ out = { err: "check the inputs" }; }
+    var res = $("calcRes"); if (!res) return;
+    if (!out){ res.innerHTML = '<span class="cr-main">\u2014</span>'; calcState.lastOut = null; return; }
+    if (out.err){ res.innerHTML = '<span class="cr-err">' + esc(out.err) + '</span>'; calcState.lastOut = null; return; }
+    calcState.lastOut = { c: c, out: out };
+    res.innerHTML =
+      '<span class="cr-main">' + esc(out.main) + '</span>' +
+      (out.sub ? '<span class="cr-sub">' + esc(out.sub) + '</span>' : "") +
+      (out.tier ? '<span class="cr-tier"><span>' + esc(out.tier) + '</span></span>' : "");
+  }
+  function calcModeInsert(){
+    if (!calcCanInsert() || !calcState.lastOut) return;
+    var c = calcState.lastOut.c, o = calcState.lastOut.out, cat = selectedCat();
+    var body = (o.steps || []).join("\n") + "\n$$" + o.tex + "$$";
+    if (o.sub) body += "\n" + o.sub.replace(/\\times/g, "x").replace(/\\ /g, " ");
+    if (o.tier) body += "\nResult: " + o.tier;
+    DATA.addCalcBlock(cat.id, state.expandedId, body, c.ins + (o.tier ? " \u2014 " + o.tier : ""));
+    closeCalc();
+  }
+
+  /* ---------- lightbox / scan slider ---------- */
+  var lbItems = [], lbAt = 0;
   function openLightbox(jobId, idx){
-    var im = (state.imagesByJob[jobId] || [])[idx];
-    if (!im) return;
-    $("lbImg").src = im.dataUrl;
-    $("lbImg").alt = im.name || "photo";
-    $("lbCap").textContent = (im.name ? im.name + "  ·  " : "") + fmtDateTime(im.createdAt);
+    var ims = state.imagesByJob[jobId] || [];
+    if (!ims.length) return;
+    openScanLightbox(ims.map(function(im){
+      return { src: im.dataUrl, cap: (im.name ? im.name + "  ·  " : "") + fmtDateTime(im.createdAt) };
+    }), idx || 0);
+  }
+  function openScanLightbox(items, start){
+    lbItems = (items || []).filter(function(x){ return x && x.src; });
+    if (!lbItems.length) return;
+    lbAt = Math.min(Math.max(start || 0, 0), lbItems.length - 1);
+    lbShow();
     $("lightbox").hidden = false;
   }
-  function closeLightbox(){ $("lightbox").hidden = true; $("lbImg").src = ""; }
+  function lbShow(){
+    var it = lbItems[lbAt]; if (!it) return;
+    $("lbImg").src = it.src;
+    $("lbImg").alt = it.cap || "scan";
+    var n = lbItems.length;
+    $("lbCap").textContent = (n > 1 ? (lbAt + 1) + " / " + n : "") + (it.cap ? (n > 1 ? "   ·   " : "") + it.cap : "");
+    $("lbPrev").hidden = $("lbNext").hidden = n < 2;
+  }
+  function lbNav(d){
+    var n = lbItems.length; if (n < 2) return;
+    lbAt = (lbAt + d + n) % n;
+    lbShow();
+  }
+  function closeLightbox(){ $("lightbox").hidden = true; $("lbImg").src = ""; lbItems = []; }
   $("lbClose").addEventListener("click", closeLightbox);
+  $("lbPrev").addEventListener("click", function(e){ e.stopPropagation(); lbNav(-1); });
+  $("lbNext").addEventListener("click", function(e){ e.stopPropagation(); lbNav(1); });
   $("lightbox").addEventListener("click", function(e){ if (e.target === $("lightbox")) closeLightbox(); });
+  (function(){
+    var sx = null;
+    $("lightbox").addEventListener("touchstart", function(e){ sx = e.touches[0].clientX; }, { passive: true });
+    $("lightbox").addEventListener("touchend", function(e){
+      if (sx == null) return;
+      var dx = e.changedTouches[0].clientX - sx; sx = null;
+      if (Math.abs(dx) > 45) lbNav(dx < 0 ? 1 : -1);
+    });
+  })();
+  document.addEventListener("keydown", function(e){
+    if ($("lightbox").hidden) return;
+    if (e.key === "ArrowLeft") lbNav(-1);
+    else if (e.key === "ArrowRight") lbNav(1);
+  });
 
   /* ---------- image processing ---------- */
   var MAX_DIM = 1000, MAX_CHARS = 180 * 1024;
@@ -3390,15 +4582,26 @@
       });
     });
   }
-  var _saveTimer = null;
+  var _saveTimer = null, _saveIdle = null;
+  function writeState(){
+    return idbSet({ v: 3, categories: state.categories, jobsByCat: state.jobsByCat, imagesByJob: state.imagesByJob, workOn: state.workOn })
+      .catch(function(e){ console.error("save failed", e); });
+  }
   function save(){
     if (_saveTimer) clearTimeout(_saveTimer);
     _saveTimer = setTimeout(function(){
       _saveTimer = null;
-      idbSet({ v: 3, categories: state.categories, jobsByCat: state.jobsByCat, imagesByJob: state.imagesByJob, workOn: state.workOn })
-        .catch(function(e){ console.error("save failed", e); });
-    }, 250);
+      if (window.requestIdleCallback) _saveIdle = requestIdleCallback(function(){ _saveIdle = null; writeState(); }, { timeout: 1000 });
+      else writeState();
+    }, 400);
   }
+  function flushSave(){
+    if (_saveTimer){ clearTimeout(_saveTimer); _saveTimer = null; }
+    if (_saveIdle && window.cancelIdleCallback){ cancelIdleCallback(_saveIdle); _saveIdle = null; }
+    writeState();
+  }
+  window.addEventListener("pagehide", flushSave);
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "hidden") flushSave(); });
 
   /* ---------- seed + migration ---------- */
   var SERVICE_CATEGORIES = ["Respect Thread", "Joki Private Debate", "Judgement Battleboarding", "Calculation Battleboarding"];
@@ -3505,6 +4708,225 @@
     Object.keys(state.jobsByCat).forEach(function(cid){ (state.jobsByCat[cid] || []).forEach(normalizeJob); });
   }
 
+  /* ---------- one-off local content: Lee Jihoon/DG respect thread (not shipped) ---------- */
+  function buildDGThread(){
+    var t = Date.now();
+    return {
+      id: uid(),
+      title: "Lee Jihoon/DG",
+      description: "Respect Thread untuk DG (Diego Kang / James Lee / Lee Jihoon) dari Lookism, Legenda Generasi Pertama.",
+      customer: "",
+      tags: ["Lookism", "DG"],
+      status: "not-started", priority: "medium", deadline: null,
+      createdAt: t, completedAt: null, price: null, priceKind: "quote",
+      rebuttals: [], argDoc: "", embeds: [],
+      rt: {
+        intro:
+          "DG (Diego Kang; 강다겸 / Kang Dagyum) adalah seorang superstar Korea Selatan yang memiliki popularitas luar biasa di industri hiburan. Selain berkarier sebagai penyanyi dan selebritas papan atas, ia juga menjabat sebagai kepala PTJ Entertainment, sebuah agensi yang berfokus pada pelatihan dan pengembangan para calon idol. Berkat pengaruh dan statusnya, DG dikenal sebagai salah satu tokoh paling berkuasa di dunia hiburan.\n\n" +
+          "Dalam dunia pertarungan, DG atau James Lee dihormati sebagai Legenda Generasi Pertama (Legend of the First Generation). Julukan itu diberikan karena ia berhasil mengalahkan dan menundukkan para King dari Generasi Pertama, para petarung terkuat yang menguasai berbagai wilayah di Korea. Prestasinya membuat namanya menjadi simbol kekuatan yang nyaris tak tertandingi, bahkan bertahun-tahun setelah ia menghilang dari dunia pertarungan. Hingga kini reputasinya tetap menjadi tolok ukur bagi para petarung generasi berikutnya.",
+        inChar:
+          "DG secara kanon adalah seorang jenius, baik dalam martial arts maupun akademis. Choi Dongsoo bahkan menganggapnya sudah tumbuh terlalu kuat sehingga tidak bisa diatur. Choi Dongsoo sendiri termasuk jenius, dan bakat DG dinarasikan lebih unggul: DG memiliki Path, sementara Choi Dongsoo tidak.\n\n" +
+          "Gaya bertarung. Sepanjang cerita Lookism, DG diperlihatkan memiliki beberapa phase, masing-masing dengan Power Level berbeda.\n\n" +
+          "Casual Phase. DG tidak bertarung dengan seluruh kemampuannya dan menyesuaikan output sesuai lawan. Terbagi dua: Mastery Speed (setara pengguna 3 Mastery seperti Na Jaegyeon) dan Invisible Attack (fight-style dasar DG yang dapat dipakai terhadap siapa pun, dari Ma Taesoo hingga Ultimate King Dogyu).\n\n" +
+          "Serious Phase. DG menggunakan seluruh Mastery miliknya sekaligus (Strength, Speed, Technique). Kombinasi ini cukup untuk meng-overwhelm Ultimate King Dogyu dan membuatnya teringat pada Old Gapryong.\n\n" +
+          "DG's Path. Phase tertinggi yang pernah diperlihatkan. Saat Dogyu memasuki kondisi All-out dan tekanannya mengingatkan DG pada Conviction Old Gapryong, DG membangkitkan Path miliknya dan mampu meng-one-shot All-out Dogyu.\n\n" +
+          "DG konsisten menaikkan phase secara bertahap sesuai kebutuhan: melawan Na Jaegyeon ia hanya memakai Mastery Speed, sedangkan melawan Ultimate King Dogyu ia mulai dari Invisible Attack, naik ke Serious Phase, lalu mengaktifkan DG's Path setelah Dogyu all-out.\n\n" +
+          "Referensi. DG vs Dogyu Part 1: https://www.webtoons.com/en/drama/lookism/ep-606-the-hunt-for-the-workers-19/viewer?title_no=1049&episode_no=606 | Part 2: https://www.webtoons.com/en/drama/lookism/ep-607-the-hunt-for-the-workers-20/viewer?title_no=1049&episode_no=607",
+        terminology: [
+          {
+            id: uid(),
+            term: "Mastery (경지, gyeongji)",
+            definition:
+              "Mastery (경지, gyeongji; secara harfiah 'alam', 'tingkatan', atau 'keadaan') adalah kondisi ketika suatu atribut fisik telah diasah hingga tingkat manusia super (superhuman), sehingga mengalami transformasi kualitatif pada aspek tersebut. Mastery bukan peningkatan kekuatan bertahap, melainkan lompatan kualitas yang memberi penggunanya kemampuan yang tidak dapat dicapai lewat latihan biasa.\n\n" +
+              "Ada empat jenis Mastery dasar: Power (Kekuatan), Speed (Kecepatan), Endurance (Daya Tahan), dan Technique (Teknik). Masing-masing berfokus pada satu aspek fisik dan memberi karakteristik unik.\n\n" +
+              "Mastery tidak menentukan seberapa besar kekuatan fisik pemiliknya, melainkan menggambarkan kemampuan khusus, kualitas, dan potensi pada atribut itu. Dua orang yang sama-sama punya Mastery Kecepatan belum tentu punya kecepatan identik, tetapi keduanya telah mencapai penguasaan di luar batas manusia biasa.\n\n" +
+              "Untuk mencapai Mastery, seseorang umumnya harus menghadapi lawan yang jauh lebih kuat hingga mencapai 'tembok' (wall), lalu mengalami rediscovery di mana tubuh dan pikirannya didorong hingga batas maksimal untuk menembus penghalang itu.",
+            evidence: ["https://www.webtoons.com/en/drama/lookism/ep-409-first-generation-king-6/viewer?title_no=1049&episode_no=409"]
+          },
+          {
+            id: uid(),
+            term: "Own Path (Jalur Milik Sendiri)",
+            definition:
+              "Own Path (Jalur Milik Sendiri) adalah tingkatan yang hanya dapat dicapai lewat keyakinan (conviction) yang kuat. Berbeda dengan Mastery yang dicapai dengan menembus batas fisik setelah mencapai 'tembok', Own Path lahir dari usaha dan perkembangan pribadi. Jalur ini adalah manifestasi identitas, pemahaman, dan cara bertarung yang sepenuhnya unik bagi individu tersebut.\n\n" +
+              "Tidak semua orang mampu menemukan Own Path mereka. Untuk membangkitkannya, seseorang harus mengembangkan kesadaran (awareness) yang cukup lewat latihan tanpa henti, pengalaman bertarung, bakat, dan pemahaman mendalam terhadap diri sendiri hingga melampaui batas sebelumnya.\n\n" +
+              "Pengguna Own Path mampu mengembangkan kemampuan maupun resistansi yang muncul sebagai respons terhadap ancaman yang dihadapi. Johan Seong membangkitkan Infinite Technique melawan Gun Park; Daniel Park membangkitkan Deepest Intentions melawan Paecheon.\n\n" +
+              "Membangkitkan Own Path juga membuat seseorang bisa merasakan keberadaan pengguna Own Path lain. Sifat terpenting Own Path adalah keunikannya: Copy Talent tidak dapat meniru unsur yang dipelajari selama proses penciptaan Own Path, sehingga jalur itu tidak dapat diikuti, diwarisi, maupun ditiru oleh orang lain.",
+            evidence: [
+              "https://imgchest.com/p/pg733lblj7r",
+              "https://imgchest.com/p/a846zqdagyx",
+              "https://imgchest.com/p/qb4zqln334j",
+              "https://imgchest.com/p/pg7332lpz7r",
+              "https://imgchest.com/p/5xy2mx2lj7l",
+              "https://imgchest.com/p/lqyeowmaq4d",
+              "https://imgchest.com/p/9rydo3r6l7k",
+              "https://imgchest.com/p/ej7mrj88n4d",
+              "https://imgchest.com/p/9p4nmq88myn",
+              "https://imgchest.com/p/wl7ldlooqyx"
+            ]
+          }
+        ],
+        feats: [
+          {
+            id: uid(),
+            name: "Speed Mastery",
+            tier: "Mastery Kecepatan · Afterimage, Burst Movement, Acrobatics",
+            explanation:
+              "Speed Mastery (Mastery Kecepatan) memungkinkan penggunanya melakukan ledakan gerakan (bursts of movement) dan lompatan terus-menerus dengan kendali sangat presisi, sehingga mampu menghindari serangan atau bertahan dengan memaksimalkan mobilitas. Pengguna Speed Mastery juga dapat bergerak begitu cepat hingga menciptakan afterimage untuk mengelabui dan mengalihkan perhatian lawan.",
+            evidence: ["https://imgchest.com/p/n87w2x9aq7x", "https://imgchest.com/p/a846zdgz2yx"]
+          },
+          {
+            id: uid(),
+            name: "Strength Mastery",
+            tier: "Mastery Kekuatan · Shockwave, Vibration, Damage Amplification",
+            explanation:
+              "Strength Mastery (Mastery Kekuatan) memungkinkan penggunanya melepaskan kekuatan secara eksplosif. Serangannya berdaya hancur jauh lebih besar dan mampu menciptakan shockwave destruktif, sehingga dapat memberi kerusakan bahkan tanpa kontak langsung dengan target.",
+            evidence: ["https://www.webtoons.com/en/drama/lookism/ep-492-cheonliang-11/viewer?title_no=1049&episode_no=492"]
+          },
+          {
+            id: uid(),
+            name: "Technique Mastery",
+            tier: "Mastery Teknik · Redirection, Attack Reflection, Power Nullification",
+            explanation:
+              "Technique Mastery (Mastery Teknik) berfokus pada efisiensi dan penguasaan teknik bertarung. Penggunanya dapat menghindari serangan lewat pengalihan arah serangan, mengubah lintasan gerakan lawan, hingga meniadakan atau menetralisir teknik yang dipakai lawan.",
+            evidence: ["https://imgchest.com/p/9p4nmqq6myn", "https://imgchest.com/p/qb4zqllld4j", "https://imgchest.com/p/vj4jj555x48"]
+          },
+          {
+            id: uid(),
+            name: "Invisible Attacks",
+            tier: "Perception Manipulation · Invisible Manouvers · Enhanced Speed Boost",
+            explanation:
+              "Invisible Attack (Serangan Tak Terlihat) memungkinkan penggunanya menyerang dengan kecepatan luar biasa sambil memanfaatkan titik buta (blind spot) lawan. Serangan dieksekusi begitu cepat sehingga sekelompok petarung yang mengepung penggunanya sekalipun tidak mampu bereaksi.\n\n" +
+              "Meski disebut 'Serangan Tak Terlihat', serangannya tidak benar-benar menghilang. Pengguna bergerak dan menyerang dengan kecepatan sangat tinggi sekaligus mengarahkan serangan lewat titik di luar jangkauan persepsi visual lawan. Kombinasi kecepatan ekstrem dan pemanfaatan blind spot menciptakan ilusi seolah serangan itu tidak terlihat.",
+            evidence: ["https://gyazo.com/5541b60fc41aead2f06b86566ecc3081"]
+          },
+          {
+            id: uid(),
+            name: "DG's Path",
+            tier: "Own Path · Slow-Motion Perception · Attack Reflection",
+            explanation:
+              "Path milik DG memiliki mekanisme slow-motion perception yang secara konsep mirip pengguna UI tetapi pada level jauh lebih tinggi. Jaegyeon tampak seolah membeku di beberapa panel dari sudut pandang DG; bahkan Deathly Kick Jaegyeon, yang menggabungkan tiga Mastery sekaligus, terlihat bergerak sangat lambat dalam persepsinya.\n\n" +
+              "Fenomena yang sama terlihat saat DG menghadapi Gitae. Karakter sekelas Prime Gapryong seperti Gitae tetap terlihat seolah membeku dalam perspektif DG, dan DG mampu menghindari Unique Skill All-Out Dogyu, teknik gabungan empat Mastery yang dinarasikan tidak dapat diatasi bahkan oleh Old Gapryong.\n\n" +
+              "Selain slow-motion perception, Path DG tampaknya punya attack reflection. Setelah Deathly Kick dilancarkan, Jaegyeon justru tumbang, dan DG menjelaskan kerusakan yang terjadi seolah merupakan konsekuensi dari serangan Jaegyeon sendiri.\n\n" +
+              "Interpretasi ini konsisten pada pertarungan melawan Gitae: DG menyatakan Path miliknya tidak efektif terhadap Gitae karena Path Gitae menyerap (absorb) damage. Gitae menyatakan Path mereka berdua saling berlawanan sehingga secara alami menjadi counter satu sama lain.",
+            evidence: ["https://gyazo.com/cb33267d9c29d8d4b16933fd53c2375f"]
+          }
+        ],
+        stats: [
+          {
+            id: uid(),
+            label: "Attack Potency",
+            value: "Large Building+ Level (kira-kira 2,94 x 10^10 J)",
+            note: "James Lee dan Kim Kitae menciptakan sonic boom destruktif, Lookism Ch. 609, calc oleh Ammar Firman. Volume atap gereja plus kepala plus kerucut kira-kira 231,94 m3 reinforced concrete, massa kira-kira 579.842 kg. Kecepatan sonic boom dari mach cone 49,57 derajat: 1/sin(49,57) x 343 kira-kira 450,6 m/s. EK = 0,5 x 579.842 x 450,6^2 kira-kira 5,89 x 10^10 J, dibagi dua karakter kira-kira 2,94 x 10^10 J."
+          },
+          {
+            id: uid(),
+            label: "Speed",
+            value: "Hypersonic+ (kira-kira Mach 10 / 3.432,84 m/s)",
+            note: "Counterattack Lee Jihoon yang melihat Death Kick Na Jaegyeon sebagai slow-motion, Lookism Ch. 584, credit Ammar Firman. Death Kick dianggap minimal Mach 1. Tinggi tendangan dari wajah Lee Jihoon h = 0,975 x sin(45) kira-kira 0,6894 m, apparent speed kira-kira 0,6894 m/s. Roundhouse kick normal 6,9 m/s, kecepatan Lee Jihoon = 343 / 0,6894 x 6,9 kira-kira 3.432,84 m/s kira-kira Mach 10."
+          }
+        ]
+      }
+    };
+  }
+  function buildOPDebunkJob(){
+    var t = Date.now();
+    return {
+      id: uid(),
+      title: "FTL+ Calc One Piece Debunk Based on Method",
+      description: "Debunk metode kalkulasi FTL+ untuk ayunan Murakumogiri milik Whitebeard (One Piece), berikut recalc.",
+      customer: "", tags: ["One Piece", "Debunk"],
+      status: "not-started", priority: "medium", deadline: null,
+      createdAt: t, completedAt: null, price: null, priceKind: "quote",
+      embeds: [], argDoc: "",
+      rebuttals: [{
+        id: uid(),
+        status: "resolved",
+        createdAt: t,
+        claim: "One Piece FTL+ Calc (metode kalkulasi Tapuang): ayunan Murakumogiri milik Whitebeard dihitung memakai pergerakan keseluruhan lengan melalui sudut 90°, menghasilkan sekitar 3,11c (FTL+).",
+        counter: "",
+        rebuttal:
+          "Ada banyak kekurangan dalam metode kalkulasi Tapuang disana. Kita ambil gambar HD untuk ini: ( https://imgur.io/a/rnSLCxb#W0X28zv ). Dapat dilihat dengan jelas disana mengenai pergerakan dari WB. Apa kesalahan utama dari kalkulasi itu? Seharusnya kalkulasi itu bukan menggunakan pergerakan keseluruhan lengannya. Penggambaran yang sesungguhnya, Whitebeard memegang Murakumogiri dengan kedua lengannya, dan mengayunkannya. Itu tidak memerlukan gerakan 90° untuk seluruh lengannya, sebagian besar gerakan dibantu oleh lengan kedua, lengan itu sendiri hanya membutuhkan setengah gerakan atau kurang dari itu. Sangat tepat untuk menggunakan lengan bawah ditambah dengan bilah Murakumogiri. Ini adalah pengamatan akurat yang dapat diuraikan lebih lanjut untuk memberikan analisis kritis dan ketegasan yang lebih besar. Pertama, dapat ditegaskan bahwa penggunaan kedua lengan Whitebeard untuk mengayunkan Murakumogiri adalah pilihan yang disengaja dan strategis. Dengan menggunakan kedua lengannya, Whitebeard mampu menghasilkan kekuatan dan momentum yang lebih besar, yang memungkinkannya untuk melancarkan serangan yang lebih kuat. Dalam hal mekanisme spesifik ayunan, dapat diamati bahwa Whitebeard tidak perlu menggerakkan seluruh lengannya melalui sudut 90° untuk menghasilkan kekuatan yang diperlukan. Sebaliknya, sebagian besar gerakan dibantu oleh lengan kedua, yang berarti lengan utama hanya perlu bergerak melalui sudut yang lebih kecil. Teknik ini tidak hanya menghemat energi tetapi juga mengurangi risiko cedera atau ketegangan pada lengan.\n\n" +
+          "https://gyazo.com/73c7bf1fa819f7345c3b15c62df0847f - Si WB bisa dilihat disini hampir tidak memegang sebagian besar gagangnya. Kita melihat bukti lebih jauh bahwa lengannya tidak berayun seperti tongkat bersama dengan Murakumogiri berkat bantuan lengan kedua, memungkinkan ayunan yang lebih cepat tanpa gerakan lengan yang cepat untuk si pengguna sendiri. Jadi, ya, kalkulasi itu seharusnya tidak menggunakan seluruh lengan untuk ini.\n\n" +
+          "https://gyazo.com/0677f503274669c0b8d93468144e230e - Lihat cahaya ini bergerak. Nyaris tidak bergerak bukan?\n\n" +
+          "https://gyazo.com/0d563037986c4780bba83b6d62265b00 - Sekarang lihat ini. Ini lebih banyak bergerak secara signifikan. Laser ini juga tidak tergeser oleh ayunan Whitebeard, jadi akan lebih mudah dan aman untuk menghitungnya. Laser ini bergerak secara pasti sekitar satu meter penuh sebelum berayun tangan WB tanda kisaran 45° (setengah sudut dari tangan lurus).\n\n" +
+          "Gw akan coba recalc untuk scene ini: https://gyazo.com/bc09b8c51126fa263ee83a298e519062\n" +
+          "Collar: 0.121651561m | 37px\n" +
+          "Laser Movement: 300px | 0.986364m\n" +
+          "Jadi pergerakannya sekitar 45° -> ((66÷111)6.66)×45×π÷180 = 3.11017672705 m\n" +
+          "Masukkan ke nilai: 3.11017672705 × 299792458 ÷ 0.986364 = 945297603.944 m/s atau 3,11 c (FTL)."
+      }]
+    };
+  }
+  function buildDowanCalcJob(){
+    var t = Date.now();
+    function ev(url){
+      var info = classifyEmbed(url) || { url: url, kind: "link" };
+      return { url: info.url, kind: info.kind, provider: info.provider || "", embedUrl: info.embedUrl || info.url, thumbUrl: info.thumbUrl || "", caption: "" };
+    }
+    return {
+      id: uid(),
+      title: "Booster Dowan Vital Point Strike Speed",
+      description: "Kecepatan Booster Ability Dowan saat menembus jarak ke Gongcheol dalam slow-motion (Reality Quest S2 Ep. 163).",
+      customer: "", tags: ["Reality Quest", "Speed"],
+      status: "not-started", priority: "medium", deadline: null,
+      createdAt: t, completedAt: null, price: null, priceKind: "quote",
+      rebuttals: [], embeds: [], argDoc: "",
+      calc: { blocks: [{
+        id: uid(),
+        createdAt: t,
+        label: "Booster Ability Speed = 51.044 Mach (High Hypersonic)",
+        body:
+          "Sumber feats:\nhttps://www.webtoons.com/id/action/reality-quest/s2-episode-163/viewer?title_no=4030&episode_no=163\n\n" +
+          "Feats kali ini, Dowan bergerak dengan cepat juga lewat Booster Ability sampai-sampai lawannya membeku. Pada kasus ini, kita akan menganggap real-speed dari Gongcheol berada di ranah paling rendah superhuman berdasarkan pukulannya yang bisa mementalkan Dowan [ 1 ]. Hal ini cukup reasonable, terutama dari narasi fiksinya yang sebenarnya bisa lebih dari itu dan dijelaskan sendiri bahwa Gongcheol memiliki fisik melampaui manusia biasa. Bahkan efek sampingnya [ 2 ]:\n" +
+          "1. Pukulan Gongcheol membuat sonic-boom yang bukan hanya efek visual, melainkan menghancurkan dengan bentuk lingkaran terhadap objek yang dikenainya.\n" +
+          "2. Menunjukkan tekanan udara yang ditekan secara ekstrim hingga berkali-kali ditekankan dengan onomatopoeia di komiknya.\n\n" +
+          "[ 1 ] https://gyazo.com/fb8590d9224ec7aab685995444a0cd97\n\n" +
+          "[ 2 ] https://www.scientificamerican.com/podcast/episode/5538765e-e7f2-99df-393e0a0cd7821157/\n\n" +
+          "Dengan asumsi paling rendah itu, kita asumsikan Gongcheol memukul dengan kecepatan 12.43 - 34.3 m/s, kita akan ambil di bagian tengah-tengah dari itu saja (setengah dari rentang 12.43 - 34.3 adalah 23.365), yakni 23.365 m/s. Gongcheol sendiri setinggi 1.92 m (estimasi) berdasarkan ini [ 3 ]. Kita akan mencari jarak yang Dowan tempuh untuk mencapai Gongcheol dengan angsize sederhana. Yakni kepala Gongcheol ke PoV. Lewat kalkulator proporsi tubuh kita mendapatkan estimasi kepalanya sekitar 0.24 m [ 4 ].\n\n" +
+          "[ 3 ] https://en.namu.wiki/w/%EA%B3%B5%EC%B2%A0(%ED%98%84%EC%8B%A4%ED%80%98%EC%8A%A4%ED%8A%B8)#toc\n\n" +
+          "[ 4 ] https://gyazo.com/3328febbc84d1d7862e3c082e0b5f761\n\n" +
+          "Menggunakan angsize dari panel ini [ 5 ]:\n" +
+          "Jarak kepala Gongcheol dari PoV = (0.24 × 1540)/(110 × 2tan(35°)) = 3.4 m\n\n" +
+          "[ 5 ] https://gyazo.com/2b7b2d9a4c35e670c212551c6ff0a57b\n\n" +
+          "3.4 m adalah estimasi jarak yang ditempuh Dowan saat itu. Akan tetapi, Dowan juga sempat memutar balik tubuhnya sebanyak 180°, ini juga perlu diperhitungkan yang berarti memiliki jarak total: 3.4 + (1.78 × 180°) = 8.99203 m.\n\n" +
+          "Dowan bergerak dalam satu waktu sehingga apparent-speednya kita asumsikan bergerak pada 1 detik dalam slow-motion, menjadi: 8.99203/1 = 8.99203 m/s. Sedangkan untuk Gongcheol, kita asumsikan hanya bergerak 1 pixel dalam lima setengah detik sebagai kecepatannya (berdasarkan jumlah panel di kejadian) sehingga: 5.5 × 0.24/110 = 0.012 m/s sebagai apparent-speednya.\n\n" +
+          "Sehingga, kecepatan Booster Ability Dowan:\n" +
+          "= 23.365/0.012 × 8.99203\n" +
+          "= 17508.2317458 m/s\n" +
+          "= 51.044 Mach\n" +
+          "= High Hypersonic",
+        evidence: [
+          ev("https://www.webtoons.com/id/action/reality-quest/s2-episode-163/viewer?title_no=4030&episode_no=163"),
+          ev("https://gyazo.com/fb8590d9224ec7aab685995444a0cd97"),
+          ev("https://www.scientificamerican.com/podcast/episode/5538765e-e7f2-99df-393e0a0cd7821157/"),
+          ev("https://en.namu.wiki/w/%EA%B3%B5%EC%B2%A0(%ED%98%84%EC%8B%A4%ED%80%98%EC%8A%A4%ED%8A%B8)#toc"),
+          ev("https://gyazo.com/3328febbc84d1d7862e3c082e0b5f761"),
+          ev("https://gyazo.com/2b7b2d9a4c35e670c212551c6ff0a57b")
+        ]
+      }] }
+    };
+  }
+  function injectLocalJob(flag, catName, title, builder){
+    try { if (localStorage.getItem(flag)) return; } catch (e) {}
+    var cat = null, i;
+    for (i = 0; i < state.categories.length; i++){
+      if (state.categories[i].name === catName){ cat = state.categories[i]; break; }
+    }
+    if (!cat) return;
+    var list = state.jobsByCat[cat.id] || (state.jobsByCat[cat.id] = []);
+    var t = title.toLowerCase();
+    if (!list.some(function(j){ return (j.title || "").toLowerCase() === t; })){
+      list.push(normalizeJob(builder()));
+      save();
+    }
+    try { localStorage.setItem(flag, "1"); } catch (e) {}
+  }
+  function injectLocalContent(){
+    injectLocalJob("bbe-rt-dg-v1", "Respect Thread", "Lee Jihoon/DG", buildDGThread);
+    injectLocalJob("bbe-op-debunk-v1", "Joki Private Debate", "FTL+ Calc One Piece Debunk Based on Method", buildOPDebunkJob);
+    injectLocalJob("bbe-dowan-calc-v1", "Calculation Battleboarding", "Booster Dowan Vital Point Strike Speed", buildDowanCalcJob);
+  }
+
   /* ---------- data layer ---------- */
   var DATA = {
     addCategory: function(name){
@@ -3567,10 +4989,14 @@
       j.tags = (j.tags || []).filter(function(x){ return x !== tag; });
       renderPanel(); save();
     },
-    addRebuttal: function(catId, jobId){
+    addRebuttal: function(catId, jobId, seed){
       var j = jobById(catId, jobId); if (!j) return;
       j.rebuttals = j.rebuttals || [];
-      j.rebuttals.push({ id: uid(), claim: "", counter: "", rebuttal: "", status: "unanswered", createdAt: Date.now() });
+      var entry = { id: uid(), claim: "", counter: "", rebuttal: "", status: "unanswered", createdAt: Date.now() };
+      if (seed) ["claim", "counter", "rebuttal", "status"].forEach(function(k){
+        if (typeof seed[k] === "string" && seed[k] !== "") entry[k] = seed[k];
+      });
+      j.rebuttals.push(entry);
       renderPanel(); save();
     },
     updateRebuttal: function(catId, jobId, rebId, field, val, render){
@@ -3593,11 +5019,11 @@
       j.rt[field] = String(text || "");
       save();
     },
-    addRtItem: function(catId, jobId, listKey){
+    addRtItem: function(catId, jobId, listKey, seed){
       var j = jobById(catId, jobId); if (!j || !j.rt || !Array.isArray(j.rt[listKey])) return;
       var cfg = rtCfg(listKey); if (!cfg) return;
       var it = { id: uid(), createdAt: Date.now() };
-      cfg.fields.forEach(function(fd){ it[fd.f] = ""; });
+      cfg.fields.forEach(function(fd){ it[fd.f] = (seed && typeof seed[fd.f] === "string") ? seed[fd.f] : ""; });
       if (cfg.evidence) it.evidence = [];
       j.rt[listKey].push(it);
       renderPanel(); save();
@@ -3617,11 +5043,20 @@
     addRtEvidence: function(catId, jobId, listKey, itemId, url){
       var j = jobById(catId, jobId); if (!j || !j.rt || !Array.isArray(j.rt[listKey])) return;
       url = String(url || "").trim(); if (!url) return;
+      if (!/^https?:\/\//i.test(url)) url = "https://" + url;
       var it = j.rt[listKey].filter(function(x){ return x.id === itemId; })[0];
       if (!it) return;
       it.evidence = it.evidence || [];
-      it.evidence.push(url);
+      it.evidence.push({ url: url, caption: "" });
       renderPanel(); save();
+    },
+    updateRtEvidenceCaption: function(catId, jobId, listKey, itemId, idx, caption){
+      var j = jobById(catId, jobId); if (!j || !j.rt || !Array.isArray(j.rt[listKey])) return;
+      var it = j.rt[listKey].filter(function(x){ return x.id === itemId; })[0];
+      if (!it || !it.evidence || !it.evidence[idx]) return;
+      if (typeof it.evidence[idx] === "string") it.evidence[idx] = { url: it.evidence[idx], caption: "" };
+      it.evidence[idx].caption = String(caption || "").trim();
+      save();
     },
     deleteRtEvidence: function(catId, jobId, listKey, itemId, idx){
       var j = jobById(catId, jobId); if (!j || !j.rt || !Array.isArray(j.rt[listKey])) return;
@@ -3630,10 +5065,10 @@
       it.evidence.splice(idx, 1);
       renderPanel(); save();
     },
-    addCalcBlock: function(catId, jobId, body){
+    addCalcBlock: function(catId, jobId, body, label){
       var j = jobById(catId, jobId); if (!j) return;
       j.calc = j.calc || { blocks: [] };
-      j.calc.blocks.push({ id: uid(), label: "", body: typeof body === "string" ? body : "", evidence: [], createdAt: Date.now() });
+      j.calc.blocks.push({ id: uid(), label: typeof label === "string" ? label : "", body: typeof body === "string" ? body : "", evidence: [], createdAt: Date.now() });
       renderPanel(); save();
     },
     updateCalcBlock: function(catId, jobId, blockId, field, val){
@@ -3848,6 +5283,7 @@
     function finish(){
       state.workOn = normalizeWorkOn(state.workOn);
       state.categories.forEach(function(c){ if (!state.jobsByCat[c.id]) state.jobsByCat[c.id] = []; });
+      injectLocalContent();
       if (!state.selectedId || !state.categories.some(function(c){ return c.id === state.selectedId; })){
         state.selectedId = state.categories[0] ? state.categories[0].id : null;
       }
