@@ -1,4 +1,4 @@
-/* Bundled subset (latin) of Anton, Barlow, IBM Plex Mono — offline, no network */
+/* Bundled subset (latin) of Anton, Barlow, IBM Plex Mono. Offline, no network. */
 @font-face{font-family:'Anton';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/anton-400.woff2) format('woff2')}
 @font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/barlow-400.woff2) format('woff2')}
 @font-face{font-family:'Barlow';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/barlow-500.woff2) format('woff2')}

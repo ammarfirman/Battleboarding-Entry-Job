@@ -29,7 +29,7 @@
     --sh-torn:polygon(0 0,calc(100% - 9px) 0,100% 100%,9px 100%);
     --sh-blade:polygon(11px 0,100% 0,calc(100% - 11px) 100%,0 100%);
     --sh-arrow:polygon(0 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,0 100%,11px 50%);
-    /* box silhouettes — leaning parallelograms, banner points & stepped notches (not snipped corners) */
+    /* box silhouettes: leaning parallelograms, banner points and stepped notches, not snipped corners */
     --k-panel:polygon(18px 0,100% 0,calc(100% - 18px) 100%,0 100%);
     --k-rail:polygon(0 0,calc(100% - 16px) 0,100% 100%,16px 100%);
     --k-flag:polygon(0 0,calc(100% - 18px) 0,100% 50%,calc(100% - 18px) 100%,0 100%);
@@ -680,12 +680,12 @@
   .lightbox .close{position:absolute;top:16px;right:20px;font-size:1.6rem;background:var(--red);border:2px solid #000;color:#fff;cursor:pointer;line-height:1;width:44px;height:44px;transform:skewX(-10deg)}
   .lightbox .close:hover{background:#fff;color:var(--red)}
 
-  /* view transition — Persona 5 pause-menu style, per-destination motif */
+  /* view transition: Persona 5 pause-menu style, per-destination motif */
   #wipe{position:fixed;inset:0;z-index:70;overflow:hidden;pointer-events:none}
   #wipe.in,#wipe.out{pointer-events:auto}
   #wipe>*{position:absolute;will-change:transform,opacity}
 
-  /* solid cover — guarantees the DOM swap is hidden */
+  /* solid cover: guarantees the DOM swap is hidden */
   #wipe .w-fill{inset:0;background:var(--bg);opacity:0}
   #wipe.in  .w-fill{opacity:1;transition:opacity .14s linear}
   #wipe.out .w-fill{opacity:0;transition:opacity .18s linear}
@@ -1156,11 +1156,11 @@
   var I18N = {
     id: {
       "loader.lbl":"Memuat Meta-Listing",
-      "tagline":"Pelacak pekerjaan battleboarding: lifecycle status, deadline & prioritas, rebuttal terstruktur, embed scan, dan statistik — semua tersimpan di perangkat ini.",
+      "tagline":"Pelacak pekerjaan battleboarding: lifecycle status, deadline & prioritas, rebuttal terstruktur, embed scan, dan statistik. Semua tersimpan di perangkat ini.",
       "tab.board":"Papan","tab.schedule":"Jadwal","tab.stats":"Statistik","tab.workon":"Kanal Kerja","tab.services":"Layanan","tab.history":"Sejarah",
       "search.btn":"Cari semua","search.ph":"Cari job, argumen, rebuttal, customer, tag…",
       "pal.up":"pilih","pal.enter":"buka","pal.esc":"tutup",
-      "pal.hint":"Ketik untuk mencari di seluruh app — job, rebuttal, notes, customer, tag.","pal.none":"Tidak ada hasil untuk",
+      "pal.hint":"Ketik untuk mencari di seluruh app: job, rebuttal, notes, customer, tag.","pal.none":"Tidak ada hasil untuk",
       "pal.g.jobs":"Job","pal.g.rebuttals":"Rebuttal","pal.g.arguments":"Argumen","pal.g.customers":"Customer","pal.g.tags":"Tag","pal.rebuttal":"(rebuttal)",
       "rail.categories":"Kategori","rail.empty":"Belum ada kategori.","rail.addcat":"+ Tambah kategori",
       "sound.title":"Musik","sound.off":"Musik: mati","sound.on":"Musik:",
@@ -1171,10 +1171,10 @@
       "prio.low":"Rendah","prio.medium":"Sedang","prio.high":"Tinggi","prio.urgent":"Mendesak",
       "reb.unanswered":"Belum Dijawab","reb.in-progress":"Sedang Proses","reb.resolved":"Selesai","reb.rejected":"Ditolak","reb.needs-evidence":"Butuh Bukti",
       "plat.web":"Web Eksternal","plat.hint.facebook":"Grup, halaman, atau thread tempat order masuk","plat.hint.whatsapp":"Grup atau kontak klien","plat.hint.discord":"Server dan channel battleboarding","plat.hint.web":"Forum, wiki, situs, atau marketplace",
-      "job.status.advance":"Klik untuk lanjut status","job.status.aria":"Status:","job.advance":"— klik untuk lanjut",
+      "job.status.advance":"Klik untuk lanjut status","job.status.aria":"Status:","job.advance":"(klik untuk lanjut)",
       "job.done.at":"Selesai","job.del":"Hapus job","job.delConfirm":"Hapus job ini?","cat.delConfirm.a":"Hapus \"","cat.delConfirm.b":"\" beserta semua isinya?",
       "cat.new.prompt":"Nama kategori baru:",
-      "panel.calc":"🧮 Kalkulator","panel.done":"selesai","panel.core":"🔒 inti","panel.core.title":"Kategori inti — tidak bisa dihapus","panel.delcat":"Hapus kategori",
+      "panel.calc":"🧮 Kalkulator","panel.done":"selesai","panel.core":"🔒 inti","panel.core.title":"Kategori inti, tidak bisa dihapus","panel.delcat":"Hapus kategori",
       "panel.jobs":"Job","panel.addjob.ph":"Tambah job…","panel.addjob.aria":"Job baru","panel.addjob":"Tambah job",
       "panel.pickcat":"Pilih kategori di kiri.",
       "panel.nojobs":"Belum ada job di kategori ini.",
@@ -1197,7 +1197,7 @@
       "rt.list.terminology":"Terminology","rt.list.feats":"Feats and Abilities","rt.list.stats":"Statistics",
       "rt.add.terminology":"+ Tambah istilah","rt.add.feats":"+ Tambah feat / kemampuan","rt.add.stats":"+ Tambah statistik",
       "rt.f.term":"Istilah / konsep","rt.f.definition":"Definisi & konteks dari sumber…","rt.f.name":"Nama feat / kemampuan","rt.f.tier":"Tier / kategori (mis. Universal Abilities)","rt.f.explanation":"Penjelasan feat beserta konteks sumber…","rt.f.label":"Statistik (mis. Attack Potency)","rt.f.value":"Nilai (mis. Multiversal+)","rt.f.note":"Justifikasi singkat (opsional)",
-      "rt.doc.empty":"(Belum diisi)","rt.doc.noname":"(tanpa nama)","rt.doc.evidence":"Bukti:","rt.doc.footer":"Dibuat dengan Battleboarding Business Entry —","rt.export.fail":"Tidak bisa mengekspor di lingkungan ini. Coba buka app-nya di browser desktop.",
+      "rt.doc.empty":"(Belum diisi)","rt.doc.noname":"(tanpa nama)","rt.doc.evidence":"Bukti:","rt.doc.footer":"Dibuat dengan Battleboarding Business Entry pada","rt.export.fail":"Tidak bisa mengekspor di lingkungan ini. Coba buka app-nya di browser desktop.",
       "calc.section":"Calculation · LaTeX","calc.hint":"Tulis di antara <b>$…$</b> untuk rumus sebaris, atau <b>$$…$$</b> untuk rumus terpisah. Pratinjau otomatis.","calc.empty":"Belum ada perhitungan.","calc.add":"+ Tambah perhitungan",
       "calc.block.del":"Hapus blok","calc.block.label":"Judul langkah","calc.block.label.ph":"mis. Energi kinetik proyektil","calc.block.body":"Isi (teks + LaTeX: $...$ inline, $$...$$ display)","calc.block.body.ph":"Massa $m = 5\\,\\text{kg}$, kecepatan $v = 200\\,\\text{m/s}$.\n$$E_k = \\tfrac12 m v^2 = 1.0\\times10^{5}\\ \\text{J}$$",
       "calc.ev.label":"Embed & scan eksternal","calc.ev.opt":"(opsional)","calc.preview.ph":"Pratinjau muncul di sini…",
@@ -1216,27 +1216,27 @@
       "history.body":"<p>Battleboarding Business pada dasarnya berdiri pada tahun 2021. Dimulai oleh Fariz Ramadhani, Ammar Firman, dan Rahmat Al Faris. Bermula dari komunitas battleboarding di Indonesia, <strong>Infinite Battle Reborn</strong> yang memiliki anggota sekitar 12 ribu orang. Dan terus menyebar hingga termasuk komunitas Battleboarding Indonesia di semua platforms.</p><p>Battleboarding Business diawali dengan Ammar Firman dan Fariz Ramadhani, yang membuka jasa <strong>&ldquo;Judgement.&rdquo;</strong> Yakni jasa untuk menilai suatu perdebatan yang terjadi dalam Private Debate. Private Debate pada dasarnya terdiri dari 2 pendebat, dan Judgement melakukan penilaian siapa yang menang diantara mereka.</p><p>Lalu dilanjutkan oleh Rahmat Al Faris pada 2022, dengan membuka <strong>jasa joki Private Debate</strong> dan dikembangkan lebih lanjut oleh Ammar Firman: jasa joki Private Debate bukan hanya dari segi battleboarding, melainkan juga <strong>Private Debate Terms</strong> &mdash; di mana perdebatan meliputi adu pengetahuan dan pemahaman di ranah Matematika dan Filsafat. Termasuk juga jasa joki Pro dan Kontra, menjawab pertanyaan Fisika, dan lain semacamnya.</p><p>Semenjak 2022, jasa Battleboarding semakin meluas dengan Ammar Firman membuka jasa <strong>Respect Thread dan Calculation</strong> di 2022. Secara data dan histori, bisnis ini terus berlanjut dari 2021 hingga 2026 dan kemungkinan akan terus eksis hingga komunitas ini mati.</p>",
       "services.title":"Layanan","services.count":"4 jasa","services.note":"Angka di bawah adalah harga minimum. Naikkan sesuai kompleksitas, tenggat, dan jumlah peserta.",
       "svc.rt.desc":"Jasa yang menyediakan analisis dan pengumpulan data-data dari suatu karakter di fiksi. Di mana, pembuat jasa akan membentuk suatu penjelasan power-scaling yang memperkirakan seberapa kuat karakter dengan bukti-bukti yang bisa dipertanggungjawabkan dari sumber aslinya secara langsung.",
-      "svc.rt.price":"Harga mulai dari Rp 50.000 / karakter — naik tergantung jumlah feat & kerapian sumber.",
+      "svc.rt.price":"Harga mulai dari Rp 50.000 / karakter. Naik tergantung jumlah feat dan kerapian sumber.",
       "svc.joki.desc":"Jasa yang menyediakan argumen untuk pihak yang melakukan perdebatan.",
-      "svc.joki.price":"Harga mulai dari, per turn: Rp 30.000 (tenggat 14 hari) · Rp 40.000 (tenggat 7 hari) · Rp 50.000 (tenggat 3 hari).",
+      "svc.joki.price":"Harga mulai dari, per turn: Rp 30.000 (tenggat 14 hari), Rp 40.000 (tenggat 7 hari), Rp 50.000 (tenggat 3 hari).",
       "svc.judge.desc":"Jasa yang menyediakan penilaian untuk pihak-pihak yang melakukan perdebatan.",
-      "svc.judge.price":"Harga mulai dari Rp 20.000 – Rp 30.000 / penilaian — naik jika peserta bertambah (mis. 2 vs 2 menggandakan harga).",
+      "svc.judge.price":"Harga mulai dari Rp 20.000 sampai Rp 30.000 / penilaian. Naik jika peserta bertambah (mis. 2 vs 2 menggandakan harga).",
       "svc.calc.desc":"Jasa yang menyediakan perhitungan untuk mencari tahu estimasi kekuatan, kecepatan, ketahanan, atau energi yang dikeluarkan dari karakter menggunakan kemampuan berhitung secara Fisika dan Matematis.",
-      "svc.calc.price":"Harga mulai dari Rp 15.000 / feat — naik tergantung kompleksitas fisika/matematika.",
+      "svc.calc.price":"Harga mulai dari Rp 15.000 / feat. Naik tergantung kompleksitas fisika/matematika.",
       "job.untitled":"(tanpa judul)",
-      "seed.rt.title":"Contoh — Respect Thread satu karakter","seed.rt.desc":"Kompilasi feat kekuatan, kecepatan, ketahanan dengan sumber.",
-      "seed.joki.title":"Contoh — Joki 1 ronde Private Debate","seed.joki.desc":"Argumen pembuka, bantahan, penutup untuk satu pihak.",
-      "seed.judge.title":"Contoh — Judgement satu match","seed.judge.desc":"Penilaian pemenang poin per poin.",
-      "seed.calc.title":"Contoh — Kalkulasi energi serangan","seed.calc.desc":"Estimasi Joule dari feat penghancuran, lengkap rumus.",
+      "seed.rt.title":"Contoh: Respect Thread satu karakter","seed.rt.desc":"Kompilasi feat kekuatan, kecepatan, ketahanan dengan sumber.",
+      "seed.joki.title":"Contoh: Joki 1 ronde Private Debate","seed.joki.desc":"Argumen pembuka, bantahan, penutup untuk satu pihak.",
+      "seed.judge.title":"Contoh: Judgement satu match","seed.judge.desc":"Penilaian pemenang poin per poin.",
+      "seed.calc.title":"Contoh: Kalkulasi energi serangan","seed.calc.desc":"Estimasi Joule dari feat penghancuran, lengkap rumus.",
       "seed.tag":"Contoh"
     },
     en: {
       "loader.lbl":"Processing to Meta-Listing",
-      "tagline":"Battleboarding work tracker: lifecycle status, deadlines & priority, structured rebuttals, scan embeds, and statistics — all stored on this device.",
+      "tagline":"Battleboarding work tracker: lifecycle status, deadlines & priority, structured rebuttals, scan embeds, and statistics. All stored on this device.",
       "tab.board":"Board","tab.schedule":"Schedule","tab.stats":"Stats","tab.workon":"Work On","tab.services":"Services","tab.history":"History",
       "search.btn":"Search all","search.ph":"Search jobs, arguments, rebuttals, customers, tags…",
       "pal.up":"select","pal.enter":"open","pal.esc":"close",
-      "pal.hint":"Type to search the whole app — jobs, rebuttals, notes, customers, tags.","pal.none":"No results for",
+      "pal.hint":"Type to search the whole app: jobs, rebuttals, notes, customers, tags.","pal.none":"No results for",
       "pal.g.jobs":"Jobs","pal.g.rebuttals":"Rebuttals","pal.g.arguments":"Arguments","pal.g.customers":"Customers","pal.g.tags":"Tags","pal.rebuttal":"(rebuttal)",
       "rail.categories":"Categories","rail.empty":"No categories yet.","rail.addcat":"+ Add category",
       "sound.title":"Music","sound.off":"Music: off","sound.on":"Music:",
@@ -1247,10 +1247,10 @@
       "prio.low":"Low","prio.medium":"Medium","prio.high":"High","prio.urgent":"Urgent",
       "reb.unanswered":"Unanswered","reb.in-progress":"In Progress","reb.resolved":"Resolved","reb.rejected":"Rejected","reb.needs-evidence":"Needs Evidence",
       "plat.web":"External Web","plat.hint.facebook":"Groups, pages, or threads where orders come in","plat.hint.whatsapp":"Client groups or contacts","plat.hint.discord":"Battleboarding servers and channels","plat.hint.web":"Forums, wikis, sites, or marketplaces",
-      "job.status.advance":"Click to advance status","job.status.aria":"Status:","job.advance":"— click to advance",
+      "job.status.advance":"Click to advance status","job.status.aria":"Status:","job.advance":"(click to advance)",
       "job.done.at":"Done","job.del":"Delete job","job.delConfirm":"Delete this job?","cat.delConfirm.a":"Delete \"","cat.delConfirm.b":"\" and everything in it?",
       "cat.new.prompt":"New category name:",
-      "panel.calc":"🧮 Calculator","panel.done":"done","panel.core":"🔒 core","panel.core.title":"Core category — can't be deleted","panel.delcat":"Delete category",
+      "panel.calc":"🧮 Calculator","panel.done":"done","panel.core":"🔒 core","panel.core.title":"Core category, cannot be deleted","panel.delcat":"Delete category",
       "panel.jobs":"Jobs","panel.addjob.ph":"Add a job…","panel.addjob.aria":"New job","panel.addjob":"Add job",
       "panel.pickcat":"Pick a category on the left.",
       "panel.nojobs":"No jobs in this category yet.",
@@ -1273,7 +1273,7 @@
       "rt.list.terminology":"Terminology","rt.list.feats":"Feats and Abilities","rt.list.stats":"Statistics",
       "rt.add.terminology":"+ Add term","rt.add.feats":"+ Add feat / ability","rt.add.stats":"+ Add statistic",
       "rt.f.term":"Term / concept","rt.f.definition":"Definition & context from the source…","rt.f.name":"Feat / ability name","rt.f.tier":"Tier / category (e.g. Universal Abilities)","rt.f.explanation":"Feat explanation with source context…","rt.f.label":"Statistic (e.g. Attack Potency)","rt.f.value":"Value (e.g. Multiversal+)","rt.f.note":"Short justification (optional)",
-      "rt.doc.empty":"(Not filled in)","rt.doc.noname":"(no name)","rt.doc.evidence":"Evidence:","rt.doc.footer":"Made with Battleboarding Business Entry —","rt.export.fail":"Can't export in this environment. Try opening the app in a desktop browser.",
+      "rt.doc.empty":"(Not filled in)","rt.doc.noname":"(no name)","rt.doc.evidence":"Evidence:","rt.doc.footer":"Made with Battleboarding Business Entry on","rt.export.fail":"Can't export in this environment. Try opening the app in a desktop browser.",
       "calc.section":"Calculation · LaTeX","calc.hint":"Wrap in <b>$…$</b> for inline formulas, or <b>$$…$$</b> for display formulas. Preview is automatic.","calc.empty":"No calculations yet.","calc.add":"+ Add calculation",
       "calc.block.del":"Delete block","calc.block.label":"Step title","calc.block.label.ph":"e.g. Projectile kinetic energy","calc.block.body":"Body (text + LaTeX: $...$ inline, $$...$$ display)","calc.block.body.ph":"Mass $m = 5\\,\\text{kg}$, speed $v = 200\\,\\text{m/s}$.\n$$E_k = \\tfrac12 m v^2 = 1.0\\times10^{5}\\ \\text{J}$$",
       "calc.ev.label":"Embeds & external scans","calc.ev.opt":"(optional)","calc.preview.ph":"Preview appears here…",
@@ -1289,21 +1289,21 @@
       "chart.status":"Jobs by status","chart.priority":"Jobs by priority","chart.tags":"Most requested fiction / verse","chart.compmonth":"Jobs completed / month","chart.revmonth":"Revenue / month",
       "wo.title":"Work On","wo.count":"entries","wo.h":"Channels & workplaces","wo.name.ph":"Group / server / site name","wo.name.aria":"Name","wo.url.ph":"Link (optional)","wo.url.aria":"Link","wo.note.ph":"Note (optional)","wo.note.aria":"Note","wo.del":"Remove","wo.empty":"None yet.",
       "history.title":"History","history.est":"Est. 2021",
-      "history.body":"<p>Battleboarding Business was essentially founded in 2021 by Fariz Ramadhani, Ammar Firman, and Rahmat Al Faris. It began within Indonesia's battleboarding community, <strong>Infinite Battle Reborn</strong>, which had around 12,000 members, and kept spreading to include the wider Indonesian battleboarding community across every platform.</p><p>Battleboarding Business started with Ammar Firman and Fariz Ramadhani, who opened the <strong>&ldquo;Judgement&rdquo;</strong> service — judging a debate held as a Private Debate. A Private Debate is essentially two debaters, and Judgement decides which of them wins.</p><p>Rahmat Al Faris continued it in 2022 by opening a <strong>Private Debate carry service</strong>, later expanded by Ammar Firman: the carry service isn't only about battleboarding but also <strong>Private Debate Terms</strong> &mdash; debates covering knowledge and understanding in Mathematics and Philosophy. It also includes Pro/Con carrying, answering Physics questions, and the like.</p><p>Since 2022 Battleboarding services widened further, with Ammar Firman opening <strong>Respect Thread and Calculation</strong> services in 2022. By the data and history, the business has continued from 2021 through 2026 and will likely keep going until this community dies.</p>",
+      "history.body":"<p>Battleboarding Business was essentially founded in 2021 by Fariz Ramadhani, Ammar Firman, and Rahmat Al Faris. It began within Indonesia's battleboarding community, <strong>Infinite Battle Reborn</strong>, which had around 12,000 members, and kept spreading to include the wider Indonesian battleboarding community across every platform.</p><p>Battleboarding Business started with Ammar Firman and Fariz Ramadhani, who opened the <strong>&ldquo;Judgement&rdquo;</strong> service, judging a debate held as a Private Debate. A Private Debate is essentially two debaters, and Judgement decides which of them wins.</p><p>Rahmat Al Faris continued it in 2022 by opening a <strong>Private Debate carry service</strong>, later expanded by Ammar Firman: the carry service isn't only about battleboarding but also <strong>Private Debate Terms</strong>, debates covering knowledge and understanding in Mathematics and Philosophy. It also includes Pro/Con carrying, answering Physics questions, and the like.</p><p>Since 2022 Battleboarding services widened further, with Ammar Firman opening <strong>Respect Thread and Calculation</strong> services in 2022. By the data and history, the business has continued from 2021 through 2026 and will likely keep going until this community dies.</p>",
       "services.title":"Services","services.count":"4 services","services.note":"The figures below are minimum prices. Raise them by complexity, deadline, and number of participants.",
       "svc.rt.desc":"A service that analyses and gathers data on a fictional character, building a power-scaling explanation that estimates how strong the character is, backed by evidence traceable directly to the original source.",
-      "svc.rt.price":"From Rp 50,000 / character — higher depending on the number of feats & source tidiness.",
+      "svc.rt.price":"From Rp 50,000 / character. Higher depending on the number of feats and source tidiness.",
       "svc.joki.desc":"A service that supplies arguments for a party in a debate.",
-      "svc.joki.price":"From, per turn: Rp 30,000 (14-day deadline) · Rp 40,000 (7-day) · Rp 50,000 (3-day).",
+      "svc.joki.price":"From, per turn: Rp 30,000 (14-day deadline), Rp 40,000 (7-day), Rp 50,000 (3-day).",
       "svc.judge.desc":"A service that provides judging for the parties in a debate.",
-      "svc.judge.price":"From Rp 20,000 – Rp 30,000 / judgement — higher as participants are added (e.g. 2 vs 2 doubles the price).",
+      "svc.judge.price":"From Rp 20,000 to Rp 30,000 / judgement. Higher as participants are added (e.g. 2 vs 2 doubles the price).",
       "svc.calc.desc":"A service that runs calculations to estimate a character's strength, speed, durability, or output energy using Physics and Mathematics.",
-      "svc.calc.price":"From Rp 15,000 / feat — higher depending on physics/math complexity.",
+      "svc.calc.price":"From Rp 15,000 / feat. Higher depending on physics/math complexity.",
       "job.untitled":"(untitled)",
-      "seed.rt.title":"Example — Respect Thread for one character","seed.rt.desc":"Compilation of strength, speed, durability feats with sources.",
-      "seed.joki.title":"Example — carry for 1 Private Debate round","seed.joki.desc":"Opening argument, rebuttal, closing for one side.",
-      "seed.judge.title":"Example — judging one match","seed.judge.desc":"Point-by-point winner judgement.",
-      "seed.calc.title":"Example — attack energy calculation","seed.calc.desc":"Joule estimate from a destruction feat, with formulas.",
+      "seed.rt.title":"Example: Respect Thread for one character","seed.rt.desc":"Compilation of strength, speed, durability feats with sources.",
+      "seed.joki.title":"Example: carry for 1 Private Debate round","seed.joki.desc":"Opening argument, rebuttal, closing for one side.",
+      "seed.judge.title":"Example: judging one match","seed.judge.desc":"Point-by-point winner judgement.",
+      "seed.calc.title":"Example: attack energy calculation","seed.calc.desc":"Joule estimate from a destruction feat, with formulas.",
       "seed.tag":"Example"
     }
   };
@@ -1511,14 +1511,14 @@
     }).join("\n");
     var stats = (rt.stats || []).length
       ? '<table class="stats"><tbody>' + rt.stats.map(function(s){
-          return '<tr><th>' + esc(s.label || "—") + '</th><td>' + esc(s.value || "—") +
+          return '<tr><th>' + esc(s.label || "-") + '</th><td>' + esc(s.value || "-") +
             (s.note ? '<br><span class="note">' + esc(s.note) + '</span>' : "") + '</td></tr>';
         }).join("") + '</tbody></table>'
       : em;
 
     return '<!doctype html>\n<html lang="' + lang + '">\n<head>\n<meta charset="utf-8">\n' +
       '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
-      '<title>' + esc(j.title || "Respect Thread") + ' — Respect Thread</title>\n<style>\n' +
+      '<title>Respect Thread: ' + esc(j.title || "(no name)") + '</title>\n<style>\n' +
       'body{max-width:820px;margin:44px auto;padding:0 24px;font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.55;background:#fff}\n' +
       'h1{font-size:26pt;text-align:center;margin:0 0 4px;letter-spacing:.01em}\n' +
       '.subtitle{text-align:center;color:#666;font-size:11pt;margin:0 0 34px}\n' +
@@ -1545,7 +1545,7 @@
   function exportRespectThread(catId, jobId){
     var j = jobById(catId, jobId); if (!j) return;
     var safe = (j.title || "Respect Thread").replace(/[^\w\s.-]/g, "").replace(/\s+/g, " ").trim() || "Respect Thread";
-    var okd = downloadHtml(safe + " — Respect Thread.html", buildRespectThreadDoc(j));
+    var okd = downloadHtml(safe + " Respect Thread.html", buildRespectThreadDoc(j));
     if (!okd) alert(L("rt.export.fail"));
   }
 
@@ -1994,7 +1994,7 @@
                  '<input type="datetime-local" class="dt-input" data-jf="deadline" value="' + esc(toLocalInput(j.deadline)) + '">' +
                  (j.deadline ? '<button type="button" class="link-danger" data-act="deadline-clear" data-id="' + esc(j.id) + '">' + esc(L("detail.clear")) + '</button>' : "") +
                '</span>' +
-               '<span class="stamp-row"><span>' + esc(L("detail.created")) + ' ' + esc(fmtDate(j.createdAt) || "—") + '</span><span>' + esc(L("detail.completed")) + ' ' + esc(fmtDate(j.completedAt) || "—") + '</span></span>' +
+               '<span class="stamp-row"><span>' + esc(L("detail.created")) + ' ' + esc(fmtDate(j.createdAt) || "-") + '</span><span>' + esc(L("detail.completed")) + ' ' + esc(fmtDate(j.completedAt) || "-") + '</span></span>' +
              '</div>' +
 
              '<div class="fld"><span>' + esc(L("detail.price")) + '</span>' +
@@ -2100,7 +2100,7 @@
   function jobLinkRow(j, cat){
     var st = deadlineState(j);
     return '<button class="sched-item ' + st + (isDone(j) ? " done" : "") + '" data-act="goto" data-cat="' + esc(cat.id) + '" data-id="' + esc(j.id) + '">' +
-             '<span class="sched-when mono">' + (j.deadline ? esc(fmtShort(j.deadline)) : (isDone(j) ? esc(L("sched.done.short")) : "—")) + '</span>' +
+             '<span class="sched-when mono">' + (j.deadline ? esc(fmtShort(j.deadline)) : (isDone(j) ? esc(L("sched.done.short")) : "-")) + '</span>' +
              '<span class="sched-info"><span class="sched-title">' + esc(j.title) + '</span>' +
                '<span class="sched-sub"><span class="dot" style="background:' + hueFor(cat.id) + '"></span>' + esc(cat.name) +
                  (j.customer ? ' &middot; ' + esc(j.customer) : "") + ' &middot; ' + esc(statusMeta(j.status).label) + '</span>' +
@@ -2293,7 +2293,7 @@
           tr(L("stats.total"), total) + tr(L("stats.active"), activeN) + tr(L("stats.completed"), done) +
           tr(L("stats.overdue"), overdue) + tr(L("stats.customers"), custs.length) +
           tr(L("stats.revenue"), fmtIDR(revenue)) + tr(L("stats.avgvalue"), fmtIDR(Math.round(avgValue))) +
-          tr(L("stats.avgtime"), compTimes.length ? (avgDays.toFixed(1) + " " + L("stats.days")) : "—") +
+          tr(L("stats.avgtime"), compTimes.length ? (avgDays.toFixed(1) + " " + L("stats.days")) : "-") +
         '</tbody></table>' +
       '</div>' +
 
@@ -2754,7 +2754,7 @@
       }
       (j.rebuttals || []).forEach(function(r){
         if (palMatch([r.claim, r.counter, r.rebuttal].join("  "), toks)){
-          groups.Rebuttals.push({ label: r.claim || r.counter || r.rebuttal || L("pal.rebuttal"), sub: j.title + " — " + rebLabel(r.status),
+          groups.Rebuttals.push({ label: r.claim || r.counter || r.rebuttal || L("pal.rebuttal"), sub: j.title + ", " + rebLabel(r.status),
             run: function(){ gotoJob(c.id, j.id); }, toks: toks });
         }
       });

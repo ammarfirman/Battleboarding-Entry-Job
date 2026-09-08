@@ -1,23 +1,37 @@
-# dependencies
+# ---------------------------------------------------------------------------
+# Battleboarding Entry: what git ignores
+# ---------------------------------------------------------------------------
+
+# Node
 node_modules/
 
-# Capacitor-generated native project (recreate with: npx cap add android)
+# Capacitor native project. Recreate with: npx cap add android
 /android/
 
-# build output
+# Local JDK drops used only for the Gradle build (see docs/android.md)
+/jdk-*/
+
+# ---------------------------------------------------------------------------
+# Build output
+# ---------------------------------------------------------------------------
+
+# dist/ holds release artifacts. Only the committed standalone build is
+# tracked; everything else here is produced by a build and stays local.
+dist/*
+!dist/battleboarding-standalone.html
+
+# Compiled installers
 *.apk
 *.aab
-dist/
 
-# Windows Electron bundle — ~375 MB of bundled Chromium, regenerated from
-# windows-app/electron/ + www/ (see windows-app/README.md). Not for git.
+# Electron desktop bundle: ~385 MB of bundled Chromium, regenerated from
+# windows-app/ + www/ (see docs/windows.md). Never committed.
 windows-app/BattleboardingEntry/
 windows-app/BattleboardingEntry.html
 
-# local JDK / tooling drops
-/jdk-*/
-
-# OS / editor
+# ---------------------------------------------------------------------------
+# OS / editor noise
+# ---------------------------------------------------------------------------
 .DS_Store
 Thumbs.db
 .idea/

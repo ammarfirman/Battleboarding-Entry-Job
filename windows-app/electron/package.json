@@ -1,7 +1,0 @@
-{
-  "name": "battleboarding-entry",
-  "version": "1.0.0",
-  "productName": "Battleboarding Entry",
-  "description": "Persona 5-styled job/service tracker for Battleboarding Business",
-  "main": "main.js"
-}

@@ -1,247 +1,177 @@
 # Battleboarding Business Entry
 
-A Persona 5–styled job / service tracker for **Battleboarding Business** — an
-Indonesian community business doing debate-judging and argument services.
+A Persona 5 styled job and service tracker for **Battleboarding Business**, an
+Indonesian community that does debate judging and argument writing.
 
-One vanilla-JS app (no framework, no build step) shipped three ways from the
-same `www/` source. All data is stored **on the device** — no server, no
-account, works fully offline.
+One vanilla JavaScript app, no framework and no build step, shipped four ways
+from the same `www/` source. All data is stored **on the device** using
+IndexedDB. No server, no account, works fully offline.
 
-> **Live demo:** https://ammarfirman.github.io/Battleboarding-Entry-Job/
-> (GitHub Pages, deployed from `www/` by the included workflow).
+**Live demo:** https://ammarfirman.github.io/Battleboarding-Entry-Job/
+(GitHub Pages, deployed from `www/` by the workflow in `.github/`.)
 
-**Stack:** HTML · CSS · ES5 · IndexedDB · Capacitor 8 (Android) · Electron 44
-(Windows) · bundled web fonts (Anton / Barlow / IBM Plex Mono) · bundled KaTeX
-(offline math). No framework, no build step, no runtime dependencies.
+**Stack:** HTML, CSS, ES5, IndexedDB, Capacitor 8 (Android), Electron 44
+(Windows), bundled web fonts (Anton, Barlow, IBM Plex Mono), bundled KaTeX for
+offline math. No framework, no runtime dependencies.
 
-| Target | What | How to get it |
+## Get it
+
+| Target | What | Where |
 |---|---|---|
-| **Browser** | one self-contained ~22 MB HTML file | double-click `battleboarding-standalone.html`, or open the live demo above |
-| **Android** | installable APK, Android 7.0+ (debug-signed) | **[Releases](../../releases/latest)** → `BattleboardingEntry-debug.apk` · build: `SETUP-ANDROID.md` |
-| **Windows** | Electron desktop app | **[Releases](../../releases/latest)** → `BattleboardingEntry-Windows-x64.zip` · build: `windows-app/README.md` |
+| Browser | one self contained HTML file, about 22 MB | `dist/battleboarding-standalone.html` in this repo, or the live demo above |
+| Android | installable APK, Android 7.0 and newer, debug signed | [latest release](../../releases/latest), file `BattleboardingEntry-debug.apk`. Build steps in `docs/android.md` |
+| Windows | Electron desktop app | [latest release](../../releases/latest), file `BattleboardingEntry-Windows-x64.zip`. Build steps in `docs/windows.md` |
+| Web | your own host | serve the contents of `www/` |
 
----
-
-## Folder layout
+## Repository layout
 
 ```
-battleboarding/
-├─ www/                          the app — shared by all three builds
-│  ├─ index.html                 markup + styles + all the logic (one file)
-│  ├─ fonts.css  fonts/*.woff2   bundled Anton / Barlow / IBM Plex Mono (offline)
-│  ├─ vendor/katex/              bundled KaTeX (math rendering for Calculation jobs)
-│  └─ assets/                    joker-bg.webp, loading.gif, life-will-change.mp3, no-more-what-ifs.mp3
+.
+├─ www/                       the app, shared by every build
+│  ├─ index.html              markup, styles and all the logic in one file
+│  ├─ fonts.css, fonts/       bundled Anton, Barlow, IBM Plex Mono
+│  ├─ vendor/katex/           bundled KaTeX for Calculation jobs
+│  └─ assets/                 background, loading gif, two music tracks
 │
-├─ battleboarding-standalone.html   everything inlined into one ~22 MB file (two music tracks inlined)
+├─ scripts/
+│  ├─ build-standalone.js     inlines every asset into dist/battleboarding-standalone.html
+│  └─ smoke-test.js           jsdom regression test, walks every screen
 │
-├─ windows-app/
-│  ├─ electron/                  the Electron wrapper source (main.js + package.json)
-│  └─ README.md                  how to reassemble the runnable bundle
+├─ docs/
+│  ├─ android.md              build the APK
+│  ├─ windows.md              build the Electron desktop bundle
+│  └─ architecture.md         how www/index.html is put together
+│
+├─ windows-app/               the Electron wrapper source (main.js, package.json)
+├─ dist/                      the committed one file build lives here
+│  └─ battleboarding-standalone.html
 │
 ├─ .github/workflows/pages.yml   deploys www/ to GitHub Pages
-├─ capacitor.config.json  package.json   Android (Capacitor) config
-└─ SETUP-ANDROID.md              how to build the APK
+├─ capacitor.config.json, package.json   Capacitor and npm config
+├─ CHANGELOG.md
+└─ LICENSE
 ```
 
-Not in git (all regenerated — see `.gitignore`): `node_modules/`, `android/`
-(Capacitor output), `dist/` + `*.apk`, and `windows-app/BattleboardingEntry/`
-(the ~375 MB Electron bundle).
+Not in git, all regenerated (see `.gitignore`): `node_modules/`, `android/`
+(the Capacitor native project), release binaries in `dist/`, and
+`windows-app/BattleboardingEntry/` (the roughly 385 MB Electron bundle).
 
----
+## Working on the app
 
-## 1. Browser (no build)
-
-Double-click **`battleboarding-standalone.html`** — runs offline in any modern
-browser, saves data in that browser (IndexedDB).
-
-To work on the source, serve `www/` so fonts + audio load:
-
-```
-cd www
-python -m http.server 8000        # then open http://localhost:8000
+```bash
+npm install          # dev tooling (Capacitor CLI, jsdom)
+cd www && python -m http.server 8000    # then open http://localhost:8000
 ```
 
-## 2. Android APK
+Serving `www/` locally is enough for day to day work; the fonts and audio
+load over http. When you are done editing `www/`:
 
-Full walkthrough in **`SETUP-ANDROID.md`**. Short version:
-
-```
-npm install
-npx cap add android      # one time
-npx cap sync
-cd android && ./gradlew assembleDebug
-# -> android/app/build/outputs/apk/debug/app-debug.apk
+```bash
+npm run build        # regenerate dist/battleboarding-standalone.html
+npm test             # run the smoke test
+npm run sync         # copy www/ into the Android project
 ```
 
-Needs Node.js + Android Studio's SDK + a **JDK 21** (Android Studio's bundled
-JDK 25 is too new for Gradle 8.14 — see `SETUP-ANDROID.md`). Distribute the
-`.apk` by attaching it to a **GitHub Release**.
+`docs/architecture.md` explains the single script inside `www/index.html`.
 
-## 3. Windows `.exe`
+## Releasing
 
-The Electron bundle is a build output and is not committed. Rebuild it from
-`windows-app/electron/` + `www/` — steps in **`windows-app/README.md`**. Data
-lives in `%APPDATA%\battleboarding-entry\`.
-
----
+1. `npm run build && npm test`.
+2. Rebuild the APK (`docs/android.md`) and the Windows zip (`docs/windows.md`).
+3. Commit `www/` and `dist/battleboarding-standalone.html`.
+4. Create a GitHub release, tag it (`1.0`, `2.0`, `3.0`, `4.0`, ...), and
+   attach the APK and the Windows zip. Binaries are release assets, never
+   commits.
 
 ## Features
 
-Tabs: **Board · Schedule · Stats · Work On · Services · History**, plus a
-global **Ctrl/⌘ + K** search palette.
+Tabs: Board, Schedule, Stats, Work On, Services, History, plus a global
+Ctrl or Cmd plus K search palette.
 
-**Board** — the four service lines are the starting categories and are
-**locked** (🔒, can't be deleted); add your own with **+ Tambah kategori**
-(those stay deletable). The category rail is a rounded, frosted-glass panel
-(translucent over the Joker art, `backdrop-filter` blur); each option is a
-rounded pill with a spherical hue dot, and pressing one plays a quick
-Persona-style select animation — a skew-and-scale bounce plus a white shine
-sweep (`.cat-pick`, honors `prefers-reduced-motion`). Every job carries:
+**Board.** The four service lines (Respect Thread, Joki Private Debate,
+Judgement Battleboarding, Calculation Battleboarding) are the starter
+categories and cannot be deleted. Add your own with "Tambah kategori"; those
+stay deletable. Every job carries:
 
-- **Lifecycle status** — `Not Started → Researching → Writing → Reviewing →
-  Completed → Delivered`. The square button on the row cycles it; the detail
-  has a direct picker. Completing a job stamps its completion date.
-- **Priority** — Low / Medium / High / Urgent (High & Urgent show on the row).
-- **Deadline** + **Customer** + **tags** (the fiction / verse it's about).
-- **Full Feats** — right under the tags: paste links to full-feats threads /
-  docs; they render as embed cards with editable captions.
-- **Rebuttals** — a structured list, not a text box: each entry is
-  *Claim → Counter → Rebuttal* with a status (`Unanswered`, `In Progress`,
-  `Resolved`, `Rejected`, `Needs Evidence`).
-- **Notes** — a lightweight rich-text doc (bold, headings, lists, quote,
+- Lifecycle status: Not Started, Researching, Writing, Reviewing, Completed,
+  Delivered. The square button on the row advances it; completing a job
+  stamps the date.
+- Priority: Low, Medium, High, Urgent (High and Urgent show on the row).
+- Deadline, customer, and tags (the fiction or verse the job is about).
+- Full Feats: links to feat compilation threads or documents, rendered as
+  cards with editable captions.
+- Rebuttals: a structured list, not a text box. Each entry is Claim, Counter,
+  Rebuttal, with a status (Unanswered, In Progress, Resolved, Rejected,
+  Needs Evidence).
+- Notes: a lightweight rich text document (bold, headings, lists, quote,
   links), autosaved.
-- **Embeds** — paste an Imgur / Gyazo / direct-image / YouTube / Vimeo /
-  Streamable link → renders inline (image, or click-to-play video).
-- **Price + status** — `Penawaran` / `Terjual` / `Contoh (estimasi)`.
-- a **photo log** (downscaled, stored on-device).
+- Embeds: paste an Imgur, Gyazo, direct image, YouTube, Vimeo or Streamable
+  link and it renders inline.
+- Price with a status: quote, sold, or example.
+- A photo log, downscaled and stored on the device.
 
-**Judgement Battleboarding jobs** hide the *Rebuttals* and *Embed & scan
-eksternal* sections (Notes / Photos / everything else stay).
+**Per category layouts.** Judgement jobs hide Rebuttals and the global Embed
+section. Respect Thread jobs hide those two and instead get a five part
+builder: Introduction, Terminology, Feats and Abilities, Statistics,
+Intelligence and In-Char, with an Export to HTML button that writes a clean
+formatted document. Calculation jobs are just a LaTeX section: each block is
+a title, a body, a live math preview and its own evidence, so every figure
+carries its proof. Write `$ ... $` for inline and `$$ ... $$` for display
+math; rendered by the bundled KaTeX, fully offline. The Calculation panel also has
+a built in scientific calculator (its own parser, no `eval`, no network) with
+a DEG and RAD toggle, a history, and an "insert as LaTeX block" button.
 
-**Respect Thread jobs** likewise hide those two, and instead get a structured
-**Respect Thread** section in five parts
-— **Introduction · Terminology · Feats and Abilities · Statistics ·
-Intelligence and In-Char**. Terminology and Feats entries take
-name/tier/explanation + evidence links; Statistics is a label/value/note
-table. Notes and the photo log stay. An **Export to HTML** button writes a
-clean formatted document with those five headings (evidence rendered as
-images, stats as a table).
+**Schedule.** Deadline buckets (Overdue, Due soon, Upcoming, Completed) and a
+month calendar with per day deadline dots.
 
-**Calculation Battleboarding jobs** are just the **Calculation · LaTeX**
-section (Rebuttals, the global Embed section, and Photos are all hidden).
-Each calculation block is *title → body → live math preview → its own
-**Embed & scan eksternal***, so every figure carries its evidence with it.
-Write `$…$` for inline and `$$…$$` for display math (also `\[ … \]` / `\( … \)`);
-rendered with a bundled copy of **KaTeX** (`www/vendor/katex/`, fully offline).
+**Stats.** Totals for jobs, customers, revenue, average job value and average
+completion time; an upcoming deadlines list; and charts for jobs by status,
+jobs by priority, most requested fiction or verse, jobs completed per month
+and revenue per month.
 
-Embed captions are editable in place — click the caption line under any embed
-card and type; it saves on blur (everywhere embeds appear, per-block ones
-included).
+**Work On.** A directory of where work comes from: Facebook, WhatsApp,
+Discord and external web, each with a name, a link and a note.
 
-The Calculation panel header has a **🧮 Kalkulator** button — a built-in
-scientific calculator (own recursive-descent parser, no `eval`, no network):
-`+ − × ÷ ^ %`, `!`, `√`, `sin/cos/tan` (DEG/RAD toggle), `ln/log`, `π`/`e`,
-parentheses & implicit multiplication, `1e5` notation, `Ans`, a persisted
-history. **↳ Sisipkan sebagai blok LaTeX** drops `$$expr = result$$` into the
-open job as a new calculation block.
+**Transitions.** Every tab change and category switch plays a two second
+Persona 5 pause menu sequence: a white flash, diagonal panels, a striped
+band, scattered stars, and the destination name stamped in Anton. Each
+destination has its own animated motif. Board is kanban cards, Schedule a
+calendar with a ticking hand, Stats growing bars, Work On chat bubbles,
+Services a swinging price tag, History a flipping hourglass; Respect Thread is
+a booting monitor, Joki a marionette, Judgement the scales of justice,
+Calculation a thinking head. Click or tap anywhere to skip. Honors
+`prefers-reduced-motion` (instant swap, no overlay).
 
-**Schedule** — deadline buckets (🔴 Overdue · 🟠 Due soon · 🟡 Upcoming ·
-🟢 Completed) plus a month **calendar** with per-day deadline dots.
+**Music.** The corner button opens a Persona 5 decision style menu to pick a
+background theme (Tema Aksi, Tema Tenang, or off), remembered per install.
 
-**Stats** — Total / Active / Completed / Overdue jobs, customer count, total
-revenue, average job value, average completion time; **Upcoming Deadlines**
-list; and charts for jobs-by-status, jobs-by-priority, most-requested
-fiction/verse, jobs completed per month, and revenue per month.
+**Language.** An ID and EN button switches the whole interface, including
+dates and the History and Services copy. Remembered per install.
 
-**Ctrl + K** — one search across the whole app: **Jobs**, **Rebuttals**,
-**Arguments** (notes), **Customers**, **Tags**. Jobs/rebuttals jump to the
-job; customers & tags filter the board.
+**Shapes.** Nothing is a plain rectangle. Every container carries its text in
+its own Persona 5 silhouette (`clip-path` polygons in `--sh-*` and `--k-*`
+custom properties, with the hard shadow following the cut via
+`filter: drop-shadow`): leaning parallelograms, banner points and stepped
+notches. The category rail is a rounded, frosted, translucent panel; pressing
+an option plays a select animation.
 
-**Work On** — a directory of where work comes from: Facebook / WhatsApp /
-Discord / External Web, each with name + link + note.
+Embeds load on GitHub Pages, in the standalone file, and in the Android and
+Windows apps. They do not load inside the claude.ai artifact preview, whose
+content policy blocks third party images and iframes.
 
-Every tab change **and category switch** plays a Persona 5 pause-menu
-transition — a white impact flash, diagonal halftone + red panels sweeping in,
-a barber-pole stripe band, scattered hand-drawn stars, and the destination
-name stamped in Anton with a cyan/red chromatic split, then it all skews off
-to reveal the new screen. Each destination gets its **own animated SVG
-motif**: Board → kanban cards, Schedule → a calendar with a ticking hand,
-Stats → growing bars, Work On → chat bubbles, Services → a swinging price tag,
-History → a flipping hourglass; and for the four service lines — Respect Thread
-→ a booting monitor, Joki Private Debate → a marionette worked by a control
-bar, Judgement → the scales of justice tipping level, Calculation → a thinking
-head with math symbols bursting out of a thought bubble. Each transition
-holds for about 3 seconds — the motif keeps moving (limbs swing, scales tip,
-the clock hand turns, the hourglass flips) — so **click or tap anywhere to
-skip it**. Honors `prefers-reduced-motion` (instant swap, no overlay).
-"Processing to Meta-Listing" launch screen. The corner 🔊 button opens a Persona-5 decision-style menu to pick the
-background theme — **Tema Aksi** (Life Will Change, default), **Tema Tenang**
-(No More What Ifs), or off — remembered per browser/install.
+## Data and storage
 
-**Language** — an **ID / EN** button (top-right, next to 🔊) switches the whole
-UI between Indonesian and English, including dates and the History/Services
-copy. Remembered per browser/install (`localStorage` `bbe-lang`, default `id`).
-Strings live in the `I18N` catalog; `L("key")` at every render site, static
-markup via `data-i18n*` attributes.
-
-**Section & box shapes** — nothing is a plain rectangle. Every container has
-its own Persona-5 silhouette (`clip-path` polygons, `--sh-*` / `--k-*`
-custom properties; the hard offset shadow follows the cut via
-`filter: drop-shadow`):
-
-- **Labels** carry their text in a shape — panel header = notched red banner,
-  section titles = pointed red pennants, field labels = skewed red notch-tabs,
-  RT/Calc block labels = torn yellow tape-tabs, chart titles = yellow
-  keystones, service titles = black notches, Work-On columns = double-pointed
-  red arrows, rail heading = torn red banner, filter bar = yellow ribbon.
-- **Boxes** each get a distinct cut — the panel is a big bevel-and-notch, the
-  rail a nicked octagon (frosted, translucent), the four category pills are
-  four different shapes (flag / TL-cut / TR-bevel / BL-cut), job rows and
-  schedule rows alternate cuts, inputs get a clipped corner, textareas a
-  bottom-left cut (resize grip kept), buttons a top-right bevel, and the
-  rebuttal / RT / calc / service / Work-On / chart / stat cards each take a
-  different corner — with generous padding and gaps throughout.
-
-> Embeds load on GitHub Pages, the standalone file, and the Android/Windows
-> apps. They do **not** load inside the claude.ai artifact preview (its CSP
-> blocks third-party images/iframes).
-
-## Data & storage
-
-One record in **IndexedDB** (`bbe` → `kv` → `state`, schema **`v3`**):
-`categories`, `jobsByCat` (each job: `status`, `priority`, `deadline`,
+One record in IndexedDB (`bbe`, store `kv`, key `state`, schema version 3):
+`categories`, `jobsByCat` (each job holds `status`, `priority`, `deadline`,
 `createdAt`, `completedAt`, `customer`, `tags`, `rebuttals`, `argDoc`,
 `embeds`, `price`, `priceKind`), `imagesByJob`, `workOn`. Photos are
-downscaled to ~1000 px JPEG and stored as data URLs. A `v1` or `v2` record
-migrates forward automatically on first load.
+downscaled to about 1000 px JPEG and stored as data URLs. A version 1 or 2
+record migrates forward automatically on first load.
 
-It is **local to each install / browser** — no sync between devices, and
-clearing the app's storage resets it to the four starter categories (each
-seeded with one worked example). There is no export button yet.
-
-## Editing the code
-
-All logic is the single `<script>` at the bottom of `www/index.html` — plain
-ES5, no framework, no build step:
-
-- `STATUSES` / `PRIORITIES` / `REB_STATUSES` — the lifecycle vocab (extend here).
-- `DATA` — every create/update/delete; most end with `renderAll()` then `save()`.
-- `save()` / `idbGet()` / `idbSet()` — the IndexedDB layer (debounced 250 ms).
-- `seedServices()` — first-run categories + one example job each; `migrate()` — v1/v2 → v3.
-- `render*` — `renderPanel` / `renderSchedule` / `renderStatsView` / `renderWorkOn` / `renderPalette` rebuild the DOM from `state`.
-- `hbars()` / `vbars()` — the hand-drawn CSS charts.
-- `classifyEmbed()` — URL → `{kind, embedUrl, thumbUrl}`; `cleanHtml()` — sanitises the Notes doc.
-- `playTransition()` — the P5 wipe.
-
-Regression check: `node` + `jsdom` smoke test lives outside the repo; it
-seeds the app, walks every tab, and exercises status/rebuttal/palette/filter.
-
-After editing `www/`:
-
-- **Browser** — re-inline into `battleboarding-standalone.html`, or just serve `www/` locally.
-- **Windows** — copy `www/` into the bundle's `resources/app/www/`.
-- **Android** — `npx cap sync`, then rebuild (`SETUP-ANDROID.md`).
+Storage is local to each install or browser. There is no sync between
+devices. Clearing the app storage resets it to the four starter categories,
+each seeded with one worked example.
 
 ## License
 
-MIT — see `LICENSE`.
+MIT. See `LICENSE`.
