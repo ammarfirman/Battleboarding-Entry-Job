@@ -171,10 +171,14 @@ Storage is local to each install or browser. There is no sync between
 devices. Clearing the app storage resets it to the four starter categories,
 each seeded with one worked example.
 
-**Backup and Restore** live in the History tab. Save to file writes the whole
-state to a JSON file you can keep or move. Load from file replaces the current
-data with a saved file. This is the only backup that survives clearing the
-storage or moving to another device.
+**Saves** live in the History tab and work like a game's memory card. New
+save snapshots the current data (categories, jobs, photos, Work On) into a
+named slot inside the app; Load brings a slot back with one tap. A slot can
+be exported to a JSON file, or copied as text when it has no photos. A save
+from another device comes in from a file or by pasting its text. The file
+format is the same on the browser, the Android app and the Windows app, so a
+save moves between them. This is the only backup that survives clearing the
+storage.
 
 ## License
 

@@ -34,7 +34,7 @@ const dom = new JSDOM(html, {
     function req(fn) { const r = { onsuccess: null, onerror: null, onupgradeneeded: null, result: undefined };
       setTimeout(() => { try { r.result = fn ? fn() : undefined; r.onsuccess && r.onsuccess({ target: r }); } catch (e) { r.onerror && r.onerror({ target: r }); } }, 0); return r; }
     window.indexedDB = { open: () => { const r = req(() => ({ createObjectStore() {}, transaction: () => {
-      const tx = { objectStore: () => ({ get: (k) => req(() => store.get(k)), put: (v, k) => { store.set(k, v); return req(); } }), oncomplete: null, onerror: null };
+      const tx = { objectStore: () => ({ get: (k) => req(() => store.get(k)), put: (v, k) => { store.set(k, v); return req(); }, delete: (k) => { store.delete(k); return req(); } }), oncomplete: null, onerror: null };
       setTimeout(() => tx.oncomplete && tx.oncomplete(), 3); return tx; } }));
       setTimeout(() => { r.onupgradeneeded && r.onupgradeneeded({ target: r }); }, 0); return r; } };
     window.HTMLMediaElement.prototype.play = () => Promise.resolve();
@@ -63,7 +63,8 @@ const settle = () => new Promise((r) => setTimeout(r, 900));
   const submit = (el) => el.dispatchEvent(new window.Event("submit", { bubbles: true, cancelable: true }));
   const checks = [];
   const ok = (n, c) => checks.push([n, !!c]);
-  window.confirm = () => true; window.prompt = () => "Temp Verse";
+  window.confirm = () => true; window.prompt = () => "Temp Verse"; window.alert = () => {};
+  if (!window.navigator.clipboard) { try { Object.defineProperty(window.navigator, "clipboard", { value: { writeText: () => Promise.resolve() }, configurable: true }); } catch (e) {} }
 
   ok("4 categories seeded", $$("#catList .cat").length === 4);
   ok("Respect Thread shows lock pill", /🔒 inti/.test($("#panel .panel-head").textContent));
@@ -376,10 +377,31 @@ const settle = () => new Promise((r) => setTimeout(r, 900));
     ok("transition: services view shown", $("#servicesWrap").hidden === false);
     goto("history"); await settle();
     ok("transition: history view shown", $("#historyWrap").hidden === false);
-    ok("backup section: save + load controls", $("#dataSave") != null && $("#dataFile") != null);
-    ok("backup section: summary shows counts", /categor|kategori/i.test(($("#dataSummary") || {}).textContent || ""));
-    { let threw = false; try { $("#dataSave").dispatchEvent(new window.MouseEvent("click", { bubbles: true })); } catch (e) { threw = true; } ok("backup: export does not throw", !threw); }
-    await tick();
+
+    // Saves: slot create / load / export / delete
+    ok("saves: section rendered", $("#savesSection h3") != null && $("#saveNew") != null && $("#dataFile") != null);
+    ok("saves: empty to start", $(".save-empty") != null);
+    $("#saveName").value = "My Save"; $("#saveNew").dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+    await settle();
+    ok("saves: one slot after New save", $$(".save-row").length === 1 && /MY SAVE/i.test($(".save-name").textContent));
+    ok("saves: slot shows counts", /\d+\s+(categor|kategori)/i.test($(".save-meta").textContent));
+    {
+      let threw = false;
+      try {
+        $$('.save-row [data-sact="export"]')[0].dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+        $$('.save-row [data-sact="copy"]')[0].dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+      } catch (e) { threw = true; }
+      await tick();
+      ok("saves: export + copy do not throw", !threw);
+    }
+    $$('.save-row [data-sact="load"]')[0].dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+    await settle();
+    ok("saves: load keeps 4 categories", $$("#catList .cat").length === 4);
+    goto("history"); await settle();
+    $$('.save-row [data-sact="del"]')[0].dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+    await settle();
+    ok("saves: deleted, back to empty", $(".save-empty") != null);
+
     goto("board"); await settle();
     ok("transition: back to board", $("#boardWrap").hidden === false);
 

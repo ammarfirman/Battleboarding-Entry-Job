@@ -378,8 +378,21 @@
   }
   .chip-form button:hover,.mini-btn:hover{background:var(--red);border-color:var(--red)}
   label.mini-btn{display:inline-block}
-  .data-row{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 10px}
-  #dataSummary{margin:0}
+  .save-new{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 14px}
+  .save-new input{flex:1 1 160px;min-width:0;font:inherit;color:var(--ink);background:#000;border:2px solid var(--line);padding:9px 11px;clip-path:var(--k-field)}
+  .save-new input:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .save-list{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:10px}
+  .save-row{background:rgba(0,0,0,.5);border:2px solid var(--line);border-left:4px solid var(--warn);padding:12px 13px;display:flex;flex-direction:column;gap:8px;clip-path:var(--k-br)}
+  .save-row:nth-child(even){clip-path:var(--k-tl)}
+  .save-name{font-family:var(--anton);font-weight:400;letter-spacing:.03em;text-transform:uppercase;font-size:1rem;word-break:break-word}
+  .save-meta{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--faint)}
+  .save-acts{display:flex;flex-wrap:wrap;gap:8px}
+  .save-acts .mini-btn{padding:5px 11px;font-size:.76rem}
+  .save-empty{color:var(--faint);font-size:.86rem;margin:2px 0 12px}
+  .save-io{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  #dataText{width:100%;min-height:80px;margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink);background:#000;border:2px solid var(--line);padding:9px 11px}
+  #dataText:focus-visible{outline:2px solid var(--warn);outline-offset:1px;border-color:var(--red)}
+  .save-flash{color:var(--warn);font-size:.8rem;font-family:"IBM Plex Mono",monospace;min-height:1em;margin:2px 0 0}
 
   /* rebuttals */
   .reb-list{display:flex;flex-direction:column;gap:16px}
@@ -941,16 +954,8 @@
   <div id="historyWrap" hidden>
     <div class="panel">
       <div class="panel-head"><h2 data-i18n="history.title">History</h2><span class="pill mono" data-i18n="history.est">Est. 2021</span></div>
-      <div class="section">
-        <h3 data-i18n="data.title">Backup &amp; Restore</h3>
-        <p class="hint" data-i18n="data.hint"></p>
-        <div class="data-row">
-          <button type="button" class="mini-btn" id="dataSave" data-i18n="data.save">Save to file</button>
-          <label class="mini-btn" for="dataFile" data-i18n="data.load">Load from file</label>
-          <input type="file" id="dataFile" accept="application/json,.json" hidden>
-        </div>
-        <p class="hint mono" id="dataSummary"></p>
-      </div>
+      <div class="section" id="savesSection"></div>
+      <input type="file" id="dataFile" accept="application/json,.json" hidden>
       <div class="history">
         <p class="est">Battleboarding Business</p>
         <div class="founders">
@@ -1223,10 +1228,16 @@
       "chart.status":"Job per status","chart.priority":"Job per prioritas","chart.tags":"Fiksi / verse terpopuler","chart.compmonth":"Job selesai / bulan","chart.revmonth":"Pendapatan / bulan",
       "wo.title":"Kanal Kerja","wo.count":"entri","wo.h":"Kanal & tempat kerja","wo.name.ph":"Nama grup / server / situs","wo.name.aria":"Nama","wo.url.ph":"Link (opsional)","wo.url.aria":"Link","wo.note.ph":"Catatan (opsional)","wo.note.aria":"Catatan","wo.del":"Hapus","wo.empty":"Belum ada.",
       "history.title":"Sejarah","history.est":"Est. 2021",
-      "data.title":"Backup & Pulihkan","data.hint":"Data hanya tersimpan di perangkat ini. Simpan ke file untuk cadangan, atau muat file untuk memulihkan (mengganti semua data sekarang).",
-      "data.save":"Simpan ke file","data.load":"Muat dari file","data.saved":"Backup tersimpan.",
-      "data.load.confirm":"Memuat file ini akan MENGGANTI semua data yang ada sekarang. Lanjutkan?",
-      "data.load.bad":"File tidak valid. Bukan file backup Battleboarding Entry.","data.load.ok":"Data berhasil dipulihkan.",
+      "data.title":"Simpanan","data.hint":"Simpan kondisi data sekarang ke sebuah slot di dalam app. Bisa dipindah ke perangkat lain lewat file atau teks.",
+      "data.new":"Simpan baru","data.new.ph":"Nama simpanan...","data.new.auto":"Simpanan",
+      "data.load":"Muat","data.update":"Perbarui di sini","data.rename":"Ganti nama","data.del":"Hapus",
+      "data.export":"Ekspor file","data.copy":"Salin teks","data.copied":"Tersalin ke clipboard.","data.updated":"Diperbarui.","data.saved":"Tersimpan.",
+      "data.import":"Impor dari perangkat lain","data.import.file":"Pilih file","data.import.text":"Tempel teks","data.import.go":"Muat teks","data.import.textph":"Tempel isi teks simpanan di sini...",
+      "data.load.confirm":"Memuat ini akan MENGGANTI semua data yang ada sekarang. Lanjutkan?",
+      "data.del.confirm":"Hapus simpanan ini?","data.rename.prompt":"Nama baru:",
+      "data.load.bad":"Data tidak valid. Bukan simpanan Battleboarding Entry.","data.load.ok":"Data berhasil dimuat.",
+      "data.big":"Simpanan ini berisi foto, terlalu besar untuk teks. Pakai Ekspor file.",
+      "data.empty":"Belum ada simpanan. Buat satu di atas.",
       "data.s.cats":"kategori","data.s.jobs":"job","data.s.photos":"foto",
       "history.body":"<p>Battleboarding Business pada dasarnya berdiri pada tahun 2021. Dimulai oleh Fariz Ramadhani, Ammar Firman, dan Rahmat Al Faris. Bermula dari komunitas battleboarding di Indonesia, <strong>Infinite Battle Reborn</strong> yang memiliki anggota sekitar 12 ribu orang. Dan terus menyebar hingga termasuk komunitas Battleboarding Indonesia di semua platforms.</p><p>Battleboarding Business diawali dengan Ammar Firman dan Fariz Ramadhani, yang membuka jasa <strong>&ldquo;Judgement.&rdquo;</strong> Yakni jasa untuk menilai suatu perdebatan yang terjadi dalam Private Debate. Private Debate pada dasarnya terdiri dari 2 pendebat, dan Judgement melakukan penilaian siapa yang menang diantara mereka.</p><p>Lalu dilanjutkan oleh Rahmat Al Faris pada 2022, dengan membuka <strong>jasa joki Private Debate</strong> dan dikembangkan lebih lanjut oleh Ammar Firman: jasa joki Private Debate bukan hanya dari segi battleboarding, melainkan juga <strong>Private Debate Terms</strong>, di mana perdebatan meliputi adu pengetahuan dan pemahaman di ranah Matematika dan Filsafat. Termasuk juga jasa joki Pro dan Kontra, menjawab pertanyaan Fisika, dan lain semacamnya.</p><p>Semenjak 2022, jasa Battleboarding semakin meluas dengan Ammar Firman membuka jasa <strong>Respect Thread dan Calculation</strong> di 2022. Secara data dan histori, bisnis ini terus berlanjut dari 2021 hingga 2026 dan kemungkinan akan terus eksis hingga komunitas ini mati.</p>",
       "services.title":"Layanan","services.count":"4 jasa","services.note":"Angka di bawah adalah harga minimum. Naikkan sesuai kompleksitas, tenggat, dan jumlah peserta.",
@@ -1304,10 +1315,16 @@
       "chart.status":"Jobs by status","chart.priority":"Jobs by priority","chart.tags":"Most requested fiction / verse","chart.compmonth":"Jobs completed / month","chart.revmonth":"Revenue / month",
       "wo.title":"Work On","wo.count":"entries","wo.h":"Channels & workplaces","wo.name.ph":"Group / server / site name","wo.name.aria":"Name","wo.url.ph":"Link (optional)","wo.url.aria":"Link","wo.note.ph":"Note (optional)","wo.note.aria":"Note","wo.del":"Remove","wo.empty":"None yet.",
       "history.title":"History","history.est":"Est. 2021",
-      "data.title":"Backup & Restore","data.hint":"Data is stored only on this device. Save it to a file for a backup, or load a file to restore (this replaces all current data).",
-      "data.save":"Save to file","data.load":"Load from file","data.saved":"Backup saved.",
-      "data.load.confirm":"Loading this file will REPLACE all of your current data. Continue?",
-      "data.load.bad":"Invalid file. Not a Battleboarding Entry backup.","data.load.ok":"Data restored.",
+      "data.title":"Saves","data.hint":"Snapshot your current data into a slot inside the app. Move it to another device as a file or as text.",
+      "data.new":"New save","data.new.ph":"Save name...","data.new.auto":"Save",
+      "data.load":"Load","data.update":"Update to current","data.rename":"Rename","data.del":"Delete",
+      "data.export":"Export file","data.copy":"Copy text","data.copied":"Copied to clipboard.","data.updated":"Updated.","data.saved":"Saved.",
+      "data.import":"Import from another device","data.import.file":"Choose file","data.import.text":"Paste text","data.import.go":"Load text","data.import.textph":"Paste a save's text here...",
+      "data.load.confirm":"Loading this will REPLACE all of your current data. Continue?",
+      "data.del.confirm":"Delete this save?","data.rename.prompt":"New name:",
+      "data.load.bad":"Invalid data. Not a Battleboarding Entry save.","data.load.ok":"Data loaded.",
+      "data.big":"This save has photos and is too large for text. Use Export file.",
+      "data.empty":"No saves yet. Create one above.",
       "data.s.cats":"categories","data.s.jobs":"jobs","data.s.photos":"photos",
       "history.body":"<p>Battleboarding Business was essentially founded in 2021 by Fariz Ramadhani, Ammar Firman, and Rahmat Al Faris. It began within Indonesia's battleboarding community, <strong>Infinite Battle Reborn</strong>, which had around 12,000 members, and kept spreading to include the wider Indonesian battleboarding community across every platform.</p><p>Battleboarding Business started with Ammar Firman and Fariz Ramadhani, who opened the <strong>&ldquo;Judgement&rdquo;</strong> service, judging a debate held as a Private Debate. A Private Debate is essentially two debaters, and Judgement decides which of them wins.</p><p>Rahmat Al Faris continued it in 2022 by opening a <strong>Private Debate carry service</strong>, later expanded by Ammar Firman: the carry service isn't only about battleboarding but also <strong>Private Debate Terms</strong>, debates covering knowledge and understanding in Mathematics and Philosophy. It also includes Pro/Con carrying, answering Physics questions, and the like.</p><p>Since 2022 Battleboarding services widened further, with Ammar Firman opening <strong>Respect Thread and Calculation</strong> services in 2022. By the data and history, the business has continued from 2021 through 2026 and will likely keep going until this community dies.</p>",
       "services.title":"Services","services.count":"4 services","services.note":"The figures below are minimum prices. Raise them by complexity, deadline, and number of participants.",
@@ -2398,7 +2415,7 @@
     else if (v === "schedule") renderSchedule();
     else if (v === "stats") renderStatsView();
     else if (v === "workon") renderWorkOn();
-    else if (v === "history") updateDataSummary();
+    else if (v === "history") renderSaves();
   }
   function renderAll(){ renderChips(); renderView(); }
 
@@ -2696,60 +2713,197 @@
     });
   });
 
-  /* ---------- save / load (backup to a file) ---------- */
+  /* ---------- saves: in-app slots + file / text transfer ---------- */
+  var SLOT_MAX = 12;
+  var slots = [];         // lightweight index: [{id,name,savedAt,c,j,p}]
+  var _flashT = null;
+
   function fileStamp(){
     var d = new Date(), p = function(n){ return (n < 10 ? "0" : "") + n; };
     return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + "-" + p(d.getHours()) + p(d.getMinutes());
   }
-  function updateDataSummary(){
-    var el = $("dataSummary"); if (!el) return;
-    var jobs = 0, photos = 0;
-    state.categories.forEach(function(c){ jobs += (state.jobsByCat[c.id] || []).length; });
-    Object.keys(state.imagesByJob).forEach(function(k){ photos += (state.imagesByJob[k] || []).length; });
-    el.textContent = state.categories.length + " " + L("data.s.cats") + " · " +
-      jobs + " " + L("data.s.jobs") + " · " + photos + " " + L("data.s.photos");
+  function snapshot(){
+    return { categories: state.categories, jobsByCat: state.jobsByCat, imagesByJob: state.imagesByJob, workOn: state.workOn };
   }
-  function exportSave(){
-    var payload = {
-      app: "battleboarding-entry", kind: "save", v: 3, savedAt: new Date().toISOString(),
-      state: {
-        categories: state.categories, jobsByCat: state.jobsByCat,
-        imagesByJob: state.imagesByJob, workOn: state.workOn
-      }
-    };
-    if (saveFile("battleboarding-save-" + fileStamp() + ".json", JSON.stringify(payload), "application/json")) {
-      var el = $("dataSummary");
-      if (el){ var was = el.textContent; el.textContent = L("data.saved"); setTimeout(function(){ updateDataSummary(); }, 1600); }
+  function countState(s){
+    var j = 0, ph = 0;
+    (s.categories || []).forEach(function(c){ j += ((s.jobsByCat || {})[c.id] || []).length; });
+    Object.keys(s.imagesByJob || {}).forEach(function(k){ ph += (s.imagesByJob[k] || []).length; });
+    return { c: (s.categories || []).length, j: j, p: ph };
+  }
+  function makePayload(name){
+    return { app: "battleboarding-entry", kind: "save", v: 3, name: name || "", savedAt: new Date().toISOString(), state: snapshot() };
+  }
+  function validPayload(o){
+    var s = o && o.state;
+    return !!(s && Array.isArray(s.categories) && s.jobsByCat && typeof s.jobsByCat === "object");
+  }
+  function applyImported(s){
+    migrate(s);
+    state.filter = null; state.expandedId = null;
+    if (!state.categories.some(function(c){ return c.id === state.selectedId; }))
+      state.selectedId = state.categories[0] ? state.categories[0].id : null;
+    renderAll(); save();
+  }
+  function flash(msg){
+    var el = $("saveFlash"); if (!el) return;
+    el.textContent = msg || "";
+    if (_flashT) clearTimeout(_flashT);
+    if (msg) _flashT = setTimeout(function(){ if ($("saveFlash")) $("saveFlash").textContent = ""; }, 2400);
+  }
+  function loadSlots(){
+    return idbGet("slots").then(function(arr){ slots = Array.isArray(arr) ? arr : []; }, function(){ slots = []; });
+  }
+  function persistSlots(){ return idbSet(slots.slice(), "slots"); }
+
+  function slotSave(name, id){
+    id = id || ("s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6));
+    var payload = makePayload(name);
+    var cnt = countState(payload.state);
+    return idbSet(payload, "slot:" + id).then(function(){
+      var meta = { id: id, name: name || (L("data.new.auto") + " " + (slots.length + 1)), savedAt: payload.savedAt, c: cnt.c, j: cnt.j, p: cnt.p };
+      var at = -1; slots.forEach(function(x, k){ if (x.id === id) at = k; });
+      if (at >= 0) slots[at] = meta; else { slots.unshift(meta); slots = slots.slice(0, SLOT_MAX); }
+      return persistSlots();
+    });
+  }
+  function slotDelete(id){
+    slots = slots.filter(function(x){ return x.id !== id; });
+    return persistSlots().then(function(){ return idbDel("slot:" + id); });
+  }
+  function slotPayload(id){ return idbGet("slot:" + id); }
+
+  function importObj(o){
+    if (!validPayload(o)){ alert(L("data.load.bad")); return false; }
+    if (!window.confirm(L("data.load.confirm"))) return false;
+    try { applyImported(o.state); }
+    catch (e){ console.error(e); alert(L("data.load.bad")); return false; }
+    // also keep a slot copy so it is easy to get back to
+    slotSave((o.name || L("data.new.auto")) + " (import)").then(function(){ renderSaves(); });
+    alert(L("data.load.ok"));
+    return true;
+  }
+  function importText(text){
+    var o = null; try { o = JSON.parse(String(text)); } catch (e) {}
+    return importObj(o);
+  }
+
+  function renderSaves(){
+    var box = $("savesSection"); if (!box) return;
+    var rows = slots.length
+      ? '<ul class="save-list">' + slots.map(function(s){
+          return '<li class="save-row" data-slot="' + esc(s.id) + '">' +
+            '<span class="save-name">' + esc(s.name) + '</span>' +
+            '<span class="save-meta">' + esc(fmtDateTime(s.savedAt) || s.savedAt) + '  &middot;  ' +
+              s.c + ' ' + esc(L("data.s.cats")) + '  &middot;  ' + s.j + ' ' + esc(L("data.s.jobs")) +
+              '  &middot;  ' + s.p + ' ' + esc(L("data.s.photos")) + '</span>' +
+            '<span class="save-acts">' +
+              '<button type="button" class="mini-btn" data-sact="load">' + esc(L("data.load")) + '</button>' +
+              '<button type="button" class="mini-btn" data-sact="update">' + esc(L("data.update")) + '</button>' +
+              '<button type="button" class="mini-btn" data-sact="rename">' + esc(L("data.rename")) + '</button>' +
+              '<button type="button" class="mini-btn" data-sact="export">' + esc(L("data.export")) + '</button>' +
+              '<button type="button" class="mini-btn" data-sact="copy">' + esc(L("data.copy")) + '</button>' +
+              '<button type="button" class="mini-btn" data-sact="del">' + esc(L("data.del")) + '</button>' +
+            '</span></li>';
+        }).join("") + '</ul>'
+      : '<p class="save-empty">' + esc(L("data.empty")) + '</p>';
+
+    box.innerHTML =
+      '<h3>' + esc(L("data.title")) + '</h3>' +
+      '<p class="hint">' + esc(L("data.hint")) + '</p>' +
+      '<div class="save-new">' +
+        '<input id="saveName" type="text" maxlength="48" placeholder="' + esc(L("data.new.ph")) + '" aria-label="' + esc(L("data.new.ph")) + '">' +
+        '<button type="button" class="mini-btn" id="saveNew">' + esc(L("data.new")) + '</button>' +
+      '</div>' +
+      rows +
+      '<h3>' + esc(L("data.import")) + '</h3>' +
+      '<div class="save-io">' +
+        '<label class="mini-btn" for="dataFile">' + esc(L("data.import.file")) + '</label>' +
+        '<button type="button" class="mini-btn" id="pasteToggle">' + esc(L("data.import.text")) + '</button>' +
+      '</div>' +
+      '<textarea id="dataText" hidden placeholder="' + esc(L("data.import.textph")) + '"></textarea>' +
+      '<div class="save-io" id="pasteGo" hidden><button type="button" class="mini-btn" id="pasteLoad">' + esc(L("data.import.go")) + '</button></div>' +
+      '<p class="save-flash" id="saveFlash"></p>';
+
+    var nm = $("saveName"), nb = $("saveNew");
+    if (nb) nb.addEventListener("click", function(){
+      slotSave((nm && nm.value.trim()) || "").then(function(){ if (nm) nm.value = ""; renderSaves(); flash(L("data.saved")); });
+    });
+    var pt = $("pasteToggle");
+    if (pt) pt.addEventListener("click", function(){
+      var ta = $("dataText"), go = $("pasteGo");
+      ta.hidden = !ta.hidden; go.hidden = ta.hidden;
+      if (!ta.hidden) ta.focus();
+    });
+    var pl = $("pasteLoad");
+    if (pl) pl.addEventListener("click", function(){
+      var ta = $("dataText"); if (ta && ta.value.trim()) importText(ta.value.trim());
+    });
+    Array.prototype.forEach.call(box.querySelectorAll(".save-row"), function(row){
+      var id = row.getAttribute("data-slot");
+      Array.prototype.forEach.call(row.querySelectorAll("[data-sact]"), function(btn){
+        btn.addEventListener("click", function(){ slotAction(btn.getAttribute("data-sact"), id); });
+      });
+    });
+  }
+
+  function slotAction(act, id){
+    if (act === "del"){
+      if (window.confirm(L("data.del.confirm"))) slotDelete(id).then(function(){ renderSaves(); });
+      return;
     }
-  }
-  function importSave(file){
-    if (!file) return;
-    var r = new FileReader();
-    r.onerror = function(){ alert(L("data.load.bad")); };
-    r.onload = function(){
-      var obj = null;
-      try { obj = JSON.parse(String(r.result)); } catch (e) {}
-      var s = obj && obj.state;
-      if (!s || !Array.isArray(s.categories) || !s.jobsByCat || typeof s.jobsByCat !== "object"){
-        alert(L("data.load.bad")); return;
+    if (act === "update"){
+      var meta = slots.filter(function(x){ return x.id === id; })[0];
+      slotSave(meta ? meta.name : "", id).then(function(){ renderSaves(); flash(L("data.updated")); });
+      return;
+    }
+    if (act === "rename"){
+      var m = slots.filter(function(x){ return x.id === id; })[0];
+      var nn = window.prompt(L("data.rename.prompt"), m ? m.name : "");
+      if (nn && nn.trim()){
+        slotPayload(id).then(function(p){
+          if (m) m.name = nn.trim();
+          if (p){ p.name = nn.trim(); return idbSet(p, "slot:" + id); }
+        }).then(persistSlots).then(function(){ renderSaves(); });
       }
-      if (!window.confirm(L("data.load.confirm"))) return;
-      try {
-        migrate(s);
-        state.filter = null; state.expandedId = null;
-        if (!state.categories.some(function(c){ return c.id === state.selectedId; })) {
-          state.selectedId = state.categories[0] ? state.categories[0].id : null;
+      return;
+    }
+    slotPayload(id).then(function(payload){
+      if (!validPayload(payload)){ alert(L("data.load.bad")); return; }
+      if (act === "load"){
+        if (!window.confirm(L("data.load.confirm"))) return;
+        applyImported(payload.state); alert(L("data.load.ok"));
+      } else if (act === "export"){
+        var nm = (payload.name || "battleboarding").replace(/[^\w\s.\-]/g, "").trim() || "battleboarding";
+        saveFile(nm + " " + fileStamp() + ".json", JSON.stringify(payload), "application/json");
+        flash(L("data.saved"));
+      } else if (act === "copy"){
+        if ((payload.state.imagesByJob && Object.keys(payload.state.imagesByJob).some(function(k){ return (payload.state.imagesByJob[k] || []).length; }))){
+          alert(L("data.big")); return;
         }
-        renderAll(); updateDataSummary(); save();
-        alert(L("data.load.ok"));
-      } catch (e){ console.error(e); alert(L("data.load.bad")); }
-    };
-    r.readAsText(file);
+        var text = JSON.stringify(payload);
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(function(){ flash(L("data.copied")); }, function(){ showCopyBox(text); });
+        } else showCopyBox(text);
+      }
+    });
+  }
+  function showCopyBox(text){
+    var ta = $("dataText"); if (!ta) return;
+    ta.hidden = false; if ($("pasteGo")) $("pasteGo").hidden = false;
+    ta.value = text; ta.focus();
+    try { ta.select(); document.execCommand("copy"); flash(L("data.copied")); } catch (e){ flash(""); }
   }
   (function(){
-    var sv = $("dataSave"), fi = $("dataFile");
-    if (sv) sv.addEventListener("click", exportSave);
-    if (fi) fi.addEventListener("change", function(){ importSave(fi.files && fi.files[0]); fi.value = ""; });
+    var fi = $("dataFile");
+    if (fi) fi.addEventListener("change", function(){
+      var f = fi.files && fi.files[0]; fi.value = "";
+      if (!f) return;
+      var r = new FileReader();
+      r.onerror = function(){ alert(L("data.load.bad")); };
+      r.onload = function(){ importText(String(r.result)); };
+      r.readAsText(f);
+    });
   })();
 
   function catPickFx(el){
@@ -3207,20 +3361,30 @@
       r.onerror = function(){ rej(r.error); };
     });
   }
-  function idbGet(){
+  function idbGet(key){
     return idbOpen().then(function(db){
       return new Promise(function(res, rej){
-        var rq = db.transaction(IDB_STORE, "readonly").objectStore(IDB_STORE).get(IDB_KEY);
+        var rq = db.transaction(IDB_STORE, "readonly").objectStore(IDB_STORE).get(key == null ? IDB_KEY : key);
         rq.onsuccess = function(){ res(rq.result); };
         rq.onerror = function(){ rej(rq.error); };
       });
     });
   }
-  function idbSet(val){
+  function idbSet(val, key){
     return idbOpen().then(function(db){
       return new Promise(function(res, rej){
         var tx = db.transaction(IDB_STORE, "readwrite");
-        tx.objectStore(IDB_STORE).put(val, IDB_KEY);
+        tx.objectStore(IDB_STORE).put(val, key == null ? IDB_KEY : key);
+        tx.oncomplete = function(){ res(); };
+        tx.onerror = function(){ rej(tx.error); };
+      });
+    });
+  }
+  function idbDel(key){
+    return idbOpen().then(function(db){
+      return new Promise(function(res, rej){
+        var tx = db.transaction(IDB_STORE, "readwrite");
+        tx.objectStore(IDB_STORE).delete(key);
         tx.oncomplete = function(){ res(); };
         tx.onerror = function(){ rej(tx.error); };
       });
@@ -3688,6 +3852,7 @@
         state.selectedId = state.categories[0] ? state.categories[0].id : null;
       }
       renderAll();
+      if (typeof loadSlots === "function") loadSlots().then(function(){ if (!$("historyWrap").hidden) renderSaves(); });
     }
     function fresh(err){ if (err) console.error(err); seedServices(); finish(); }
     if (!("indexedDB" in window)){ fresh(); return; }

@@ -20,10 +20,12 @@ Interface and polish pass.
   parallelograms, banner points and stepped notches, with more spacing
   throughout.
 - Header badge now reads "Final V".
-- Backup and Restore in the History tab: Save to file writes the whole state
-  (categories, jobs, photos, Work On) to a JSON file; Load from file replaces
-  the current data with a saved file. This is the only backup that survives
-  clearing the browser or app storage.
+- Saves in the History tab, like a game's memory card. Snapshot the current
+  data into a named slot inside the app and load it back with one tap, no
+  file dialog. Each slot can also be exported to a JSON file or copied as
+  text (for photo-free saves), and a save from another device can be brought
+  in from a file or by pasting its text. The same save file works on the
+  browser, the Android app and the Windows app.
 - The Add category button is gone. The four service lines are the only
   categories.
 - Fixed: on a phone the Add job button could sit off the right edge and be
