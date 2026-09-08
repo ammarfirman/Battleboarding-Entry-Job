@@ -92,7 +92,11 @@ global **Ctrl/⌘ + K** search palette.
 
 **Board** — the four service lines are the starting categories and are
 **locked** (🔒, can't be deleted); add your own with **+ Tambah kategori**
-(those stay deletable). Every job carries:
+(those stay deletable). The category rail is a rounded, frosted-glass panel
+(translucent over the Joker art, `backdrop-filter` blur); each option is a
+rounded pill with a spherical hue dot, and pressing one plays a quick
+Persona-style select animation — a skew-and-scale bounce plus a white shine
+sweep (`.cat-pick`, honors `prefers-reduced-motion`). Every job carries:
 
 - **Lifecycle status** — `Not Started → Researching → Writing → Reviewing →
   Completed → Delivered`. The square button on the row cycles it; the detail
