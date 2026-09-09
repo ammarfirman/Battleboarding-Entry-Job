@@ -14,13 +14,18 @@
     "build": "node scripts/build-standalone.js",
     "test": "node scripts/smoke-test.js",
     "sync": "cap sync android",
+    "sync:ios": "cap sync ios",
     "add:android": "cap add android",
+    "add:ios": "cap add ios",
     "open:android": "cap open android",
-    "apk": "npm run build && npm run sync && cd android && gradlew assembleDebug"
+    "open:ios": "cap open ios",
+    "apk": "npm run build && npm run sync && cd android && gradlew assembleDebug",
+    "ipa": "npm run build && npm run sync:ios && cd ios/App && xcodebuild -scheme App -configuration Release -archivePath build/App.xcarchive archive"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.1",
-    "@capacitor/core": "^8.5.1"
+    "@capacitor/core": "^8.5.1",
+    "@capacitor/ios": "^8.5.1"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",

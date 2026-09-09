@@ -10,9 +10,9 @@ IndexedDB. No server, no account, works fully offline.
 **Live demo:** https://ammarfirman.github.io/Battleboarding-Entry-Job/
 (GitHub Pages, deployed from `www/` by the workflow in `.github/`.)
 
-**Stack:** HTML, CSS, ES5, IndexedDB, Capacitor 8 (Android), Electron 44
-(Windows), bundled web fonts (Anton, Barlow, IBM Plex Mono), bundled KaTeX for
-offline math. No framework, no runtime dependencies.
+**Stack:** HTML, CSS, ES5, IndexedDB, Capacitor 8 (Android and iOS), Electron
+44 (Windows), bundled web fonts (Anton, Barlow, IBM Plex Mono), bundled KaTeX
+for offline math. No framework, no runtime dependencies.
 
 ## Get it
 
@@ -20,6 +20,7 @@ offline math. No framework, no runtime dependencies.
 |---|---|---|
 | Browser | one self contained HTML file, about 22 MB | `dist/battleboarding-standalone.html` in this repo, or the live demo above |
 | Android | installable APK, Android 7.0 and newer, debug signed | [latest release](../../releases/latest), file `BattleboardingEntry-debug.apk`. Build steps in `docs/android.md` |
+| iOS | Capacitor project, build on a Mac or in CI | needs Xcode (macOS only) or the `ios.yml` workflow. Build steps in `docs/ios.md`. Or add the Pages demo to the iPhone home screen |
 | Windows | Electron desktop app | [latest release](../../releases/latest), file `BattleboardingEntry-Windows-x64.zip`. Build steps in `docs/windows.md` |
 | Web | your own host | serve the contents of `www/` |
 
@@ -39,6 +40,7 @@ offline math. No framework, no runtime dependencies.
 │
 ├─ docs/
 │  ├─ android.md              build the APK
+│  ├─ ios.md                  build the iOS app (Mac or CI)
 │  ├─ windows.md              build the Electron desktop bundle
 │  └─ architecture.md         how www/index.html is put together
 │
@@ -47,13 +49,14 @@ offline math. No framework, no runtime dependencies.
 │  └─ battleboarding-standalone.html
 │
 ├─ .github/workflows/pages.yml   deploys www/ to GitHub Pages
+├─ .github/workflows/ios.yml     builds the iOS app on a hosted Mac
 ├─ capacitor.config.json, package.json   Capacitor and npm config
 ├─ CHANGELOG.md
 └─ LICENSE
 ```
 
 Not in git, all regenerated (see `.gitignore`): `node_modules/`, `android/`
-(the Capacitor native project), release binaries in `dist/`, and
+and `ios/` (the Capacitor native projects), release binaries in `dist/`, and
 `windows-app/BattleboardingEntry/` (the roughly 385 MB Electron bundle).
 
 ## Working on the app

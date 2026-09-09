@@ -32,6 +32,9 @@ Mobile-native pass, richer evidence, and a calculation suite.
   pages through every scan in that feat ("3 / 7", swipe or arrow keys).
 - Respect Thread evidence now carries captions; older evidence upgrades
   automatically.
+- **iOS target** added via Capacitor (`npx cap add ios`, `docs/ios.md`, and a
+  `Build iOS app` GitHub Actions workflow on a hosted Mac). Building still
+  needs Xcode; the Pages demo can also be added to the iPhone home screen.
 - **Calculation panel** gains a multi-mode calculator with the standard VS
   Battles methods: Kinetic Energy, Mass from Volume, Destruction Energy
   (material x method, J/cc table built in), Crater, Gravitational Binding

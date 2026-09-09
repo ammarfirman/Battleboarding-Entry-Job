@@ -8,5 +8,10 @@
     "allowMixedContent": false,
     "webContentsDebuggingEnabled": false,
     "adjustMarginsForEdgeToEdge": "disable"
+  },
+  "ios": {
+    "backgroundColor": "#0B0B0C",
+    "contentInset": "always",
+    "webContentsDebuggingEnabled": false
   }
 }

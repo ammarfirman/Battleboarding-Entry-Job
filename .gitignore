@@ -5,8 +5,12 @@
 # Node
 node_modules/
 
-# Capacitor native project. Recreate with: npx cap add android
+# Android native project. Recreate with: npx cap add android
 /android/
+
+# The iOS native project IS committed (Capacitor's recommendation, and the CI
+# build needs it). ios/.gitignore keeps build output, Pods and the synced
+# web assets out; only the small Xcode project source is tracked.
 
 # Local JDK drops used only for the Gradle build (see docs/android.md)
 /jdk-*/
