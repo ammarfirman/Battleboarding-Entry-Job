@@ -64,33 +64,31 @@
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
-  /* per-view background: visible but quiet - you can tell there's a photo,
-     you'd never read detail in it */
-  body::before{
-    content:"";position:fixed;inset:-40px;pointer-events:none;z-index:0;
-    background:url("assets/bg-default.webp") no-repeat center top;
-    background-size:cover;
-    filter:blur(9px) saturate(.35) brightness(.68);
-    transition:opacity .35s ease;
-  }
-  body[data-bg="board"]::before   {background-image:url("assets/bg-board.webp")}
-  body[data-bg="schedule"]::before{background-image:url("assets/bg-schedule.webp")}
-  body[data-bg="stats"]::before   {background-image:url("assets/bg-stats.webp")}
-  body[data-bg="workon"]::before  {background-image:url("assets/bg-workon.webp")}
-  body[data-bg="services"]::before{background-image:url("assets/joker-bg.webp")}
-  /* a mostly-flat dark red wash over the photo, a touch heavier behind the
-     header and the foot; plus the P5 dot screen */
+  /* faint P5 dot-screen on the flat base - no full-bleed photo shell */
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:
-      linear-gradient(180deg,rgba(8,3,5,.8) 0%,rgba(10,3,6,.58) 22%,rgba(10,3,6,.58) 70%,rgba(8,3,5,.84) 100%),
-      radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
-    background-size:100% 100%,13px 13px;
+    background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.035) 1px,transparent 1.5px);
+    background-size:13px 13px;
   }
   .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
   .dot{width:10px;height:10px;flex:none;display:inline-block;transform:skewX(-12deg);border:1.5px solid #000}
 
-  .app{max-width:1180px;margin:0 auto;padding:26px 20px 76px;position:relative;z-index:1}
+  .app{max-width:1180px;margin:0 auto;padding:26px 20px 76px;position:relative;z-index:1;isolation:isolate}
+  /* per-view art overlaid behind the content column at ~30% - a quiet
+     backdrop, not a full-bleed shell */
+  .app::before{
+    content:"";position:absolute;inset:-26px -24px 0;z-index:-1;pointer-events:none;
+    background:url("assets/bg-default.webp") no-repeat center top;
+    background-size:cover;
+    opacity:.30;filter:saturate(.72);
+    -webkit-mask-image:linear-gradient(180deg,#000 0,#000 58%,transparent 100%);
+            mask-image:linear-gradient(180deg,#000 0,#000 58%,transparent 100%);
+  }
+  body[data-bg="board"]    .app::before{background-image:url("assets/bg-board.webp")}
+  body[data-bg="schedule"] .app::before{background-image:url("assets/bg-schedule.webp")}
+  body[data-bg="stats"]    .app::before{background-image:url("assets/bg-stats.webp")}
+  body[data-bg="workon"]   .app::before{background-image:url("assets/bg-workon.webp")}
+  body[data-bg="services"] .app::before{background-image:url("assets/joker-bg.webp")}
 
   header{margin-bottom:24px;position:relative}
   header::before{content:"";position:absolute;inset:-30px -24px -10px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 80% 100% at 22% 45%,rgba(11,11,12,.9),rgba(11,11,12,.45) 60%,rgba(11,11,12,0) 100%)}
@@ -1106,14 +1104,8 @@
   }
 
   @media (max-width:640px){
-    /* photo quiet behind the header, near-black flat panels over it */
-    body::before{filter:blur(10px) saturate(.35) brightness(.64)}
-    body::after{
-      background:
-        linear-gradient(180deg,rgba(8,3,5,.93) 0%,rgba(9,3,5,.86) 13%,rgba(10,3,6,.55) 28%,rgba(10,3,6,.53) 66%,rgba(8,3,5,.84) 100%),
-        radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
-      background-size:100% 100%,13px 13px;
-    }
+    /* art sits quieter on a phone so body text over it stays clean */
+    .app::before{opacity:.18;inset:-16px -16px 0}
     .panel{background:#0d0508}
 
     .app{max-width:100%;padding:16px 16px calc(66px + env(safe-area-inset-bottom) + 16px);font-size:15px}
@@ -1993,11 +1985,11 @@
   }
   function buildRespectThreadDoc(j){
     var rt = j.rt || {};
-    var title = (j.title || "Respect Thread").toUpperCase();
-    var sub = "Respect Thread &middot; Battleboarding Business" +
-      (j.customer ? " &middot; " + esc(j.customer) : "") +
-      (j.tags && j.tags.length ? " &middot; " + j.tags.map(esc).join(", ") : "");
-    var em = '<p><em>' + esc(L("rt.doc.empty")) + '</em></p>';
+    var title = j.title || "Respect Thread";
+    var metaBits = [];
+    if (j.customer) metaBits.push(esc(j.customer));
+    if (j.tags && j.tags.length) metaBits.push(j.tags.map(esc).join(" &middot; "));
+    var em = '<p class="empty"><em>' + esc(L("rt.doc.empty")) + '</em></p>';
     var noName = L("rt.doc.noname"), evLbl = L("rt.doc.evidence");
 
     var terms = (rt.terminology || []).map(function(e){
@@ -2018,31 +2010,65 @@
         }).join("") + '</tbody></table>'
       : em;
 
+    var toc =
+      '<nav class="toc" aria-label="List of Contents">\n' +
+      '<p class="toc-h">List of Contents</p>\n<ol>\n' +
+      '<li><a href="#sec-intro">Introduction</a></li>\n' +
+      '<li><a href="#sec-terminology">Terminology</a></li>\n' +
+      '<li><a href="#sec-feats">Feats and Abilities</a></li>\n' +
+      '<li><a href="#sec-stats">Statistics</a></li>\n' +
+      '<li><a href="#sec-inchar">Intelligence and In-Char</a></li>\n' +
+      '</ol>\n</nav>';
+    var rule = '<hr class="rule">';
+
     return '<!doctype html>\n<html lang="' + lang + '">\n<head>\n<meta charset="utf-8">\n' +
       '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
       '<title>Respect Thread: ' + esc(j.title || "(no name)") + '</title>\n<style>\n' +
-      'body{max-width:820px;margin:44px auto;padding:0 24px;font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.55;background:#fff}\n' +
-      'h1{font-size:26pt;text-align:center;margin:0 0 4px;letter-spacing:.01em}\n' +
-      '.subtitle{text-align:center;color:#666;font-size:11pt;margin:0 0 34px}\n' +
-      'h2{font-size:17pt;border-bottom:2px solid #111;padding-bottom:4px;margin:36px 0 14px;text-transform:uppercase;letter-spacing:.03em}\n' +
-      'h3{font-size:13pt;margin:22px 0 2px;color:#111}\n' +
-      '.tier{color:#666;font-size:9.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px}\n' +
-      'p{margin:0 0 12px}\n.ev{font-weight:700;margin:14px 0 6px}\n.block{margin:0 0 22px}\n' +
-      'figure.scan{margin:0 0 16px}\n' +
-      'img{max-width:100%;height:auto;border:1px solid #ccc;display:block;margin:0}\n' +
-      '.evcap{font-size:9.5pt;color:#555;font-style:italic;margin:6px 0 0;padding-left:2px}\n' +
-      '.evlink{display:block;font-size:9pt;color:#1155cc;word-break:break-all;margin:0 0 8px}\n' +
-      'table.stats{border-collapse:collapse;width:100%;margin:0 0 14px}\n' +
-      'table.stats th,table.stats td{border:1px solid #bbb;padding:7px 10px;text-align:left;vertical-align:top;font-size:10.5pt}\n' +
-      'table.stats th{background:#f2f2f2;width:34%}\ntable.stats .note{color:#666;font-size:9pt}\n' +
-      'footer{margin-top:40px;border-top:1px solid #ddd;padding-top:10px;color:#999;font-size:9pt}\n' +
+      ':root{--tx:rgb(55,53,47);--tx-mut:rgba(55,53,47,.65);--ln:rgba(55,53,47,.13)}\n' +
+      '*{box-sizing:border-box}\n' +
+      'body{max-width:900px;margin:0 auto;padding:70px 60px 120px;background:#fff;color:var(--tx);\n' +
+      ' font-family:ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;\n' +
+      ' font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}\n' +
+      '.cover{height:120px;margin:-70px -60px 0;background:linear-gradient(120deg,#111 0%,#7a1020 55%,#e4002b 100%)}\n' +
+      'h1{font-size:2.5em;font-weight:700;letter-spacing:-.01em;line-height:1.2;margin:.6em 0 .1em}\n' +
+      '.byline{color:var(--tx-mut);font-size:.95em;margin:0 0 2px}\n' +
+      '.meta{color:var(--tx-mut);font-size:.9em;margin:0 0 30px}\n' +
+      '.lead{border-left:3px solid var(--tx);padding-left:16px;margin:24px 0;font-size:1.05em}\n' +
+      '.toc{background:rgba(55,53,47,.03);border:1px solid var(--ln);border-radius:4px;padding:14px 20px;margin:26px 0}\n' +
+      '.toc-h{font-weight:600;font-size:.85em;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-mut);margin:0 0 8px}\n' +
+      '.toc ol{margin:0;padding-left:20px}\n.toc li{margin:3px 0}\n' +
+      '.toc a{color:var(--tx);text-decoration:none}\n.toc a:hover{text-decoration:underline}\n' +
+      'hr.rule{border:none;border-top:1px solid var(--ln);margin:52px 0}\n' +
+      '.anc{display:block;position:relative;top:-20px;visibility:hidden}\n' +
+      'h2{font-size:1.9em;font-weight:600;line-height:1.3;margin:0 0 4px;letter-spacing:-.005em}\n' +
+      'h3{font-size:1.28em;font-weight:600;margin:30px 0 4px}\n' +
+      '.tier{display:inline-block;color:var(--tx-mut);font-size:.72em;font-weight:700;text-transform:uppercase;\n' +
+      ' letter-spacing:.07em;background:rgba(55,53,47,.06);border-radius:3px;padding:2px 8px;margin:2px 0 10px}\n' +
+      'p{margin:0 0 14px}\n.empty{color:var(--tx-mut)}\n' +
+      '.ev{font-weight:600;font-size:.82em;text-transform:uppercase;letter-spacing:.05em;color:var(--tx-mut);margin:16px 0 8px}\n' +
+      '.block{margin:0 0 30px}\n' +
+      'figure.scan{margin:0 0 14px}\n' +
+      'img{max-width:100%;height:auto;display:block;border-radius:4px;border:1px solid var(--ln)}\n' +
+      '.evcap{font-size:.85em;color:var(--tx-mut);font-style:italic;margin:6px 0 0}\n' +
+      '.evlink{display:block;font-size:.85em;color:#1a56db;word-break:break-all;margin:0 0 8px}\n' +
+      'table.stats{border-collapse:collapse;width:100%;margin:8px 0 14px;font-size:.95em}\n' +
+      'table.stats th,table.stats td{border:1px solid var(--ln);padding:9px 12px;text-align:left;vertical-align:top}\n' +
+      'table.stats th{background:rgba(55,53,47,.03);width:32%;font-weight:600}\n' +
+      'table.stats .note{color:var(--tx-mut);font-size:.88em}\n' +
+      'footer{margin-top:60px;padding-top:14px;border-top:1px solid var(--ln);color:var(--tx-mut);font-size:.82em}\n' +
+      '@media(max-width:640px){body{padding:40px 22px 80px}.cover{margin:-40px -22px 0}h1{font-size:2em}}\n' +
       '</style>\n</head>\n<body>\n' +
-      '<h1>' + esc(title) + '</h1>\n<p class="subtitle">' + sub + '</p>\n' +
-      '<h2>Introduction</h2>\n' + (paraHtml(rt.intro) || em) + '\n' +
-      '<h2>Terminology</h2>\n' + (terms || em) + '\n' +
-      '<h2>Feats and Abilities</h2>\n' + (feats || em) + '\n' +
-      '<h2>Statistics</h2>\n' + stats + '\n' +
-      '<h2>Intelligence and In-Char</h2>\n' + (paraHtml(rt.inChar) || em) + '\n' +
+      '<div class="cover"></div>\n' +
+      '<h1>' + esc(title) + '</h1>\n' +
+      '<p class="byline">This respect thread was compiled with Battleboarding Business Entry.</p>\n' +
+      (metaBits.length ? '<p class="meta">' + metaBits.join(" &nbsp;&middot;&nbsp; ") + '</p>\n' : '<p class="meta"></p>\n') +
+      (j.description ? '<p class="lead">' + esc(j.description) + '</p>\n' : "") +
+      toc + '\n' + rule + '\n' +
+      '<span class="anc" id="sec-intro"></span>\n<h2>Introduction</h2>\n' + (paraHtml(rt.intro) || em) + '\n' + rule + '\n' +
+      '<span class="anc" id="sec-terminology"></span>\n<h2>Terminology</h2>\n' + (terms || em) + '\n' + rule + '\n' +
+      '<span class="anc" id="sec-feats"></span>\n<h2>Feats and Abilities</h2>\n' + (feats || em) + '\n' + rule + '\n' +
+      '<span class="anc" id="sec-stats"></span>\n<h2>Statistics</h2>\n' + stats + '\n' + rule + '\n' +
+      '<span class="anc" id="sec-inchar"></span>\n<h2>Intelligence and In-Char</h2>\n' + (paraHtml(rt.inChar) || em) + '\n' +
       '<footer>' + esc(L("rt.doc.footer")) + ' ' + esc(fmtDate(Date.now())) + '</footer>\n' +
       '</body>\n</html>';
   }
