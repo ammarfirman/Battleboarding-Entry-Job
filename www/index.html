@@ -64,31 +64,33 @@
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
-  /* faint P5 dot-screen on the flat base - no full-bleed photo shell */
+  /* per-view background: visible but quiet - you can tell there's a photo,
+     you'd never read detail in it */
+  body::before{
+    content:"";position:fixed;inset:-40px;pointer-events:none;z-index:0;
+    background:url("assets/bg-default.webp") no-repeat center top;
+    background-size:cover;
+    filter:blur(9px) saturate(.35) brightness(.68);
+    transition:opacity .35s ease;
+  }
+  body[data-bg="board"]::before   {background-image:url("assets/bg-board.webp")}
+  body[data-bg="schedule"]::before{background-image:url("assets/bg-schedule.webp")}
+  body[data-bg="stats"]::before   {background-image:url("assets/bg-stats.webp")}
+  body[data-bg="workon"]::before  {background-image:url("assets/bg-workon.webp")}
+  body[data-bg="services"]::before{background-image:url("assets/joker-bg.webp")}
+  /* a mostly-flat dark red wash over the photo, a touch heavier behind the
+     header and the foot; plus the P5 dot screen */
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.035) 1px,transparent 1.5px);
-    background-size:13px 13px;
+    background:
+      linear-gradient(180deg,rgba(8,3,5,.8) 0%,rgba(10,3,6,.58) 22%,rgba(10,3,6,.58) 70%,rgba(8,3,5,.84) 100%),
+      radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
+    background-size:100% 100%,13px 13px;
   }
   .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
   .dot{width:10px;height:10px;flex:none;display:inline-block;transform:skewX(-12deg);border:1.5px solid #000}
 
-  .app{max-width:1180px;margin:0 auto;padding:26px 20px 76px;position:relative;z-index:1;isolation:isolate}
-  /* per-view art overlaid behind the content column at ~30% - a quiet
-     backdrop, not a full-bleed shell */
-  .app::before{
-    content:"";position:absolute;inset:-26px -24px 0;z-index:-1;pointer-events:none;
-    background:url("assets/bg-default.webp") no-repeat center top;
-    background-size:cover;
-    opacity:.30;filter:saturate(.72);
-    -webkit-mask-image:linear-gradient(180deg,#000 0,#000 58%,transparent 100%);
-            mask-image:linear-gradient(180deg,#000 0,#000 58%,transparent 100%);
-  }
-  body[data-bg="board"]    .app::before{background-image:url("assets/bg-board.webp")}
-  body[data-bg="schedule"] .app::before{background-image:url("assets/bg-schedule.webp")}
-  body[data-bg="stats"]    .app::before{background-image:url("assets/bg-stats.webp")}
-  body[data-bg="workon"]   .app::before{background-image:url("assets/bg-workon.webp")}
-  body[data-bg="services"] .app::before{background-image:url("assets/joker-bg.webp")}
+  .app{max-width:1180px;margin:0 auto;padding:26px 20px 76px;position:relative;z-index:1}
 
   header{margin-bottom:24px;position:relative}
   header::before{content:"";position:absolute;inset:-30px -24px -10px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 80% 100% at 22% 45%,rgba(11,11,12,.9),rgba(11,11,12,.45) 60%,rgba(11,11,12,0) 100%)}
@@ -1104,8 +1106,14 @@
   }
 
   @media (max-width:640px){
-    /* art sits quieter on a phone so body text over it stays clean */
-    .app::before{opacity:.18;inset:-16px -16px 0}
+    /* photo quiet behind the header, near-black flat panels over it */
+    body::before{filter:blur(10px) saturate(.35) brightness(.64)}
+    body::after{
+      background:
+        linear-gradient(180deg,rgba(8,3,5,.93) 0%,rgba(9,3,5,.86) 13%,rgba(10,3,6,.55) 28%,rgba(10,3,6,.53) 66%,rgba(8,3,5,.84) 100%),
+        radial-gradient(circle at 1px 1px,rgba(255,255,255,.04) 1px,transparent 1.5px);
+      background-size:100% 100%,13px 13px;
+    }
     .panel{background:#0d0508}
 
     .app{max-width:100%;padding:16px 16px calc(66px + env(safe-area-inset-bottom) + 16px);font-size:15px}

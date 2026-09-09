@@ -16,10 +16,9 @@ Mobile-native pass, richer evidence, and a calculation suite.
 - The top language / music controls and the "+" button slide away while you
   scroll down and return on scroll-up or near the top. While a job is open, a
   collapse button sits bottom-left so you can fold it from anywhere.
-- **Per-view background art**: a different Persona 5 key visual per tab,
-  overlaid at ~30% opacity behind the content column and fading out down the
-  page - a quiet backdrop rather than a full-bleed wallpaper - with the flat
-  near-black panels sitting on top.
+- **Per-view background art**: a different Persona 5 key visual behind each
+  tab, kept quiet - blurred and dimmed under a flat dark wash - so the
+  near-black panels and text on top stay legible.
 - **Respect Thread export** now follows a Notion-style document layout: a
   cover band, a compiled-by line, a "List of Contents" with jump links,
   horizontal rules between sections, and lighter Notion typography.
