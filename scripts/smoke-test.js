@@ -20,8 +20,8 @@ const html = fs.readFileSync(path.join(ROOT, "www", "index.html"), "utf8");
 let JSDOM;
 try { ({ JSDOM } = require("jsdom")); }
 catch (e) {
-  console.error("Cannot load jsdom. Run `npm install` first.");
-  process.exit(1);
+    console.error("Cannot load jsdom. Run `npm install` first.");
+    process.exit(1);
 }
 
 const dom = new JSDOM(html, {
@@ -29,7 +29,7 @@ const dom = new JSDOM(html, {
   beforeParse(window) {
     window.requestAnimationFrame = (cb) => setTimeout(() => cb(Date.now()), 0);
     // report reduced-motion so view transitions resolve synchronously in the test
-    window.matchMedia = (q) => ({ matches: /reduce/.test(q || ""), addEventListener() {}, removeEventListener() {} });
+    window.matchMedia = (q) => ({ matches: /reduce/.test(q || ""), addEventListener() { }, removeEventListener() { } });
     const store = new Map();
     function req(fn) { const r = { onsuccess: null, onerror: null, onupgradeneeded: null, result: undefined };
       setTimeout(() => { try { r.result = fn ? fn() : undefined; r.onsuccess && r.onsuccess({ target: r }); } catch (e) { r.onerror && r.onerror({ target: r }); } }, 0); return r; }
