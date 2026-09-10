@@ -15,6 +15,9 @@
     "test": "node scripts/smoke-test.js",
     "sync": "cap sync android",
     "sync:ios": "cap sync ios",
+    "sync:win": "node scripts/sync-windows.js",
+    "electron": "npm run sync:win && npx electron windows-app",
+    "win:pack": "npm run build && node scripts/pack-windows.js",
     "add:android": "cap add android",
     "add:ios": "cap add ios",
     "open:android": "cap open android",
@@ -29,6 +32,8 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",
-    "jsdom": "^30.0.1"
+    "@electron/packager": "^18.3.6",
+    "electron": "^34.0.0",
+    "jsdom": "^26.0.0"
   }
 }

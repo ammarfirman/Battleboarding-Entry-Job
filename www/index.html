@@ -685,7 +685,13 @@
   .pill.calc-open:hover{background:#fff}
   #calc{position:fixed;inset:0;z-index:72;background:rgba(0,0,0,.72);display:flex;justify-content:center;align-items:flex-start;padding:6vh 14px 14px;overflow:auto}
   .calc-box{width:min(430px,100%);background:var(--panel);border:2px solid var(--ink);clip-path:var(--k-bl);filter:drop-shadow(8px 8px 0 var(--red));display:flex;flex-direction:column}
-  .calc-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:2px solid var(--red)}
+    .calc-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px 12px 22px;
+        border-bottom: 2px solid var(--red)
+    }
   .calc-head b{font-family:var(--anton);font-weight:400;text-transform:uppercase;letter-spacing:.06em;flex:1}
   .calc-deg{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;background:#000;border:1.5px solid var(--warn);color:var(--warn);padding:3px 9px;transform:skewX(-10deg)}
   .calc-deg:hover{background:var(--warn);color:#000}
@@ -724,15 +730,46 @@
   .calc-hrow b{color:var(--ink);flex:none}
 
   /* multi-calculator: mode strip + preset forms */
-  .calc-modes{display:flex;gap:6px;overflow-x:auto;padding:10px 14px 2px;scrollbar-width:none}
-  .calc-modes::-webkit-scrollbar{display:none}
-  .calc-mode{
-    flex:0 0 auto;cursor:pointer;white-space:nowrap;
-    font-family:"IBM Plex Mono",monospace;font-size:.71rem;letter-spacing:.01em;
-    background:#000;border:1.5px solid var(--line);color:var(--muted);padding:6px 10px;
-  }
-  .calc-mode:hover{border-color:var(--ink);color:#fff}
-  .calc-mode.on{background:var(--red);border-color:var(--red);color:#fff}
+    .calc-modes {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 10px 14px 4px 18px;
+        scrollbar-width: none;
+        -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 36px), transparent 100%);
+        mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 36px), transparent 100%);
+    }
+        .calc-modes::-webkit-scrollbar {
+            display: none;
+        }
+    .calc-mode {
+        flex: 0 0 auto;
+        cursor: pointer;
+        white-space: nowrap;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.03em;
+        background: #000;
+        border: 1.5px solid var(--line);
+        color: var(--muted);
+        padding: 6px 12px;
+        transform: skewX(-10deg);
+        transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.12s;
+    }
+        .calc-mode:hover {
+            border-color: var(--ink);
+            color: #fff;
+            background: var(--red-wash);
+        }
+        .calc-mode.on {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+            box-shadow: 2px 2px 0 #000;
+        }
+        .calc-mode:active {
+            transform: skewX(-10deg) scale(0.95);
+        }
   .calc-form{display:flex;flex-direction:column;gap:11px;padding:14px}
   .calc-fld{display:flex;flex-direction:column;gap:5px}
   .calc-fld > span{font-family:"IBM Plex Mono",monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--faint)}
@@ -1301,10 +1338,52 @@
 
     /* category strip: show a peek of the next chip so it reads as scrollable */
     .cat-list{padding-right:36px}
-    .rail::after{
-      content:"";position:absolute;top:0;right:0;bottom:0;width:34px;pointer-events:none;z-index:1;
-      background:linear-gradient(90deg,transparent,rgba(11,11,12,.92));
+    .rail::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 34px;
+        pointer-events: none;
+        z-index: 1;
+        background: linear-gradient(90deg,transparent,rgba(11,11,12,.92));
     }
+    /*Preset Strip*/
+    .calc-presets {
+        display: flex;
+        gap: 6px;
+        margin: 10px 14px 0;
+        padding-bottom: 2px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+        .calc-presets::-webkit-scrollbar {
+            display: none;
+        }
+    .cp-chip {
+        background: #000;
+        color: var(--ink, #fff);
+        border: 1px solid var(--line, rgba(255,255,255,0.25));
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.78rem;
+        padding: 5px 10px;
+        white-space: nowrap;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.15s ease;
+    }
+        .cp-chip:hover {
+            background: #1a1a1a;
+            border-color: var(--red, #e4002b);
+            color: var(--red, #e4002b);
+        }
+        .cp-chip.on {
+            background: var(--red, #e4002b);
+            color: #fff;
+            border-color: var(--red, #e4002b);
+            box-shadow: 2px 2px 0 #000;
+        }
   }
   @keyframes jobDetailIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
   @media (prefers-reduced-motion:reduce){
@@ -1659,7 +1738,7 @@
       "common.add":"Tambah","common.remove":"Hapus","common.empty":"Belum ada.",
       "ev.label":"Bukti (link scan / gambar)","ev.ph":"Tempel link gambar / Imgur / Gyazo…","ev.aria":"Link bukti","ev.del":"Hapus bukti","ev.cap.aria":"Keterangan bukti",
       "rt.section":"Respect Thread · format","rt.intro":"Introduction","rt.intro.ph":"Latar belakang karakter / verse: siapa dia, asal-usul, peran dalam cerita…",
-      "rt.inchar":"Intelligence and In-Char","rt.inchar.ph":"Kecerdasan, gaya bertarung, pengalaman tempur, kecenderungan in-character…","rt.export":"⬇ Export ke HTML",
+      "rt.inchar": "Intelligence and In-Char", "rt.inchar.ph": "Kecerdasan, gaya bertarung, pengalaman tempur, kecenderungan in-character…", "rt.export": "⬇ Export ke HTML", "rt.exportMd": "Salin Markdown", "rt.copiedMd": "Markdown berhasil disalin ke clipboard!",
       "rt.list.terminology":"Terminology","rt.list.feats":"Feats and Abilities","rt.list.stats":"Statistics",
       "rt.add.terminology":"+ Tambah istilah","rt.add.feats":"+ Tambah feat / kemampuan","rt.add.stats":"+ Tambah statistik",
       "rt.f.term":"Istilah / konsep","rt.f.definition":"Definisi & konteks dari sumber…","rt.f.name":"Nama feat / kemampuan","rt.f.tier":"Tier / kategori (mis. Universal Abilities)","rt.f.explanation":"Penjelasan feat beserta konteks sumber…","rt.f.label":"Statistik (mis. Attack Potency)","rt.f.value":"Nilai (mis. Multiversal+)","rt.f.note":"Justifikasi singkat (opsional)",
@@ -1705,7 +1784,7 @@
       "seed.joki.title":"Contoh: Joki 1 ronde Private Debate","seed.joki.desc":"Argumen pembuka, bantahan, penutup untuk satu pihak.",
       "seed.judge.title":"Contoh: Judgement satu match","seed.judge.desc":"Penilaian pemenang poin per poin.",
       "seed.calc.title":"Contoh: Kalkulasi energi serangan","seed.calc.desc":"Estimasi Joule dari feat penghancuran, lengkap rumus.",
-      "seed.tag":"Contoh"
+      "seed.tag": "Contoh"
     },
     en: {
       "loader.lbl":"Processing to Meta-Listing",
@@ -1745,9 +1824,9 @@
       "detail.embed":"Embeds & external scans","embed.url.ph":"Imgur / Gyazo / image / YouTube link…","embed.url.aria":"Embed URL","embed.cap.ph":"Caption (optional)","embed.cap.aria":"Caption","embed.cap.edit.ph":"Caption…","embed.cap.edit.aria":"Embed caption","embed.del":"Remove embed","embed.scan.alt":"scan",
       "detail.photos":"Photos","photos.add":"Add photos","photos.hint":"Click to pick, or drop image files","photo.del":"Delete photo","photo.tooBig":"is too large even after compression.","photo.failed.a":"Could not add \"","photo.failed.b":"\".",
       "common.add":"Add","common.remove":"Remove","common.empty":"None yet.",
-      "ev.label":"Evidence (scan / image link)","ev.ph":"Paste an image / Imgur / Gyazo link…","ev.aria":"Evidence link","ev.del":"Remove evidence","ev.cap.aria":"Evidence caption",
-      "rt.section":"Respect Thread · format","rt.intro":"Introduction","rt.intro.ph":"Character / verse background: who they are, origin, role in the story…",
-      "rt.inchar":"Intelligence and In-Char","rt.inchar.ph":"Intelligence, fighting style, combat experience, in-character tendencies…","rt.export":"⬇ Export to HTML",
+      "ev.label": "Evidence (scan / image link)", "ev.ph": "Paste an image / Imgur / Gyazo link…", "ev.aria": "Evidence link", "ev.del": "Remove evidence", "ev.cap.aria": "Evidence caption",
+      "rt.section": "Respect Thread · format", "rt.intro": "Introduction", "rt.intro.ph": "Character / verse background: who they are, origin, role in the story…",
+      "rt.inchar": "Intelligence and In-Char", "rt.inchar.ph": "Intelligence, fighting style, combat experience, in-character tendencies…", "rt.export": "⬇ Export to HTML", "rt.exportMd": "Copy Markdown", "rt.copiedMd": "Markdown copied to clipboard!",
       "rt.list.terminology":"Terminology","rt.list.feats":"Feats and Abilities","rt.list.stats":"Statistics",
       "rt.add.terminology":"+ Add term","rt.add.feats":"+ Add feat / ability","rt.add.stats":"+ Add statistic",
       "rt.f.term":"Term / concept","rt.f.definition":"Definition & context from the source…","rt.f.name":"Feat / ability name","rt.f.tier":"Tier / category (e.g. Universal Abilities)","rt.f.explanation":"Feat explanation with source context…","rt.f.label":"Statistic (e.g. Attack Potency)","rt.f.value":"Value (e.g. Multiversal+)","rt.f.note":"Short justification (optional)",
@@ -1793,7 +1872,7 @@
       "seed.joki.title":"Example: carry for 1 Private Debate round","seed.joki.desc":"Opening argument, rebuttal, closing for one side.",
       "seed.judge.title":"Example: judging one match","seed.judge.desc":"Point-by-point winner judgement.",
       "seed.calc.title":"Example: attack energy calculation","seed.calc.desc":"Joule estimate from a destruction feat, with formulas.",
-      "seed.tag":"Example"
+        "seed.tag": "Example"
     }
   };
   var lang = "id";
@@ -2079,13 +2158,126 @@
       '<span class="anc" id="sec-inchar"></span>\n<h2>Intelligence and In-Char</h2>\n' + (paraHtml(rt.inChar) || em) + '\n' +
       '<footer>' + esc(L("rt.doc.footer")) + ' ' + esc(fmtDate(Date.now())) + '</footer>\n' +
       '</body>\n</html>';
-  }
+    }
+    function buildRespectThreadMarkdown(j) {
+        var rt = j.rt || {};
+        var title = j.title || "Respect Thread";
+        var lines = [];
+        var em = "_" + (L("rt.doc.empty") || "Belum ada.") + "_";
+        var noName = L("rt.doc.noname") || "(no name)";
+        var evLbl = L("rt.doc.evidence") || "Evidence";
+        lines.push("# " + title);
+        lines.push("*This respect thread was compiled with Battleboarding Business Entry.*");
+        var metaBits = [];
+        if (j.customer) metaBits.push(j.customer);
+        if (j.tags && j.tags.length) metaBits.push(j.tags.join(" · "));
+        if (metaBits.length) lines.push("\n**" + metaBits.join(" · ") + "**");
+        if (j.description) lines.push("\n> " + j.description.trim());
+        lines.push("");
+        lines.push("**List of Contents**");
+        lines.push("1. Introduction");
+        lines.push("2. Terminology");
+        lines.push("3. Feats and Abilities");
+        lines.push("4. Statistics");
+        lines.push("5. Intelligence and In-Char");
+        lines.push("\n---\n");
+        function formatEv(list) {
+            if (!list || !list.length) return "";
+            return list.map(function (ev) {
+                var url = typeof ev === "string" ? ev : (ev.url || "");
+                var cap = (typeof ev === "object" && ev.caption) ? ev.caption : "Link";
+                return "- [" + evLbl + ": " + cap + "](" + url + ")";
+            }).join("\n");
+        }
+        lines.push("## Introduction");
+        lines.push(rt.intro ? rt.intro.trim() : em);
+        lines.push("\n---\n");
+        lines.push("## Terminology");
+        var terms = rt.terminology || [];
+        if (terms.length) {
+            terms.forEach(function (e) {
+                lines.push("### " + (e.term || noName));
+                if (e.definition) lines.push(e.definition.trim());
+                var ev = formatEv(e.evidence);
+                if (ev) lines.push(ev);
+                lines.push("");
+            });
+        } else {
+            lines.push(em + "\n");
+        }
+        lines.push("---\n");
+        lines.push("## Feats and Abilities");
+        var feats = rt.feats || [];
+        if (feats.length) {
+            feats.forEach(function (e) {
+                var tier = e.tier ? " `[" + e.tier + "]`" : "";
+                lines.push("### " + (e.name || noName) + tier);
+                if (e.explanation) lines.push(e.explanation.trim());
+                var ev = formatEv(e.evidence);
+                if (ev) lines.push(ev);
+                lines.push("");
+            });
+        } else {
+            lines.push(em + "\n");
+        }
+        lines.push("---\n");
+        lines.push("## Statistics");
+        var stats = rt.stats || [];
+        if (stats.length) {
+            lines.push("| Atribut / Kategori | Tingkatan / Nilai | Catatan |");
+            lines.push("| :--- | :--- | :--- |");
+            stats.forEach(function (s) {
+                var label = (s.label || "-").replace(/\|/g, "\\|");
+                var val = (s.value || "-").replace(/\|/g, "\\|");
+                var note = (s.note || "-").replace(/\|/g, "\\|");
+                lines.push("| " + label + " | " + val + " | " + note + " |");
+            });
+            lines.push("");
+        } else {
+            lines.push(em + "\n");
+        }
+        lines.push("---\n");
+        lines.push("## Intelligence and In-Char");
+        lines.push(rt.inChar ? rt.inChar.trim() : em);
+        lines.push("");
+        var footerText = L("rt.doc.footer") || "Compiled";
+        lines.push("\n---\n*" + footerText + " " + (typeof fmtDate === "function" ? fmtDate(Date.now()) : new Date().toLocaleDateString()) + "*");
+        return lines.join("\n");
+    }
   function exportRespectThread(catId, jobId){
     var j = jobById(catId, jobId); if (!j) return;
     var safe = (j.title || "Respect Thread").replace(/[^\w\s.-]/g, "").replace(/\s+/g, " ").trim() || "Respect Thread";
     var okd = downloadHtml(safe + " Respect Thread.html", buildRespectThreadDoc(j));
     if (!okd) alert(L("rt.export.fail"));
   }
+  function exportRespectThreadMd(catId, jobId) {
+    var j = jobById(catId, jobId); if (!j) return;
+    var safe = (j.title || "Respect Thread").replace(/[^\w\s.-]/g, "").replace(/\s+/g, " ").trim() || "Respect Thread";
+    var md = buildRespectThreadMarkdown(j);
+
+      if (window.navigator && window.navigator.clipboard && window.navigator.clipboard.writeText) {
+          window.navigator.clipboard.writeText(md).then(function () {
+              alert(L("rt.copiedMd"));
+          })["catch"](function () {
+              downloadMd(safe + " Respect Thread.md", md);
+          });
+      } else {
+          downloadMd(safe + " Respect Thread.md", md);
+      }
+    }
+  function downloadMd(filename, content) {
+      try {
+          var blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url; a.download = filename;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+          return true;
+      } catch (e) {
+          return false;
+      }
+    }
 
   function isDone(j){ return !!DONE_STATUS[j.status]; }
   function jobPrice(j){ return typeof j.price === "number" && isFinite(j.price) ? j.price : 0; }
@@ -2523,6 +2715,7 @@
              '</label>' +
              '<div class="rt-actions">' +
                '<button type="button" class="mini-btn rt-export-btn" data-act="rt-export" data-id="' + esc(j.id) + '">' + esc(L("rt.export")) + '</button>' +
+               '<button type="button" class="mini-btn rt-export-btn" data-act="rt-export-md" data-id="' + esc(j.id) + '">' + esc(L("rt.exportMd")) + '</button>' +
              '</div>' +
            '</div>';
   }
@@ -3278,7 +3471,8 @@
     else if (act === "add-rt" && cat){ if (isMobile()) openAddRtSheet(cat.id, id, t.getAttribute("data-list")); else DATA.addRtItem(cat.id, id, t.getAttribute("data-list")); }
     else if (act === "del-rt" && cat){ DATA.deleteRtItem(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), id); }
     else if (act === "del-rt-ev" && cat){ DATA.deleteRtEvidence(cat.id, t.getAttribute("data-job"), t.getAttribute("data-list"), t.getAttribute("data-entry"), parseInt(t.getAttribute("data-idx"), 10)); }
-    else if (act === "rt-export" && cat){ exportRespectThread(cat.id, id); }
+    else if (act === "rt-export" && cat) { exportRespectThread(cat.id, id); }
+    else if (act === "rt-export-md" && cat) { exportRespectThreadMd(cat.id, id); }
     else if (act === "calc-open"){ openCalc(); }
     else if (act === "add-calc" && cat){ if (isMobile()) openAddCalcSheet(cat.id, id); else DATA.addCalcBlock(cat.id, id); }
     else if (act === "del-calc" && cat){ DATA.deleteCalcBlock(cat.id, t.getAttribute("data-job"), id); }
@@ -4059,8 +4253,15 @@
     s = s.replace(/\b(sin|cos|tan|asin|acos|atan|sinh|cosh|tanh|ln|log|log2|exp|abs)\(/g, "\\$1(");
     return s;
   }
-
-  var calcState = { expr: "", ans: 0, deg: true, history: [], mode: "sci", lastOut: null };
+  var calcState = {
+      expr: "",
+      ans: 0,
+      deg: (function () { try { return localStorage.getItem("bbe-calc-deg") !== "rad"; } catch (e) { return true; } })(),
+      history: (function () { try { return JSON.parse(localStorage.getItem("bbe-calc-history")) || []; } catch (e) { return []; } })(),
+      mode: (function () { try { return localStorage.getItem("bbe-calc-mode") || "sci"; } catch (e) { return "sci"; } })(),
+      lastOut: null,
+      activePreset: null
+    };
   try { var hh = JSON.parse(localStorage.getItem("bbe-calc-history") || "[]"); if (hh && hh.length) calcState.history = hh; } catch (e) {}
   try { calcState.deg = localStorage.getItem("bbe-calc-deg") !== "rad"; } catch (e) {}
   try { var cm0 = localStorage.getItem("bbe-calc-mode"); if (cm0) calcState.mode = cm0; } catch (e) {}
@@ -4087,72 +4288,134 @@
   }
   function closeCalc(){ $("calc").hidden = true; }
   $("calc").addEventListener("click", function(e){ if (e.target === $("calc")) closeCalc(); });
-
-  function renderCalc(){
-    var box = $("calc").querySelector(".calc-box");
-    var mode = calcState.mode || "sci";
-    var modeStrip = '<div class="calc-modes">' +
-      '<button type="button" class="calc-mode' + (mode === "sci" ? " on" : "") + '" data-cm="sci">Scientific</button>' +
-      VCALCS.map(function(c){ return '<button type="button" class="calc-mode' + (mode === c.id ? " on" : "") + '" data-cm="' + c.id + '">' + esc(c.name) + '</button>'; }).join("") +
-      '</div>';
-    var vc = vcalc(mode);
-    var head = '<div class="calc-head"><b>' + esc(mode === "sci" ? L("calc.head") : (vc ? vc.name : "Calc")) + '</b>' +
-      (mode === "sci" ? '<span class="calc-deg" data-ck="@deg" role="button" tabindex="0">' + (calcState.deg ? "DEG" : "RAD") + '</span>' : "") +
-      '<button type="button" class="calc-x" data-ck="@close" aria-label="' + esc(L("calc.close")) + '">✕</button></div>';
-    var bodyHtml;
-    if (mode === "sci"){
-      var grid = '<div class="calc-grid">' + CALC_ROWS.map(function(row){
-        return '<div class="calc-row">' + row.map(function(k){
-          var label = k[0] === "DEG/RAD" ? (calcState.deg ? "DEG" : "RAD") : k[0];
-          return '<button type="button" class="calc-key ' + (k[2] || "") + '" data-ck="' + esc(k[1]) + '">' + esc(label) + '</button>';
-        }).join("") + '</div>';
-      }).join("") + '</div>';
-      var hist = calcState.history.length
-        ? '<div class="calc-hist">' + calcState.history.slice(0, 14).map(function(h, idx){
-            return '<button type="button" class="calc-hrow" data-ch="' + idx + '"><span>' + esc(h.expr) + '</span><b>' + esc(h.result) + '</b></button>';
-          }).join("") + '</div>'
-        : "";
-      bodyHtml =
-        '<input id="calcExpr" type="text" value="' + esc(calcState.expr) + '" placeholder="' + esc(L("calc.expr.ph")) + '" autocomplete="off" spellcheck="false" aria-label="' + esc(L("calc.expr.aria")) + '">' +
-        '<div id="calcOut" class="calc-out"></div>' +
-        grid +
-        (calcCanInsert() ? '<button type="button" class="calc-ins" data-ck="@ins">' + esc(L("calc.insert")) + '</button>' : "") +
-        hist;
-    } else {
-      bodyHtml = renderCalcForm(vc);
-    }
-    box.innerHTML = head + modeStrip + bodyHtml;
-
-    if (!renderCalc._bound){
-      renderCalc._bound = true;
-      box.addEventListener("click", function(e){
-        var mb = e.target.closest("[data-cm]");
-        if (mb){ calcState.mode = mb.getAttribute("data-cm"); try { localStorage.setItem("bbe-calc-mode", calcState.mode); } catch (_){} renderCalc(); return; }
-        var kb = e.target.closest("[data-ck]");
-        if (kb){ calcKey(kb.getAttribute("data-ck")); return; }
-        var hb = e.target.closest("[data-ch]");
-        if (hb){ calcState.expr = calcState.history[parseInt(hb.getAttribute("data-ch"), 10)].expr; renderCalc(); $("calcExpr").focus(); }
-      });
-      box.addEventListener("input", function(e){ if (e.target.closest && e.target.closest(".calc-form")) computeCalcForm(); });
-      box.addEventListener("change", function(e){
-        if (e.target.matches && e.target.matches("[data-dshape]")){
-          calcState.dynIdx = calcState.dynIdx || {};
-          calcState.dynIdx[calcState.mode] = parseInt(e.target.value, 10) || 0;
-          renderCalc(); return;
+    var SCI_PRESETS = [
+        {
+            id: "ke",
+            name: "Kinetic Energy",
+            expr: "0.5 * 80 * 200^2",
+            tex: "E_k = \\tfrac{1}{2} m v^2",
+            badge: "E_k = ½mv²"
+        },
+        {
+            id: "tnt",
+            name: "TNT Yield (Tons)",
+            expr: "1e12 / 4.184e9",
+            tex: "\\text{Tons TNT} = \\frac{J}{4.184 \\times 10^9}",
+            badge: "J → Ton TNT"
+        },
+        {
+            id: "mach",
+            name: "Speed to Mach",
+            expr: "1715 / 340.29",
+            tex: "M = \\frac{v}{340.29}",
+            badge: "v → Mach"
+        },
+        {
+            id: "pe",
+            name: "Potential Energy",
+            expr: "70 * 9.80665 * 100",
+            tex: "E_p = mgh",
+            badge: "E_p = mgh"
         }
-        if (e.target.closest && e.target.closest(".calc-form")) computeCalcForm();
-      });
+    ];
+
+    function renderCalc() {
+        var box = $("calc").querySelector(".calc-box");
+        var mode = calcState.mode || "sci";
+        var modeStrip = '<div class="calc-modes">' +
+            '<button type="button" class="calc-mode' + (mode === "sci" ? " on" : "") + '" data-cm="sci">Scientific</button>' +
+            VCALCS.map(function (c) { return '<button type="button" class="calc-mode' + (mode === c.id ? " on" : "") + '" data-cm="' + c.id + '">' + esc(c.name) + '</button>'; }).join("") +
+            '</div>';
+        var vc = vcalc(mode);
+        var head = '<div class="calc-head"><b>' + esc(mode === "sci" ? L("calc.head") : (vc ? vc.name : "Calc")) + '</b>' +
+            (mode === "sci" ? '<span class="calc-deg" data-ck="@deg" role="button" tabindex="0">' + (calcState.deg ? "DEG" : "RAD") + '</span>' : "") +
+            '<button type="button" class="calc-x" data-ck="@close" aria-label="' + esc(L("calc.close")) + '">✕</button></div>';
+        var bodyHtml;
+        if (mode === "sci") {
+            var grid = '<div class="calc-grid">' + CALC_ROWS.map(function (row) {
+                return '<div class="calc-row">' + row.map(function (k) {
+                    var label = k[0] === "DEG/RAD" ? (calcState.deg ? "DEG" : "RAD") : k[0];
+                    return '<button type="button" class="calc-key ' + (k[2] || "") + '" data-ck="' + esc(k[1]) + '">' + esc(label) + '</button>';
+                }).join("") + '</div>';
+            }).join("") + '</div>';
+            var hist = calcState.history.length
+                ? '<div class="calc-hist">' + calcState.history.slice(0, 14).map(function (h, idx) {
+                    return '<button type="button" class="calc-hrow" data-ch="' + idx + '"><span>' + esc(h.expr) + '</span><b>' + esc(h.result) + '</b></button>';
+                }).join("") + '</div>'
+                : "";
+            var presets = '<div class="calc-modes">' +
+                SCI_PRESETS.map(function (p) {
+                    var on = calcState.activePreset && calcState.activePreset.id === p.id;
+                    return '<button type="button" class="calc-mode' + (on ? " on" : "") + '" data-cp="' + p.id + '">' + esc(p.badge) + '</button>';
+                }).join("") +
+                '</div>';
+            bodyHtml =
+                presets +
+                '<input id="calcExpr" type="text" value="' + esc(calcState.expr) + '" placeholder="' + esc(L("calc.expr.ph")) + '" autocomplete="off" spellcheck="false" aria-label="' + esc(L("calc.expr.aria")) + '">' +
+                '<div id="calcOut" class="calc-out"></div>' +
+                grid +
+                (calcCanInsert() ? '<button type="button" class="calc-ins" data-ck="@ins">' + esc(L("calc.insert")) + '</button>' : "") +
+                hist;
+        } else {
+            bodyHtml = renderCalcForm(vc);
+        }
+        box.innerHTML = head + modeStrip + bodyHtml;
+        if (!renderCalc._bound) {
+            renderCalc._bound = true;
+            box.addEventListener("wheel", function (e) {
+                var modes = e.target.closest(".calc-modes");
+                if (modes && (modes.scrollWidth > modes.clientWidth)) {
+                    if (e.deltaY) {
+                        e.preventDefault();
+                        modes.scrollLeft += e.deltaY;
+                    }
+                }
+            }, { passive: false });
+            box.addEventListener("click", function (e) {
+                var mb = e.target.closest("[data-cm]");
+                if (mb) { calcState.mode = mb.getAttribute("data-cm"); try { localStorage.setItem("bbe-calc-mode", calcState.mode); } catch (_) { } renderCalc(); return; }
+                var pb = e.target.closest("[data-cp]");
+                if (pb) {
+                    var pid = pb.getAttribute("data-cp");
+                    var preset = null;
+                    for (var i = 0; i < SCI_PRESETS.length; i++) {
+                        if (SCI_PRESETS[i].id === pid) { preset = SCI_PRESETS[i]; break; }
+                    }
+                    if (preset) {
+                        calcState.expr = preset.expr;
+                        calcState.activePreset = preset;
+                        var inp = $("calcExpr");
+                        if (inp) { inp.value = preset.expr; inp.focus(); }
+                        updateCalcOut();
+                        renderCalc();
+                    }
+                    return;
+                }
+                var kb = e.target.closest("[data-ck]");
+                if (kb) { calcKey(kb.getAttribute("data-ck")); return; }
+                var hb = e.target.closest("[data-ch]");
+                if (hb) { calcState.expr = calcState.history[parseInt(hb.getAttribute("data-ch"), 10)].expr; renderCalc(); $("calcExpr").focus(); }
+            });
+            box.addEventListener("input", function (e) { if (e.target.closest && e.target.closest(".calc-form")) computeCalcForm(); });
+            box.addEventListener("change", function (e) {
+                if (e.target.matches && e.target.matches("[data-dshape]")) {
+                    calcState.dynIdx = calcState.dynIdx || {};
+                    calcState.dynIdx[calcState.mode] = parseInt(e.target.value, 10) || 0;
+                    renderCalc(); return;
+                }
+                if (e.target.closest && e.target.closest(".calc-form")) computeCalcForm();
+            });
+        }
+        if (mode === "sci") {
+            var inp = $("calcExpr");
+            inp.addEventListener("input", function () { calcState.expr = inp.value; updateCalcOut(); });
+            inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); calcEquals(); } });
+            updateCalcOut();
+        } else {
+            calcState.lastOut = null;
+            computeCalcForm();
+        }
     }
-    if (mode === "sci"){
-      var inp = $("calcExpr");
-      inp.addEventListener("input", function(){ calcState.expr = inp.value; updateCalcOut(); });
-      inp.addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); calcEquals(); } });
-      updateCalcOut();
-    } else {
-      calcState.lastOut = null;
-      computeCalcForm();
-    }
-  }
   function updateCalcOut(){
     var out = $("calcOut"); if (!out) return;
     var e = (calcState.expr || "").trim();
@@ -4198,15 +4461,23 @@
       var o = $("calcOut"); if (o){ o.textContent = "⚠ " + err.message; o.className = "calc-out err"; }
     }
   }
-  function calcInsert(){
-    var cat = selectedCat();
-    if (!cat || cat.kind !== "calc" || !state.expandedId) return;
-    var e = (calcState.expr || "").trim(); if (!e) return;
-    var v;
-    try { v = mathEval(e, calcState.deg, calcState.ans); } catch (err){ return; }
-    var body = "$$" + exprToTeX(e) + " = " + fmtNum(v) + "$$";
-    DATA.addCalcBlock(cat.id, state.expandedId, body);
-    closeCalc();
+  function calcInsert() {
+      var cat = selectedCat();
+      if (!cat || cat.kind !== "calc" || !state.expandedId) return;
+      var e = (calcState.expr || "").trim(); if (!e) return;
+      var v;
+      try { v = mathEval(e, calcState.deg, calcState.ans); } catch (err) { return; }
+      var label = "Calculation";
+      var body = "";
+      if (calcState.activePreset && calcState.activePreset.expr === e) {
+          label = calcState.activePreset.name;
+          body = "$$" + calcState.activePreset.tex + "$$\n$$" + exprToTeX(e) + " = " + fmtNum(v) + "$$";
+      } else {
+          body = "$$" + exprToTeX(e) + " = " + fmtNum(v) + "$$";
+      }
+      DATA.addCalcBlock(cat.id, state.expandedId, body, label);
+      calcState.activePreset = null;
+      closeCalc();
   }
 
   /* ======== VS Battles calculators (values from vsbattles.fandom.com) ======== */

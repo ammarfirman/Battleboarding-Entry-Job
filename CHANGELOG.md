@@ -4,6 +4,52 @@ All notable changes to Battleboarding Business Entry. Versions match the
 GitHub release tags. Existing on-device data upgrades automatically on first
 open of a newer version.
 
+## v5.1
+
+Respect Thread Markdown export, formula presets, calculator polish, and Windows packaging.
+
+- **Respect Thread Markdown export**: a "Salin MD" / "Copy MD" button added
+  next to the Export to HTML button in the Respect Thread builder toolbar.
+- Exports the five-part structure to clean, readable Markdown tailored for
+  Discord servers, WhatsApp discussion threads, Reddit (`r/respectthreads`),
+  and debate forums.
+- Matches the HTML document layout 1:1: character title, compiled-by byline,
+  verse and customer metadata tags, lead blockquote, numbered List of Contents,
+  horizontal section dividers (`---`), Terminology definitions with evidence
+  links, Feats and Abilities with bracketed tier tags (`[Tier]`), a formatted
+  Statistics table, and Intelligence and In-Char notes.
+- One-tap copy: writes formatted text straight to the clipboard with an
+  alert notification, falling back to a `.md` file download if clipboard
+  access is restricted by the platform or browser.
+- **Scientific calculator formula presets**: added standard battleboarding
+  template chips (`E_k = ½mv²`, `J → Ton TNT`, `v → Mach`, `E_p = mgh`) directly
+  inside Scientific mode. Clicking a preset auto-populates the expression,
+  computes the real-time result, and outputs both the mathematical definition
+  and evaluation when inserted as a LaTeX block.
+- **Calculator history & state persistence**: history is now restored from
+  `localStorage` on startup rather than resetting to an empty list, alongside
+  remembered DEG/RAD and mode preferences.
+- **Horizontal tab scrolling & Persona 5 polish**: desktop mouse wheel events
+  now translate smoothly to horizontal scroll across all calculator mode and
+  preset strips; tab chips adopt Persona 5 leaning parallelograms (`skewX(-10deg)`),
+  overflowing edges fade out with an alpha dissolve mask, and header padding
+  clears the top-left silhouette cut.
+- Smoke test updated in `scripts/smoke-test.js` with automated regression checks
+  for Markdown generation, headers, table syntax, and link formatting.
+- **Windows desktop automation & packaging**: added `npm run electron` for
+  live desktop development with automated asset synchronization (`scripts/sync-windows.js`),
+  and `npm run win:pack` using `@electron/packager` (`scripts/pack-windows.js`)
+  to produce the release bundle `dist/BattleboardingEntry-Windows-x64.zip`
+  alongside `BattleboardingEntry.html`.
+- **Dynamic display responsiveness**: updated `windows-app/main.js` to scale
+  the window boundary based on the primary monitor's active work area (`workAreaSize`),
+  preventing taskbar overlap on 1366x768 / 720p laptop displays while maintaining
+  the optimal 1200x840 layout on 1080p and 4K screens; window paints gracefully
+  (`show: false` and `ready-to-show`) to eliminate blank white startup flashes.
+- **Windows CI workflow**: added `.github/workflows/windows.yml` to automatically
+  test, build, and package the Windows desktop archive on release tags and manual
+  dispatches, matching the `pages.yml` and `ios.yml` workflows.
+
 ## v5.0
 
 Mobile-native pass, richer evidence, and a calculation suite.

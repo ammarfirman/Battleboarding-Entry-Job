@@ -56,30 +56,35 @@ function serve(request) {
 }
 
 function createWindow() {
-  const win = new BrowserWindow({
-    width: 1200,
-    height: 840,
-    minWidth: 360,
-    minHeight: 480,
-    backgroundColor: "#0B0B0C",
-    autoHideMenuBar: true,
-    title: "Battleboarding Entry",
-    webPreferences: {
-      contextIsolation: true,
-      nodeIntegration: false,
-      spellcheck: false
-    }
-  });
-
-  Menu.setApplicationMenu(null);
-
-  // open target=_blank / external links in the real browser, not a new app window
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    if (/^https?:/i.test(url)) shell.openExternal(url);
-    return { action: "deny" };
-  });
-
-  win.loadURL("app://local/index.html");
+    const { screen } = require("electron");
+    const display = screen.getPrimaryDisplay();
+    const { width: maxW, height: maxH } = display.workAreaSize;
+    const initialWidth = Math.min(1200, Math.max(360, Math.round(maxW * 0.92)));
+    const initialHeight = Math.min(840, Math.max(480, Math.round(maxH * 0.92)));
+    const win = new BrowserWindow({
+        width: initialWidth,
+        height: initialHeight,
+        minWidth: 360,
+        minHeight: 480,
+        backgroundColor: "#0B0B0C",
+        autoHideMenuBar: true,
+        title: "Battleboarding Entry",
+        show: false,
+        webPreferences: {
+            contextIsolation: true,
+            nodeIntegration: false,
+            spellcheck: false
+        }
+    });
+    win.once("ready-to-show", () => {
+        win.show();
+    });
+    Menu.setApplicationMenu(null);
+    win.webContents.setWindowOpenHandler(({ url }) => {
+        if (/^https?:/i.test(url)) shell.openExternal(url);
+        return { action: "deny" };
+    });
+    win.loadURL("app://local/index.html");
 }
 
 app.whenReady().then(() => {
